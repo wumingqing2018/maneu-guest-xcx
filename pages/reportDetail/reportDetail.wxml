@@ -1,0 +1,160 @@
+<!--pages/reportDetail/reportDetail.wxml-->
+<view style="background-color: #003153; height: 40px; padding-left: 5%;">
+  <text style="font-size: 20px; color: #FFC048;">报告详情</text>
+</view>
+<view class="table">
+  <view class="tr1">
+    <view class="td0">
+      <text class="text0">屈光检验结果   Subjective refraction</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">参数</text>
+    </view>
+    <view class="td1">
+      <text class="text0">右眼</text>
+    </view>
+    <view class="td1">
+      <text class="text0">左眼</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">裸眼视力：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_VA}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_VA}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">球镜：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_SPH}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_SPH}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">柱镜：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_CYL}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_CYL}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">轴位：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_AX}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_AX}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">矫正视力：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_BCVA}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_BCVA}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">眼轴长度：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_AL}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_AL}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">角膜曲率：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_AK}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_AK}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">前房深度：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_AD}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_AD}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">角膜厚度：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_CCT}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_CCT}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">晶体厚度：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_LT}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_LT}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">玻璃体厚度：</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OD_VT}}</text>
+    </view>
+    <view class="td1">
+      <text class="text0">{{OS_VT}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text class="text0">验光师备注：</text>
+    </view>
+    <view class="td2">
+      <text class="text0">{{remark}}</text>
+    </view>
+  </view>
+</view>
+<!-- <view class="echarts">
+  <ec-canvas id="echarts" canvas-id="echarts" ec="{{ec1}}"></ec-canvas>
+</view>
+<view class="echarts">
+  <ec-canvas id="echarts" canvas-id="echarts" ec="{{ec2}}"></ec-canvas>
+</view> -->
+<view style="text-align: center;">
+  <text>————这是我的底线————</text>
+</view>

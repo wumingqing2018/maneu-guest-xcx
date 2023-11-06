@@ -1,0 +1,18 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/indexDetail/indexDetail",
+    "pages/orderDetail/orderDetail",
+    "pages/orderList/orderList",
+    "pages/reportDetail/reportDetail",
+    "pages/reportList/reportList"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#003153",
+    "navigationBarTitleText": "",
+    "navigationBarTextStyle": "white",
+    "enablePullDownRefresh": false
+  },
+  "lazyCodeLoading": "requiredComponents"
+}

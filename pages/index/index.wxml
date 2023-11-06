@@ -1,0 +1,20 @@
+<!--pages/index/index.wxml-->
+<view class="pure_top">
+  <view class="s_view">
+    <image src="https://maneu.online/static/img/L.jpg" mode="widthFix" mode="widthFix" bindtap="getOrderList" class="getOrder"></image>
+    <image src="https://maneu.online/static/img/R.jpg" mode="widthFix" mode="widthFix" bindtap="getReport" class="getReport"></image>
+  </view>
+</view>
+<view class="s_view banner-text">
+  <text class="h5">徕可丨专注视觉 Focus on vision</text>
+</view>
+<view class="s_view">
+  <image src="https://maneu.online/static/img/5.gif" class="m_show" mode="widthFix" mode="widthFix" bind:tap="getDetail"></image>
+  <image src="https://maneu.online/static/img/4.gif" class="m_show" mode="widthFix" mode="widthFix" bind:tap="getDetail"></image>
+  <image src="https://maneu.online/static/img/3.gif" class="m_show" mode="widthFix" mode="widthFix" bind:tap="getDetail"></image>
+  <image src="https://maneu.online/static/img/2.gif" class="m_show" mode="widthFix" mode="widthFix" bind:tap="getDetail"></image>
+  <image src="https://maneu.online/static/img/1.gif" class="m_show" mode="widthFix" mode="widthFix" bind:tap="getDetail"></image>
+</view>
+<view class="s_view">
+  <text>————这是我的底线————</text>
+</view>

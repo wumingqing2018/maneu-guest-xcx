@@ -1,0 +1,45 @@
+/* pages/report/report.wxss */
+.table {
+  margin: 5%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;     /* 排列形式: 向下 */
+}
+.tr {
+  display: flex;
+  flex-direction: row;
+  min-height: 40px;
+}
+.td0 {  /* 公有的属性 */
+  display: flex;
+  width: 100%;					/* 4个25%相加刚好100% */
+  text-align: left;         /* 文本居中 */
+  justify-content: left;     /* 主轴居中 */
+  align-items: left;        /* 交叉轴居中 */
+  border-bottom: 1px solid #003153;
+  color: #003153;
+}
+.td1 {  /* 公有的属性 */
+  flex-wrap: wrap;            /* 自动换行 */
+  width: 30%;					/* 4个25%相加刚好100% */
+  text-align: right;         /* 文本居中 */
+  justify-content:center;     /* 主轴居中 */
+  align-items: center;        /* 交叉轴居中 */
+  color: #003153;
+}
+.td2 {
+  flex-wrap: wrap;            /* 自动换行 */
+  width: 70%;					/* 4个25%相加刚好100% */
+  text-align: center;         /* 文本居中 */
+  justify-content:center;     /* 主轴居中 */
+  align-items: center;        /* 交叉轴居中 */
+  color: #003153;
+}
+
+.text0 {
+  margin-left: 3%;
+}
+.text2{
+  font-size: 20px;
+  color: #FFC048;
+}

@@ -1,0 +1,164 @@
+<!--pages/orderDetail/orderDetail.wxml-->
+<view style="background-color: #003153; height: 40px; padding-left: 5%;">
+  <text style="font-size: 20px; color: #FFC048;">订单详情</text>
+</view>
+<view class="table">
+  <view class="tr">
+    <view class="td0" style="margin-top: 5%;">
+      <text class="text0">视力解决方案 Vision Solutions</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>参数</text>
+    </view>
+    <view class="td1">
+      <text>右眼</text>
+    </view>
+    <view class="td1">
+      <text>左眼</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>裸眼视力</text>
+    </view>
+    <view class="td1">
+      <text>{{OD_VA}}</text>
+    </view>
+    <view class="td1">
+      <text>{{OS_VA}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>球镜</text>
+    </view>
+    <view class="td1">
+      <text>{{OD_SPH}}</text>
+    </view>
+    <view class="td1">
+      <text>{{OS_SPH}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>柱镜</text>
+    </view>
+    <view class="td1">
+      <text>{{OD_CYL}}</text>
+    </view>
+    <view class="td1">
+      <text>{{OS_CYL}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>轴位</text>
+    </view>
+    <view class="td1">
+      <text>{{OD_AX}}</text>
+    </view>
+    <view class="td1">
+      <text>{{OS_AX}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>棱镜</text>
+    </view>
+    <view class="td1">
+      <text>{{OD_PR}}</text>
+    </view>
+    <view class="td1">
+      <text>{{OS_PR}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>基底取向</text>
+    </view>
+    <view class="td1">
+      <text>{{OD_FR}}</text>
+    </view>
+    <view class="td1">
+      <text>{{OS_FR}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>下加光</text>
+    </view>
+    <view class="td1">
+      <text>{{OD_ADD}}</text>
+    </view>
+    <view class="td1">
+      <text>{{OS_ADD}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>矫正视力</text>
+    </view>
+    <view class="td1">
+      <text>{{OD_BCVA}}</text>
+    </view>
+    <view class="td1">
+      <text>{{OS_BCVA}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>瞳距</text>
+    </view>
+    <view class="td1">
+      <text>{{PD}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>使用需求</text>
+    </view>
+    <view class="td2">
+      <text>{{function}}</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td1">
+      <text>验光师建议</text>
+    </view>
+    <view class="td2">
+      <text>{{remark}}</text>
+    </view>
+  </view>
+</view>
+<view class="table">
+  <view class="tr">
+    <view class="td0" style="margin-top: 5%;">
+      <text class="text0">产品订单信息 Product Orders</text>
+    </view>
+  </view>
+  <view class="tr" wx:for="{{store_content}}" wx:key="index">
+    <view class="td0" style="border: 0px;">
+      <text class="text0">{{item.arg0}}, {{item.arg1}}, {{item.arg2}}, {{item.arg3}}, {{item.arg4}}</text>
+    </view>
+  </view>
+</view>
+<view class="table">
+  <view class="tr">
+    <view class="td0" style="margin-top: 5%;">
+      <text class="text0">注意事项 matters need attention</text>
+    </view>
+  </view>
+  <view class="tr">
+    <view class="td0" style="border: 0px;">
+      <text class="text0">处方由眼科专家根据患者屈光不正性质、年龄、用眼需求等综合因素决定。
+        选择镜片、镜架及按眼科专家指导的配戴方法才能确保矫正效果和视觉健康。
+        数据为当时检查状态的结果，检查后如超过六个月配镜，建议复查。
+      </text>
+    </view>
+  </view>
+</view>
+<view style="text-align: center; margin-top: 5%;">
+  <text>————这是我的底线————</text>
+</view>
