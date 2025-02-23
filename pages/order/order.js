@@ -29,7 +29,6 @@ Page({
         'code': options.code
       },
       success: (res) => {
-        console.log(res)
         this.setData({
           name: res.data.content.name,
           time: res.data.content.time,
@@ -105,7 +104,7 @@ Page({
       tabsId: e.currentTarget.dataset.idx
     })
   },
-  get_admin_content(code){
+  get_admin_content(code) {
     wx.request({
       url: 'https://maneu.online/get_detail/',
       method: 'GET',
@@ -114,14 +113,13 @@ Page({
         'code': code,
       },
       success: (res) => {
-        console.log('admin',res)
         this.setData({
           admin: res.data.content
         })
       }
     })
   },
-  get_report_content(code){
+  get_report_content(code) {
     wx.request({
       url: 'https://maneu.online/get_detail/',
       method: 'GET',

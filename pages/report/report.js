@@ -124,7 +124,6 @@ Page({
                     admin_id: res.data.content.admin_id,
                     report: res.data.content.content
                 })
-                console.log(res.data.content.content.PLAN)
                 this.get_admin_content(res.data.content.admin_id)
             }
         })

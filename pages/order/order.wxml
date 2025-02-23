@@ -1,8 +1,6 @@
 <view style="background: whitesmoke; padding: 2%;">
-    <view class="card">
-        <view style="text-align: center;">
-            <text class="h5">{{ time }} 历史订单</text>
-        </view>
+    <view class="card" style="text-align: center;">
+      <text class="h5">{{ time }} ：配镜订单</text>
     </view>
     <view style="padding:2%;"></view>
 
@@ -11,38 +9,40 @@
             <view class="h5">基础信息</view>
             <view class="h4">客户信息</view>
         </view>
-        <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-            <view style="padding: 5px; background: #f6f4f4;">客户姓名</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ name }}</view>
+        <view class="fr2">
+            <view class="somke">客户姓名</view>
+            <view class="somke">{{ name }}</view>
         </view>
-        <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-            <view style="padding: 5px; background: #ffffff;">联系电话</view>
-            <view style="padding: 5px; background: #ffffff;">{{ phone }}</view>
+        <view class="fr2">
+            <view class="white">联系电话</view>
+            <view class="white">{{ phone }}</view>
         </view>
 
         <view>
             <view class="h4">验光机构</view>
         </view>
-        <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-            <view style="padding: 5px; background: #f6f4f4;">店铺名称</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ admin.nickname }}</view>
+        <view class="fr2">
+            <view class="somke">店铺名称</view>
+            <view class="somke">{{ admin.nickname }}</view>
         </view>
-        <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-            <view style="padding: 5px; background: #ffffff;">联系电话</view>
-            <view style="padding: 5px; background: #ffffff;">{{ admin.phone }}</view>
+        <view class="fr2">
+            <view class="white">联系电话</view>
+            <view class="white">{{ admin.phone }}</view>
         </view>
-        <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-            <view style="padding: 5px; background: #f6f4f4;">营业地址</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ admin.location }}</view>
+        <view class="fr2">
+            <view class="somke">营业地址</view>
+            <view class="somke">{{ admin.location }}</view>
         </view>
 
         <view>
             <view class="h4">验光师建议</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr;">
-            <view style="padding: 5px; background: #ffffff;">{{remark}}</view>
+        <view class="fr1" wx:if="{{ !remark }}">
+            <view class="white">无</view>
         </view>
-        <view style="padding:2%;"></view>
+        <view class="fr1" wx:else="">
+            <view class="white">{{remark}}</view>
+        </view>
     </view>
     <view style="padding:2%;"></view>
 
@@ -52,51 +52,50 @@
             <view class="h5">配镜处方</view>
             <view class="h4">根据您的视力检测结果，我们制定了以下配镜方案</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center;">
-            <view style="padding: 4%; background: #d6eef8; font-weight: bold;">{{ report.PLAN }}</view>
-            <view style="padding: 4%; background: #d6eef8; font-weight: bold;">左眼</view>
-            <view style="padding: 4%; background: #d6eef8; font-weight: bold;">右眼</view>
+        <view class="fr3">
+            <view class="blue">{{ report.PLAN }}</view>
+            <view class="blue">左眼</view>
+            <view class="blue">右眼</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center;">
-            <view style="padding: 5px; background: #f6f4f4;">裸眼视力</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ report.OD.VA }}</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ report.OS.VA }}</view>
+        <view class="fr3">
+            <view class="somke">裸眼视力</view>
+            <view class="somke">{{ report.OD.VA }}</view>
+            <view class="somke">{{ report.OS.VA }}</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center;">
-            <view style="padding: 5px; background: #ffffff;">球镜(DS)</view>
-            <view style="padding: 5px; background: #ffffff;">{{ report.OD.SPH }}</view>
-            <view style="padding: 5px; background: #ffffff;">{{ report.OS.SPH }}</view>
+        <view class="fr3">
+            <view class="white">球镜(DS)</view>
+            <view class="white">{{ report.OD.SPH }}</view>
+            <view class="white">{{ report.OS.SPH }}</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center;">
-            <view style="padding: 5px; background: #f6f4f4;">柱镜(DC)</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ report.OD.CYL }}</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ report.OS.CYL }}</view>
+        <view class="fr3">
+            <view class="somke">柱镜(DC)</view>
+            <view class="somke">{{ report.OD.CYL }}</view>
+            <view class="somke">{{ report.OS.CYL }}</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center;">
-            <view style="padding: 5px; background: #ffffff;">轴位</view>
-            <view style="padding: 5px; background: #ffffff;">{{ report.OD.AX }}</view>
-            <view style="padding: 5px; background: #ffffff;">{{ report.OS.AX }}</view>
+        <view class="fr3">
+            <view class="white">轴位</view>
+            <view class="white">{{ report.OD.AX }}</view>
+            <view class="white">{{ report.OS.AX }}</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center;">
-            <view style="padding: 5px; background: #f6f4f4;">棱镜(△)</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ report.OD.PR }}</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ report.OS.PR }}</view>
+        <view class="fr3">
+            <view class="somke">棱镜(△)</view>
+            <view class="somke">{{ report.OD.PR }}</view>
+            <view class="somke">{{ report.OS.PR }}</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr 2fr; text-align: center;">
-            <view style="padding: 5px; background: #ffffff;">瞳距</view>
-            <view style="padding: 5px; background: #ffffff;">{{ report.PD }}</view>
+        <view class="fr2">
+            <view class="white">瞳距</view>
+            <view class="white">{{ report.PD }}</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center;">
-            <view style="padding: 5px; background: #f6f4f4;">下加光</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ report.OD.ADD }}</view>
-            <view style="padding: 5px; background: #f6f4f4;">{{ report.OS.ADD }}</view>
+        <view class="fr3">
+            <view class="somke">下加光</view>
+            <view class="somke">{{ report.OD.ADD }}</view>
+            <view class="somke">{{ report.OS.ADD }}</view>
         </view>
-        <view style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center;">
-            <view style="padding: 5px; background: #ffffff;">矫正视力</view>
-            <view style="padding: 5px; background: #ffffff;">{{ report.OD.BC }}</view>
-            <view style="padding: 5px; background: #ffffff;">{{ report.OS.BC }}</view>
+        <view class="fr3">
+            <view class="white">矫正视力</view>
+            <view class="white">{{ report.OD.BC }}</view>
+            <view class="white">{{ report.OS.BC }}</view>
         </view>
-        <view style="padding:2%;"></view>
     </view>
     <view style="padding:2%;"></view>
 
@@ -107,32 +106,31 @@
             <view class="h4">根据您的视力检测结果，我们给您定制了以下配镜方案</view>
         </view>
         <view wx:for="{{store}}" wx:for-index="i" wx:for-item="content" wx:key="i">
-            <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-                <view style="padding: 5px; background: #f6f4f4;">{{i}}</view>
-                <view style="padding: 5px; background: #f6f4f4;"></view>
+            <view class="fr2">
+                <view class="somke">{{i}}</view>
+                <view class="somke"></view>
             </view>
-            <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-                <view style="padding: 5px; background: #ffffff;">类别</view>
-                <view style="padding: 5px; background: #ffffff;">{{content.arg10}}</view>
+            <view class="fr2">
+                <view class="white">类别</view>
+                <view class="white">{{content.arg10}}</view>
             </view>
-            <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-                <view style="padding: 5px; background: #ffffff;">品牌</view>
-                <view style="padding: 5px; background: #ffffff;">{{content.arg11}}</view>
+            <view class="fr2">
+                <view class="white">品牌</view>
+                <view class="white">{{content.arg11}}</view>
             </view>
-            <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-                <view style="padding: 5px; background: #ffffff;">型号</view>
-                <view style="padding: 5px; background: #ffffff;">{{content.arg12}}</view>
+            <view class="fr2">
+                <view class="white">型号</view>
+                <view class="white">{{content.arg12}}</view>
             </view>
-            <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-                <view style="padding: 5px; background: #ffffff;">参数</view>
-                <view style="padding: 5px; background: #ffffff;">{{content.arg13}}</view>
+            <view class="fr2">
+                <view class="white">参数</view>
+                <view class="white">{{content.arg13}}</view>
             </view>
-            <view style="text-align: center; display: grid; grid-template-columns: 1fr 2fr;">
-                <view style="padding: 5px; background: #ffffff;">价格</view>
-                <view style="padding: 5px; background: #ffffff;">{{content.arg14}}</view>
+            <view class="fr2">
+                <view class="white">价格</view>
+                <view class="white">{{content.arg14}}</view>
             </view>
         </view>
-        <view style="padding:2%;"></view>
     </view>
     <view style="padding:2%;"></view>
 </view>

@@ -13,7 +13,7 @@
         </view>
         <!-- Tab布局 -->
         <view class="navBox">
-            <view bindtap="tabsOn" class="titleBox" data-idx="{{item.index}}" wx:for="{{tabList}}">
+            <view bindtap="tabsOn" class="titleBox" data-idx="{{item.index}}" wx:for="{{tabList}}" wx:key="ib">
                 <text class="{{item.index == tabsId ? 'fontColorBox' : ''}}">{{item.title}}</text>
                 <hr class="{{item.index == tabsId ? 'lineBox' : ''}}"/>
             </view>
@@ -41,7 +41,7 @@
         <view class="card_banner">
             <text class="h5">历史验光数据</text>
         </view>
-        <view wx:for="{{id}}" wx:for-index="i">
+        <view wx:for="{{id}}" wx:for-index="i" wx:key="ia">
             <view bindtap="get_detail" data-bar_code="{{item}}"
                   style="margin:2%; background-color: #d6eef8; border-radius:20px;">
                 <view style="display: grid; grid-template-columns: 1fr;">

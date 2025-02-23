@@ -1,40 +1,60 @@
 <view class="content">
-    <view class="card">
-        <view style="text-align: center;">
-            <text class="h5">{{name}}订单档案</text>
-        </view>
+  <view class="card">
+    <view style="text-align: center;">
+      <text class="h5">{{name}}订单档案</text>
     </view>
-    <view style="margin:2%;"></view>
+  </view>
+  <view style="margin:2%;"></view>
 
-    <view class="card">
-        <view class="card_banner">
-            <text class="h5">购买记录</text>
-        </view>
-        <view wx:for="{{content}}" wx:for-index="i" wx:for-item="order" wx:key="order">
-            <view bindtap="get_detail" data-bar_code="{{order.id}}"
-                  style="margin:2%; background-color: #d6eef8; border-radius:20px;">
-                <view style="display: grid; grid-template-columns: 1fr;">
-                    <view style="margin:2%; padding-left: 5px;">
-                        <text>{{order.time}}</text>
-                    </view>
-                </view>
-                <view style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr;">
-                    <view style="margin: 5px; padding-left: 10px;">姓名：</view>
-                    <view style="margin: 5px;">{{order.name}}</view>
-                    <view style="margin: 5px;">电话：</view>
-                    <view style="margin: 5px;">{{order.phone}}</view>
-                </view>
-                <view style="display: grid; grid-template-columns: 1fr 4fr;">
-                    <view style="margin: 5px; padding-left: 10px;">备注：</view>
-                    <view style="margin: 5px;">{{order.remark}}</view>
-                </view>
-                <view style="display: grid; grid-template-columns: 1fr;">
-                    <view style="border-bottom-left-radius:20px; border-bottom-right-radius:20px; padding-left: 20px; background: #91c9e1; text-align: right; padding: 5px; padding-right: 15px;">
-                        <text>点击查看详情</text>
-                    </view>
-                </view>
-            </view>
-        </view>
+  <view class="card">
+    <!-- Tab布局 -->
+    <view class="navBox">
+      <view bindtap="tabsOn" class="titleBox" data-idx="{{item.index}}" wx:for="{{tabList}}" wx:key="ib">
+        <text class="{{item.index == tabsId ? 'fontColorBox' : ''}}">{{item.title}}</text>
+        <hr class="{{item.index == tabsId ? 'lineBox' : ''}}" />
+      </view>
     </view>
-    <view style="margin:2%;"></view>
+    <!-- 内容布局 -->
+    <swiper bindchange="slideOn" circular class="swiperTtemBox" current="{{tabsId}}">
+      <!-- circular 启用循环滑动 -->
+      <swiper-item>
+        <canvas canvas-id="canvas_frame" class="canvas" disable-scroll="true"></canvas>
+      </swiper-item>
+      <swiper-item>
+        <canvas canvas-id="canvas_glass" class="canvas" disable-scroll="true"></canvas>
+      </swiper-item>
+    </swiper>
+  </view>
+  <view style="margin:2%;"></view>
+
+  <view class="card">
+    <view class="card_banner">
+      <text class="h5">购买记录</text>
+    </view>
+    <view wx:for="{{content}}" wx:for-index="i" wx:for-item="order" wx:key="order">
+      <view bindtap="get_detail" data-bar_code="{{order.id}}" style="margin: 10px; background-color: #d6eef8; border-radius:20px;">
+        <view style="display: grid; grid-template-columns: 1fr;">
+          <view style="margin-top: 10px; margin-bottom: 5px; margin-left: 15px;">
+            <text>{{order.time}}</text>
+          </view>
+        </view>
+        <view style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr;">
+          <view style="margin-top: 5px; margin-bottom: 5px; margin-left: 15px;">姓名：</view>
+          <view style="margin-top: 5px; margin-bottom: 5px;">{{order.name}}</view>
+          <view style="margin-top: 5px; margin-bottom: 5px;">电话：</view>
+          <view style="margin-top: 5px; margin-bottom: 5px;">{{order.phone}}</view>
+        </view>
+        <view style="display: grid; grid-template-columns: 1fr 4fr;">
+          <view style="margin-top: 5px; margin-bottom: 5px; margin-left: 15px;">备注：</view>
+          <view style="margin: 5px;">{{order.remark}}</view>
+        </view>
+        <view style="display: grid; grid-template-columns: 1fr;">
+          <view style="border-bottom-left-radius:20px; border-bottom-right-radius:20px; background: #91c9e1; text-align: right;">
+            <view style="margin-top: 5px; margin-bottom: 5px; margin-right: 15px;">点击查看详情</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view style="margin:2%;"></view>
 </view>
