@@ -6,8 +6,9 @@
     "pages/orderList/orderList",
     "pages/report/report",
     "pages/reportList/reportList",
-    "pages/userPage/userPage",
-    "pages/userVerify/userVerify"
+    "pages/verify/verify",
+    "pages/verifyList/verifyList",
+    "pages/userPage/userPage"
     ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -21,6 +22,12 @@
       {
         "pagePath": "pages/index/index",
         "text": "首页",
+        "iconPath": "/image/home1.png",
+        "selectedIconPath": "/image/home2.png"
+      },
+      {
+        "pagePath": "pages/verify/verify",
+        "text": "test",
         "iconPath": "/image/home1.png",
         "selectedIconPath": "/image/home2.png"
       },

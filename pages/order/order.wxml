@@ -1,6 +1,6 @@
 <view style="background: whitesmoke; padding: 2%;">
     <view class="card" style="text-align: center;">
-      <text class="h5">{{ time }} ：配镜订单</text>
+      <text class="h5">配镜订单：{{ time }}</text>
     </view>
     <view style="padding:2%;"></view>
 

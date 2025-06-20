@@ -1,23 +1,155 @@
-/* pages/userPage/userPage.wxss */
-.s_view {
-    margin: 5%;
-    width: 90%;
-    text-align: left;
+/* pages/login/login.wxss */
+.login-container {
+  height: 100%;
+  background:  #003153;
+  /* linear-gradient(135deg, #003153 0%, #FFC048 100%); */
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.banner-text {
-    background-color: #f6f4f4;
-    border-radius: 10px;
-    margin-bottom: 1%;
-    height: 40px;
-    line-height: 40px;
+.brand-area {
+  text-align: center;
+  margin: 80rpx 0 60rpx;
+}
+.logo {
+  height: 200rpx;
+  border-radius: 32rpx;
+}
+.app-name {
+  display: block;
+  color: white;
+  font-size: 40rpx;
+  margin-top: 20rpx;
+  font-weight: 500;
 }
 
-.m_show {
-    width: 100%;
-    border-radius: 30rpx;
+.form-card {
+  background: white;
+  width: 100%;
+  border-radius: 24rpx;
+  box-shadow: 0 10rpx 30rpx rgba(0,0,0,0.1);
+}
+.title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-top: 30rpx;
+  margin-left: 30rpx;
+  margin-bottom: 30rpx;
+  display: block;
 }
 
-button {
-    text-align: left;
+/* 输入组样式 */
+.input-group {
+  display: flex;
+  height: 100rpx;
+  border-bottom: 1rpx solid #eee;
+  margin: 40rpx;
+  align-items: center;
+}
+.country-code {
+  color: #333;
+  font-size: 32rpx;
+  min-width: 140rpx;
+  padding-right: 20rpx;
+}
+.arrow-icon {
+  width: 28rpx;
+  height: 28rpx;
+  margin-left: 10rpx;
+}
+.phone-input, .code-input {
+  flex: 1;
+  height: 100%;
+  font-size: 32rpx;
+  padding-left: 20rpx;
+}
+
+/* 验证码按钮 */
+.send-btn {
+  margin-left: 100px;
+  font-size: 28rpx;
+  color: #4d90fe;
+  background: none;
+  border: none;
+  padding: 0;
+  min-width: 180rpx;
+  text-align: center;
+}
+.send-btn.disabled {
+  color: #999;
+}
+
+/* 登录按钮 */
+.login-btn {
+  background: #FFC048;
+  /* background: linear-gradient(to right, #6a11cb, #2575fc); */
+  color: black;
+  height: 90rpx;
+  border-radius: 12rpx;
+  font-size: 34rpx;
+  margin: 35rpx;
+  transition: all 0.3s;
+}
+.login-btn.disabled {
+  opacity: 0.6;
+}
+
+/* 协议样式 */
+.agreement {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #666;
+  margin: 40rpx;
+}
+.link {
+  color: #4d90fe;
+  margin: 0 5rpx;
+}
+
+/* 其他登录方式 */
+.divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 70rpx 0 50rpx;
+}
+.divider .line {
+  flex: 1;
+  height: 1rpx;
+  background: rgba(255,255,255,0.3);
+}
+.divider .text {
+  color: rgba(255,255,255,0.8);
+  font-size: 28rpx;
+  padding: 0 30rpx;
+}
+
+.other-login {
+  width: 100%;
+}
+.login-method {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 50rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx 0;
+}
+.login-method .icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 15rpx;
+}
+.login-method text {
+  color: white;
+  font-size: 26rpx;
+}
+/* 适配iPhone X底部安全区 */
+.other-login {
+  padding-bottom: env(safe-area-inset-bottom);
 }

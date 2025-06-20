@@ -1,38 +1,83 @@
 <!--pages/userPage/userPage.wxml-->
+
 <view wx:if="{{islogin == true}}">
-    <image class="m_show" mode="widthFix" src="/image/banner.jpg"></image>
-    <view class="s_view banner-text">
-        <button>登录账号：{{call}}</button>
-    </view>
-    <view class="s_view banner-text">
-        <button bind:tap="getOrederList">购买记录</button>
-    </view>
-    <view class="s_view banner-text">
-        <button bind:tap="getReportList">验光报告</button>
-    </view>
-    <view class="s_view banner-text">
-        <button bind:tap="getMaintainList">售后记录</button>
-    </view>
-    <view class="s_view banner-text">
-        <button bind:tap="userLogout">用户退出</button>
-    </view>
+  <view class="">
+    <image class="" mode="widthFix" src="/image/banner.jpg"></image>
+</view>
+  <view class="s_view banner-text">
+    <button>登录账号：{{call}}</button>
+  </view>
+  <view class="s_view banner-text">
+    <button bind:tap="getOrederList">购买记录</button>
+  </view>
+  <view class="s_view banner-text">
+    <button bind:tap="getReportList">验光报告</button>
+  </view>
+  <view class="s_view banner-text">
+    <button bind:tap="getMaintainList">售后记录</button>
+  </view>
+  <view class="s_view banner-text">
+    <button bind:tap="handleLogout">用户退出</button>
+  </view>
 </view>
 <view wx:else="{{islogin == false}}">
-    <view class="container">
-        <form catchreset="formReset" catchsubmit="getVerifyCode">
-            <image mode="widthFix" src="/image/banner.jpg"></image>
-            <view class="page-section">
-                <view class="weui-cells weui-cells_after-title">
-                    <view class="weui-cell weui-cell_input">
-                        <view class="weui-cell__bd" style="margin: 50rpx 0">
-                            <input class="weui-input" name="input" placeholder="请输入手机号"/>
-                        </view>
-                    </view>
-                </view>
-            </view>
-            <view class="btn-area">
-                <button formType="submit" style="margin: 30rpx 0" type="primary">获取验证码</button>
-            </view>
-        </form>
+  <!-- pages/login/login.wxml -->
+  <view class="container">
+    <view class="login-container">
+      <!-- 品牌标识 -->
+      <view class="brand-area">
+        <image src="https://maneu.online/static/img/logo.svg" class="logo"></image>
+        <text class="app-name">login徕可小程序登录</text>
+      </view>
+1
+      <!-- 表单区域 -->
+      <view class="form-card">
+        <text class="title">短信验证登录</text>
+
+        <!-- 手机号输入 -->
+        <view class="input-group">
+          <view class="country-code" bindtap="showCountryPicker">
+            +86 <image src="/images/arrow-down.png" class="arrow-icon"></image>
+          </view>
+          <input type="number" placeholder="请输入手机号" maxlength="11" value="{{phone}}" bindinput="onPhoneInput" class="phone-input" />
+        </view>
+
+        <!-- 验证码输入 -->
+        <view class="input-group code-group">
+          <input type="number" placeholder="6位验证码" maxlength="6" value="{{code}}" bindinput="onCodeInput" />
+          <button class="send-btn {{isCountdown ? 'disabled' : ''}}" bindtap="sendSmsCode" disabled="{{isCountdown}}">
+            {{countdownText}}
+          </button>
+        </view>
+
+        <!-- 登录按钮 -->
+        <button class="login-btn {{!phone || !code ? 'disabled' : ''}}" bindtap="handleLogin">
+          登录
+        </button>
+
+        <!-- 协议声明 -->
+        <view class="agreement">
+          <checkbox checked="{{agree}}" color="#4d90fe" bindtap="toggleAgree" />
+          <text>同意</text>
+          <text class="link">《用户协议》</text>
+          <text>和</text>
+          <text class="link">《隐私政策》</text>
+        </view>
+      </view>
+
+      <!-- 其他登录方式 -->
+      <view class="divider">
+        <view class="line"></view>
+        <text class="text">其他方式登录</text>
+        <view class="line"></view>
+      </view>
+
+      <view class="other-login">
+        <button class="login-method" open-type="getPhoneNumber" bindgetphonenumber="onWechatLogin">
+          <image src="/images/wechat-icon.png" class="icon"></image>
+          <text>微信登录</text>
+        </button>
+      </view>
     </view>
+  </view>
 </view>

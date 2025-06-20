@@ -21,25 +21,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    wx.request({
-      url: 'https://maneu.online/get_detail/',
-      method: 'GET',
-      data: {
-        'text': '100001',
-        'code': options.code
-      },
-      success: (res) => {
-        this.setData({
-          name: res.data.content.name,
-          time: res.data.content.time,
-          phone: res.data.content.phone,
-          remark: res.data.content.remark,
-          store: res.data.content.content,
-        })
-        this.get_admin_content(res.data.content.admin_id)
-        this.get_report_content(res.data.content.report_id)
-      }
-    })
+    let code = options.code
+    let token = wx.getStorageSync('token')
+    if (code !=null & token!=null) {
+      this.get_order_content(code,token)
+    }
   },
 
   /**
@@ -104,33 +90,66 @@ Page({
       tabsId: e.currentTarget.dataset.idx
     })
   },
+
+  get_order_content(code,token){
+    wx.request({
+      url: 'https://maneu.online/get_detail/',
+      method: 'GET',
+      data: {
+        'text': '100001',
+        'token': token,
+        'code': code,
+      },
+      success: (res) => { 
+        console.log(res.data)
+        this.setData({
+          name: res.data.content.name,
+          time: res.data.content.time,
+          phone: res.data.content.phone,
+          remark: res.data.content.remark,
+          store: res.data.content.content,
+        })
+        wx.setStorageSync('token', res.data.token)
+        this.get_admin_content(res.data.content.admin_id)
+        this.get_report_content(res.data.content.report_id)
+      }
+    })
+  },
+
   get_admin_content(code) {
     wx.request({
       url: 'https://maneu.online/get_detail/',
       method: 'GET',
       data: {
+        'token': wx.getStorageSync('token'),
         'text': 100005,
         'code': code,
       },
       success: (res) => {
+        console.log(res.data)
         this.setData({
           admin: res.data.content
         })
+        wx.setStorageSync('token', res.data.token)
       }
     })
   },
+
   get_report_content(code) {
     wx.request({
       url: 'https://maneu.online/get_detail/',
       method: 'GET',
       data: {
-        'text': 100003,
+        'token': wx.getStorageSync('token'),
+        'text': '100003',
         'code': code,
       },
       success: (res) => {
+        console.log(res.data)
         this.setData({
           report: res.data.content.content
         })
+        wx.setStorageSync('token', res.data.token)
       }
     })
   },

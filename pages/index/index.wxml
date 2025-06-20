@@ -1,18 +1,15 @@
 <!--pages/index/index.wxml-->
 <view class="pure_top">
-    <view class="s_view">
-        <image bindtap="getOrderList" class="getOrder" mode="widthFix" mode="widthFix"
-               src="https://maneu.online/static/img/L.jpg"></image>
-        <image bindtap="getReportList" class="getReport" mode="widthFix" mode="widthFix"
-               src="https://maneu.online/static/img/R.jpg"></image>
-    </view>
+  <view class="s_view">
+    <image bindtap="getOrderList" class="getOrder" mode="widthFix" mode="widthFix" src="https://maneu.online/static/img/L.jpg"></image>
+    <image bindtap="getReportList" class="getReport" mode="widthFix" mode="widthFix" src="https://maneu.online/static/img/R.jpg"></image>
+  </view>
 </view>
 <view class="s_view banner-text">
-    <text class="h5">徕可丨专注视觉 Focus on vision</text>
+  <text class="h5">徕可丨专注视觉 Focus on vision</text>
 </view>
 <view wx:for="{{imageLink}}" wx:key="index">
-    <view class="s_view">
-        <image bind:tap="getDetail" class="m_show" data-hi="{{item.data}}" lazy-load="{{ true }}" mode="widthFix"
-               show-menu-by-longpress="{{ false }}" src="{{item.index}}"></image>
-    </view>
+  <view class="s_view">
+    <image bind:tap="getDetail" class="m_show" data-hi="{{item.data}}" lazy-load="{{ true }}" mode="widthFix" show-menu-by-longpress="{{ false }}" src="{{item.index}}"></image>
+  </view>
 </view>

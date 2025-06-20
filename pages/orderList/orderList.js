@@ -6,17 +6,18 @@ var windowW = 0;
 var app = getApp()
 
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
+    /**
+     * 页面的初始数据
+     */
     id: '',
     name: '',
     content: [],
     glassList: {},
     frameList: {},
 
-    tabsId: 0, //默认选型为装备
+    //默认选型为装备
+    tabsId: 0,
     tabList: [{
       title: "镜架统计",
       index: "0",
@@ -29,19 +30,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (e) {
-    // 屏幕宽度
-    this.setData({
-      imageWidth: wx.getSystemInfoSync().windowWidth
-    });
-    console.log(this.data.imageWidth);
-
-    //计算屏幕宽度比列
-    windowW = this.data.imageWidth / 375;
-    console.log(windowW);
-
-    this.get_storage();
-  },
+  onLoad: function (e) {},
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -51,7 +40,19 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow() {},
+  onShow() {
+        // 屏幕宽度
+        this.setData({
+          imageWidth: wx.getSystemInfoSync().windowWidth
+        });
+        console.log(this.data.imageWidth);
+    
+        //计算屏幕宽度比列
+        windowW = this.data.imageWidth / 375;
+        console.log(windowW);
+    
+        this.get_storage();
+  },
 
   /**
    * 生命周期函数--监听页面隐藏
@@ -67,8 +68,18 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function (e) {
-    this.get_storage()
-  },
+    // 屏幕宽度
+    this.setData({
+      imageWidth: wx.getSystemInfoSync().windowWidth
+    });
+    console.log(this.data.imageWidth);
+
+    //计算屏幕宽度比列
+    windowW = this.data.imageWidth / 375;
+    console.log(windowW);
+
+    this.get_storage();
+    },
 
   /**
    * 页面上拉触底事件的处理函数
@@ -83,47 +94,42 @@ Page({
 
   get_storage(e) {
     let that = this
-    wx.getStorage({
-      key: 'ssk',
-      success(res) {
-        if (res.data) {
-          that.setData({
-            id: res.data.id,
-            name: res.data.name,
-          })
-          that.get_list()
-        } else {
-          app.fail_alter("网络异常请重新登录")
-        }
-      },
-      fail(res) {
-        app.fail_alter("请先登录")
-      }
-    })
+    let token = wx.getStorageSync('token')
+    if (token){
+      that.get_list(token)
+    }else{
+      app.fail_alter("请先登录")
+    }
   },
 
-  get_list(){
+  get_list(token) {
     let that = this
     wx.request({
       url: 'https://maneu.online/get_list/',
       method: 'GET',
       data: {
-        'code': that.data.id,
+        'token': token,
         'text': "100001",
       },
       success: (res) => {
-        var content = {}
-        content = that.count_funtion(res.data.content)
-        that.setData({
-          content: res.data.content,
-          glassList: content.glassList,
-          frameList: content.frameList,
-        });
-        that.visual_frame();
-        that.visual_glass();
+        if (res.data.status) {
+          var content = {}
+          content = that.count_funtion(res.data.content)
+          that.setData({
+            content: res.data.content,
+            glassList: content.glassList,
+            frameList: content.frameList,
+          });
+          that.visual_frame();
+          that.visual_glass();
+          wx.setStorageSync('token', res.data.token)
+        } else {
+          wx.removeStorageSync('token')
+          app.fail_alter("请重新登录")
+        }
       },
       fail(res) {
-        app.fail_Remind("请求发送短信失败，请确认发送短信次数是否过多")
+        app.fail_remind("网络问题，请下拉刷新")
       }
     })
   },

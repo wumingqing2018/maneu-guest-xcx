@@ -47,7 +47,17 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (e) {
+  onLoad: function (e) {},
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady() {},
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
     // 屏幕宽度
     this.setData({
       imageWidth: wx.getSystemInfoSync().windowWidth
@@ -60,16 +70,6 @@ Page({
 
     this.get_storage()
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {},
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {},
 
   /**
    * 生命周期函数--监听页面隐藏
@@ -85,6 +85,16 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function (e) {
+    // 屏幕宽度
+    this.setData({
+      imageWidth: wx.getSystemInfoSync().windowWidth
+    });
+    console.log(this.data.imageWidth);
+
+    //计算屏幕宽度比列
+    windowW = this.data.imageWidth / 375;
+    console.log(windowW);
+
     this.get_storage()
   },
 
@@ -100,71 +110,72 @@ Page({
 
   get_storage(e) {
     let that = this
-    wx.getStorage({
-      key: 'ssk',
-      success(res) {
-        that.setData({
-          name: res.data.name,
-          report_id: res.data.id,
-        });
-        that.get_list()
-      },
-      fail(res) {
-        app.fail_alter("请先登录")
-      }
-    })
+    let token = wx.getStorageSync('token')
+    if (token){
+      that.get_list(token)
+    }else{
+      app.fail_alter("请先登录")
+    }
   },
 
-  get_list(){
+  get_list(token) {
     let that = this
     wx.request({
       url: 'https://maneu.online/get_list/',
       method: 'GET',
       data: {
-        'code': that.data.report_id,
+        'token': token,
         'text': "100002",
       },
       success: (res) => {
-        var content = res.data.content
-        var card = that.data
-        for (var i in content) {
-          card.id.push(content[i].id)
-          card.time.push(content[i].time)
-          var report = JSON.parse(content[i].content)
-          card.AL.push(24.00)
-          card.OD_AL.push(report.OD.AL)
-          card.OS_AL.push(report.OS.AL)
-          card.VA.push(1.00)
-          card.OD_VA.push(report.OD.VA)
-          card.OS_VA.push(report.OS.VA)
-          card.SPH.push(0.00)
-          card.OD_SPH.push(report.OD.SPH)
-          card.OS_SPH.push(report.OS.SPH)
-          card.CYL.push(0.00)
-          card.OD_CYL.push(report.OD.CYL)
-          card.OS_CYL.push(report.OS.CYL)
-        }
-        that.setData({
-          id: card.id,
-          time: card.time,
-          AL: card.AL,
-          OD_AL: card.OD_AL,
-          OS_AL: card.OS_AL,
-          VA: card.VA,
-          OD_VA: card.OD_VA,
-          OS_VA: card.OS_VA,
-          SPH: card.SPH,
-          OD_SPH: card.OD_SPH,
-          OS_SPH: card.OS_SPH,
-          CYL: card.CYL,
-          OD_CYL: card.OD_CYL,
-          OS_CYL: card.OS_CYL,
-        });
+        if (res.data.status) {
+          var content = res.data.content
+          var card = that.data
+          if (content.length != 0) {
+            for (var i in content) {
+              card.id.push(content[i].id)
+              card.time.push(content[i].time)
+              var report = JSON.parse(content[i].content)
+              card.AL.push(24.00)
+              card.OD_AL.push(report.OD.AL)
+              card.OS_AL.push(report.OS.AL)
+              card.VA.push(1.00)
+              card.OD_VA.push(report.OD.VA)
+              card.OS_VA.push(report.OS.VA)
+              card.SPH.push(0.00)
+              card.OD_SPH.push(report.OD.SPH)
+              card.OS_SPH.push(report.OS.SPH)
+              card.CYL.push(0.00)
+              card.OD_CYL.push(report.OD.CYL)
+              card.OS_CYL.push(report.OS.CYL)
+            }
+            that.setData({
+              id: card.id,
+              time: card.time,
+              AL: card.AL,
+              OD_AL: card.OD_AL,
+              OS_AL: card.OS_AL,
+              VA: card.VA,
+              OD_VA: card.OD_VA,
+              OS_VA: card.OS_VA,
+              SPH: card.SPH,
+              OD_SPH: card.OD_SPH,
+              OS_SPH: card.OS_SPH,
+              CYL: card.CYL,
+              OD_CYL: card.OD_CYL,
+              OS_CYL: card.OS_CYL,
+            });
 
-        that.visual_AX();
-        that.visual_VA();
-        that.visual_SPH();
-        that.visual_CYL();
+            that.visual_AX();
+            that.visual_VA();
+            that.visual_SPH();
+            that.visual_CYL();
+          }
+          wx.setStorageSync('token', res.data.token)
+        } else {
+          wx.removeStorageSync('token')
+          app.fail_alter('请先登录')
+        }
       },
       fail(res) {
         app.fail_Remind("请求发送短信失败，请确认发送短信次数是否过多")
@@ -271,6 +282,7 @@ Page({
       }
     });
   },
+
   visual_CYL() {
     new wxCharts({
       animation: true,
@@ -307,7 +319,6 @@ Page({
       }
     });
   },
-
 
   get_detail(e) {
     var code = e.currentTarget.dataset.bar_code
