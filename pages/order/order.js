@@ -110,18 +110,17 @@ Page({
           store: res.data.content.content,
         })
         wx.setStorageSync('token', res.data.token)
-        this.get_admin_content(res.data.content.admin_id)
-        this.get_report_content(res.data.content.report_id)
+        this.get_admin_content(res.data.content.admin_id, token=wx.getStorageSync('token'),)
       }
     })
   },
 
-  get_admin_content(code) {
+  get_admin_content(code,token) {
     wx.request({
       url: 'https://maneu.online/get_detail/',
       method: 'GET',
       data: {
-        'token': wx.getStorageSync('token'),
+        'token': token,
         'text': 100005,
         'code': code,
       },
@@ -131,16 +130,17 @@ Page({
           admin: res.data.content
         })
         wx.setStorageSync('token', res.data.token)
+        this.get_report_content(res.data.content.report_id, token=wx.getStorageSync('token'),)
       }
     })
   },
 
-  get_report_content(code) {
+  get_report_content(code,token) {
     wx.request({
       url: 'https://maneu.online/get_detail/',
       method: 'GET',
       data: {
-        'token': wx.getStorageSync('token'),
+        'token': token,
         'text': '100003',
         'code': code,
       },

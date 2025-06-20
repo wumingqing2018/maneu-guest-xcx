@@ -24,14 +24,7 @@
         "text": "首页",
         "iconPath": "/image/home1.png",
         "selectedIconPath": "/image/home2.png"
-      },
-      {
-        "pagePath": "pages/verify/verify",
-        "text": "test",
-        "iconPath": "/image/home1.png",
-        "selectedIconPath": "/image/home2.png"
-      },
-      {
+      },{
         "pagePath": "pages/userPage/userPage",
         "text": "我的",
         "iconPath": "/image/user1.png",
