@@ -1,0 +1,89 @@
+<view wx:if="{{islogin == true}}">
+    <view class="card">
+      <view style="text-align: center;">
+        <text class="h5">唯一码验证</text>
+      </view>
+    </view>
+    <view style="margin:2%;"></view>
+
+    <view class="card">
+      <view class="card_banner">
+        <text class="h5">验证记录</text>
+      </view>
+      <view wx:for="{{content}}" wx:for-index="i" wx:for-item="order" wx:key="order">
+        <view style="margin: 10px; background-color: #d6eef8; border-radius:20px;">
+          <view style="display: grid; grid-template-columns: 1fr;">
+            <view style="margin-top: 10px; margin-bottom: 5px; margin-left: 15px;">
+              <text>{{order.time}}</text>
+            </view>
+          </view>
+          <view style="display: grid; grid-template-columns: 1fr;">
+            <view style="border-bottom-left-radius:20px; border-bottom-right-radius:20px; background: #91c9e1; text-align: right;">
+              <view style="margin-top: 5px; margin-bottom: 5px; margin-right: 15px;">点击查看详情</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view style="margin:2%;"></view>
+</view>
+<view wx:if="{{islogin == false}}">
+  <!-- pages/login/login.wxml -->
+  <view class="container">
+    <view class="login-container">
+      <!-- 品牌标识 -->
+      <view class="brand-area">
+        <image src="https://maneu.online/static/img/logo.svg" class="logo"></image>
+        <text class="app-name">徕可小程序登录</text>
+      </view>
+      <!-- 表单区域 -->
+      <view class="form-card">
+        <text class="title">短信验证登录</text>
+
+        <!-- 手机号输入 -->
+        <view class="input-group">
+          <view class="country-code" bindtap="showCountryPicker">
+            +86 <image src="/images/arrow-down.png" class="arrow-icon"></image>
+          </view>
+          <input type="number" placeholder="请输入手机号" maxlength="11" value="{{phone}}" bindinput="onPhoneInput" class="phone-input" />
+        </view>
+
+        <!-- 验证码输入 -->
+        <view class="input-group code-group">
+          <input type="number" placeholder="6位验证码" maxlength="6" value="{{code}}" bindinput="onCodeInput" />
+          <button class="send-btn {{isCountdown ? 'disabled' : ''}}" bindtap="sendSmsCode" disabled="{{isCountdown}}">
+            {{countdownText}}
+          </button>
+        </view>
+
+        <!-- 登录按钮 -->
+        <button class="login-btn {{!phone || !code ? 'disabled' : ''}}" bindtap="handleLogin">
+          登录
+        </button>
+
+        <!-- 协议声明 -->
+        <view class="agreement">
+          <checkbox checked="{{agree}}" color="#4d90fe" bindtap="toggleAgree" />
+          <text>同意</text>
+          <text class="link">《用户协议》</text>
+          <text>和</text>
+          <text class="link">《隐私政策》</text>
+        </view>
+      </view>
+
+      <!-- 其他登录方式 -->
+      <view class="divider">
+        <view class="line"></view>
+        <text class="text">其他方式登录</text>
+        <view class="line"></view>
+      </view>
+
+      <view class="other-login">
+        <button class="login-method" open-type="getPhoneNumber" bindgetphonenumber="onWechatLogin">
+          <image src="/image/wechat-icon.png" class="icon"></image>
+          <text>微信登录</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

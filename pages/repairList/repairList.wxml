@@ -1,0 +1,37 @@
+<view class="card">
+  <view style="text-align: center;">
+    <text class="h5">{{name}}售后档案: {{code}}</text>
+  </view>
+</view>
+
+<view class="card" style="min-height: 80%;">
+  <view style="margin: 10px;">
+    <text class="h5">售后记录</text>
+  </view>
+  <view wx:for="{{content}}" wx:for-index="i" wx:for-item="order" wx:key="order">
+    <view bindtap="get_detail" data-bar_code="{{order.id}}" style="margin: 10px; background-color: #d6eef8; border-radius:20px;">
+
+      <view style="display: grid; grid-template-columns: 1fr;">
+        <view style="border-top-left-radius:20px; border-top-right-radius:20px;">
+          <view style="margin: 10px;">{{order.time}}</view>
+        </view>
+      </view>
+
+      <view style="display: grid; grid-template-columns: 1fr 2fr 1fr 2fr; padding: 10px;">
+        <text>姓名：</text>
+        <text>{{order.name}}</text>
+        <text>电话：</text>
+        <text>{{order.phone}}</text>
+      </view>
+      <view style="display: grid; grid-template-columns: 1fr 5fr; padding: 10px; margin-bottom: 10px;">
+        <text>备注：</text>
+        <text>{{order.remark}}</text>
+      </view>
+      <view style="display: grid; grid-template-columns: 1fr;">
+        <view style="border-bottom-left-radius:20px; border-bottom-right-radius:20px; background: #91c9e1; text-align: right;">
+          <view style="margin: 10px;">点击查看详情</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
