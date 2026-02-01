@@ -1,37 +1,45 @@
 <!--pages/userPage/userPage.wxml-->
 
 <view wx:if="{{islogin == true}}">
-  <view class="">
-    <image class="" mode="widthFix" src="/image/banner.jpg"></image>
-</view>
-  <view class="s_view banner-text">
-    <button>登录账号：{{call}}</button>
-  </view>
-  <view class="s_view banner-text">
-    <button bind:tap="getOrederList">购买记录</button>
-  </view>
-  <view class="s_view banner-text">
-    <button bind:tap="getReportList">验光报告</button>
-  </view>
-  <view class="s_view banner-text">
-    <button bind:tap="getMaintainList">售后记录</button>
-  </view>
-  <view class="s_view banner-text">
-    <button bind:tap="handleLogout">用户退出</button>
+  <view class="container">
+    <view class="s_view">
+      <image style="text-align: left;"  mode="widthFix" src="/image/banner.jpg"></image>
+    </view>
+    <view class="s_view">
+      <button style="text-align: left;">登录账号：{{call}}</button>
+    </view>
+    <view class="s_view">
+      <button style="text-align: left;" bind:tap="getOrederList">购买记录</button>
+    </view>
+    <view class="s_view">
+      <button style="text-align: left;" bind:tap="getReportList">验光报告</button>
+    </view>
+    <view class="s_view">
+      <button style="text-align: left;" bind:tap="getRepairList">售后记录</button>
+    </view>
+    <view class="s_view">
+      <button style="text-align: left;" bind:tap="scanCode">扫码识别</button>
+    </view>
+    <view class="s_view">
+      <button style="text-align: left;" bind:tap="handleLogout">用户退出</button>
+    </view>
   </view>
 </view>
 <view wx:else="{{islogin == false}}">
+
   <!-- pages/login/login.wxml -->
   <view class="container">
     <view class="login-container">
+
       <!-- 品牌标识 -->
       <view class="brand-area">
-        <image src="https://maneu.online/static/img/logo.svg" class="logo"></image>
-        <text class="app-name">login徕可小程序登录</text>
+        <image src="https://maneu.online/static/img/maneu/logo.svg" class="logo"></image>
+        <text class="app-name">徕可小程序登录</text>
       </view>
-1
+
       <!-- 表单区域 -->
       <view class="form-card">
+      
         <text class="title">短信验证登录</text>
 
         <!-- 手机号输入 -->
@@ -74,10 +82,11 @@
 
       <view class="other-login">
         <button class="login-method" open-type="getPhoneNumber" bindgetphonenumber="onWechatLogin">
-          <image src="/images/wechat-icon.png" class="icon"></image>
-          <text>微信登录</text>
+          <image src="/image/wechat-icon.png" class="icon"></image>
+          <text>快捷登录</text>
         </button>
       </view>
+
     </view>
   </view>
 </view>

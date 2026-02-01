@@ -6,10 +6,12 @@
     "pages/orderList/orderList",
     "pages/report/report",
     "pages/reportList/reportList",
+    "pages/repair/repair",
+    "pages/repairList/repairList",
     "pages/verify/verify",
     "pages/verifyList/verifyList",
     "pages/userPage/userPage"
-    ],
+  ],
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#003153",
@@ -24,7 +26,8 @@
         "text": "首页",
         "iconPath": "/image/home1.png",
         "selectedIconPath": "/image/home2.png"
-      },{
+      },
+      {
         "pagePath": "pages/userPage/userPage",
         "text": "我的",
         "iconPath": "/image/user1.png",

@@ -1,136 +1,139 @@
 <view style="background: whitesmoke; padding: 2%;">
-    <view class="card" style="text-align: center;">
-      <text class="h5">配镜订单：{{ time }}</text>
+  <view class="card" style="text-align: center;">
+    <text class="h5">配镜订单：{{ time }}</text>
+  </view>
+  <view style="padding:2%;"></view>
+
+
+  <view class="card">
+    <view>
+      <view class="h5">客户信息</view>
+      <view class="h4"></view>
     </view>
-    <view style="padding:2%;"></view>
-
-    <view class="card">
-        <view>
-            <view class="h5">基础信息</view>
-            <view class="h4">客户信息</view>
-        </view>
-        <view class="fr2">
-            <view class="somke">客户姓名</view>
-            <view class="somke">{{ name }}</view>
-        </view>
-        <view class="fr2">
-            <view class="white">联系电话</view>
-            <view class="white">{{ phone }}</view>
-        </view>
-
-        <view>
-            <view class="h4">验光机构</view>
-        </view>
-        <view class="fr2">
-            <view class="somke">店铺名称</view>
-            <view class="somke">{{ admin.nickname }}</view>
-        </view>
-        <view class="fr2">
-            <view class="white">联系电话</view>
-            <view class="white">{{ admin.phone }}</view>
-        </view>
-        <view class="fr2">
-            <view class="somke">营业地址</view>
-            <view class="somke">{{ admin.location }}</view>
-        </view>
-
-        <view>
-            <view class="h4">验光师建议</view>
-        </view>
-        <view class="fr1" wx:if="{{ !remark }}">
-            <view class="white">无</view>
-        </view>
-        <view class="fr1" wx:else="">
-            <view class="white">{{remark}}</view>
-        </view>
+    <view class="fr2">
+      <view class="somke" style="text-align: left; padding-left: 20px;">客户姓名</view>
+      <view class="somke">{{ name }}</view>
     </view>
-    <view style="padding:2%;"></view>
-
-
-    <view class="card">
-        <view>
-            <view class="h5">配镜处方</view>
-            <view class="h4">根据您的视力检测结果，我们制定了以下配镜方案</view>
-        </view>
-        <view class="fr3">
-            <view class="blue">{{ report.PLAN }}</view>
-            <view class="blue">左眼</view>
-            <view class="blue">右眼</view>
-        </view>
-        <view class="fr3">
-            <view class="somke">裸眼视力</view>
-            <view class="somke">{{ report.OD.VA }}</view>
-            <view class="somke">{{ report.OS.VA }}</view>
-        </view>
-        <view class="fr3">
-            <view class="white">球镜(DS)</view>
-            <view class="white">{{ report.OD.SPH }}</view>
-            <view class="white">{{ report.OS.SPH }}</view>
-        </view>
-        <view class="fr3">
-            <view class="somke">柱镜(DC)</view>
-            <view class="somke">{{ report.OD.CYL }}</view>
-            <view class="somke">{{ report.OS.CYL }}</view>
-        </view>
-        <view class="fr3">
-            <view class="white">轴位</view>
-            <view class="white">{{ report.OD.AX }}</view>
-            <view class="white">{{ report.OS.AX }}</view>
-        </view>
-        <view class="fr3">
-            <view class="somke">棱镜(△)</view>
-            <view class="somke">{{ report.OD.PR }}</view>
-            <view class="somke">{{ report.OS.PR }}</view>
-        </view>
-        <view class="fr2">
-            <view class="white">瞳距</view>
-            <view class="white">{{ report.PD }}</view>
-        </view>
-        <view class="fr3">
-            <view class="somke">下加光</view>
-            <view class="somke">{{ report.OD.ADD }}</view>
-            <view class="somke">{{ report.OS.ADD }}</view>
-        </view>
-        <view class="fr3">
-            <view class="white">矫正视力</view>
-            <view class="white">{{ report.OD.BC }}</view>
-            <view class="white">{{ report.OS.BC }}</view>
-        </view>
+    <view class="fr2">
+      <view class="white" style="text-align: left; padding-left: 20px;">联系电话</view>
+      <view class="white">{{ phone }}</view>
     </view>
-    <view style="padding:2%;"></view>
+  </view>
+  <view style="padding:2%;"></view>
 
 
-    <view class="card">
-        <view>
-            <view class="h5">配镜方案</view>
-            <view class="h4">根据您的视力检测结果，我们给您定制了以下配镜方案</view>
-        </view>
-        <view wx:for="{{store}}" wx:for-index="i" wx:for-item="content" wx:key="i">
-            <view class="fr2">
-                <view class="somke">{{i}}</view>
-                <view class="somke"></view>
-            </view>
-            <view class="fr2">
-                <view class="white">类别</view>
-                <view class="white">{{content.arg10}}</view>
-            </view>
-            <view class="fr2">
-                <view class="white">品牌</view>
-                <view class="white">{{content.arg11}}</view>
-            </view>
-            <view class="fr2">
-                <view class="white">型号</view>
-                <view class="white">{{content.arg12}}</view>
-            </view>
-            <view class="fr2">
-                <view class="white">参数</view>
-                <view class="white">{{content.arg13}}</view>
-            </view>
-            <view class="fr2">
-                <view class="white">价格</view>
-                <view class="white">{{content.arg14}}</view>
-            </view>
-        </view>
+  <view class="card">
+    <view>
+      <view class="h5">验光机构</view>
+      <view class="h4"></view>
     </view>
-    <view style="padding:2%;"></view>
+    <view class="fr2">
+      <view class="somke" style="text-align: left; padding-left: 20px;">店铺名称</view>
+      <view class="somke">{{ admin.nickname }}</view>
+    </view>
+    <view class="fr2">
+      <view class="white" style="text-align: left; padding-left: 20px;">联系电话</view>
+      <view class="white">{{ admin.phone }}</view>
+    </view>
+    <view class="fr2">
+      <view class="somke" style="text-align: left; padding-left: 20px;">营业地址</view>
+      <view class="somke">{{ admin.location }}</view>
+    </view>
+    <view class="fr2">
+      <view class="white" style="text-align: left; padding-left: 20px;">店铺介绍</view>
+      <view class="white">{{ admin.remark }}</view>
+    </view>
+  </view>
+  <view style="padding:2%;"></view>
+
+
+  <view class="card">
+    <view>
+      <view class="h5">订单备注</view>
+      <view class="h4"></view>
+    </view>
+    <view class="fr1" wx:if="{{ !remark }}">
+      <view class="white" style="text-align: left; padding-left: 20px;">无</view>
+    </view>
+    <view class="fr1" wx:else="">
+      <view class="white" style="text-align: left; padding-left: 20px;">{{remark}}</view>
+    </view>
+  </view>
+  <view style="padding:2%;"></view>
+
+
+  <view class="card">
+    <view>
+      <view class="h5">配镜处方</view>
+      <view class="h4">根据您的视力检测结果，我们制定了以下配镜方案</view>
+    </view>
+    <view class="fr3">
+      <view class="blue" style="text-align: left; padding-left: 20px;">{{ plan }}</view>
+      <view class="blue">左眼</view>
+      <view class="blue">右眼</view>
+    </view>
+    <view class="fr3">
+      <view class="somke" style="text-align: left; padding-left: 20px;">裸眼视力</view>
+      <view class="somke">{{ od_va }}</view>
+      <view class="somke">{{ os_va }}</view>
+    </view>
+    <view class="fr3">
+      <view class="white" style="text-align: left; padding-left: 20px;">球镜(DS)</view>
+      <view class="white">{{ od_sph }}</view>
+      <view class="white">{{ os_sph }}</view>
+    </view>
+    <view class="fr3">
+      <view class="somke" style="text-align: left; padding-left: 20px;">柱镜(DC)</view>
+      <view class="somke">{{ od_cyl }}</view>
+      <view class="somke">{{ os_cyl }}</view>
+    </view>
+    <view class="fr3">
+      <view class="white" style="text-align: left; padding-left: 20px;">轴位</view>
+      <view class="white">{{ od_ax }}</view>
+      <view class="white">{{ os_ax }}</view>
+    </view>
+    <view class="fr3">
+      <view class="somke" style="text-align: left; padding-left: 20px;">棱镜(△)</view>
+      <view class="somke">{{ od_pr }}</view>
+      <view class="somke">{{ os_pr }}</view>
+    </view>
+    <view class="fr2">
+      <view class="white" style="text-align: left; padding-left: 20px;">瞳距</view>
+      <view class="white">{{ pd }}</view>
+    </view>
+    <view class="fr3">
+      <view class="somke" style="text-align: left; padding-left: 20px;">下加光</view>
+      <view class="somke">{{ od_add }}</view>
+      <view class="somke">{{ os_add }}</view>
+    </view>
+    <view class="fr3">
+      <view class="white" style="text-align: left; padding-left: 20px;">矫正视力</view>
+      <view class="white">{{ od_bc }}</view>
+      <view class="white">{{ os_bc }}</view>
+    </view>
+  </view>
+  <view style="padding:2%;"></view>
+
+
+  <view class="card">
+    <view>
+      <view class="h5">配镜方案</view>
+      <view class="h4">根据您的视力检测结果，我们给您定制了以下配镜方案</view>
+    </view>
+    <view wx:for="{{store}}" wx:for-index="i" wx:for-item="content" wx:key="i">
+      <view class="somke" style="margin: 10px; padding: 15px; border-radius: 20px;">
+        <view style="text-align: left; font-weight: bold; font-size: 35rpx;">{{content.arg10}}</view>
+        <view class="fr3">
+          <view style="text-align: left;">{{content.arg11}}</view>
+          <view style="text-align: right;">*1</view>
+          <view style="text-align: right;">{{content.arg14}}</view>
+        </view>
+        <view style="text-align: left;">{{content.arg12}}</view>
+        <view style="text-align: left;">{{content.arg13}}</view>
+      </view>
+    </view>
+  </view>
+  <view style="padding:2%;"></view>
+
+  
 </view>

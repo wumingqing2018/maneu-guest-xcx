@@ -1,4 +1,9 @@
 {
   "component": true,
-  "usingComponents": {}
+  "usingComponents": {},
+  "permission": {
+    "scope.camera": {
+      "desc": "需要访问您的相机进行扫码" 
+    }
+  }
 }

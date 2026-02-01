@@ -1,28 +1,22 @@
 /* pages/wxcharts/wxcharts.wxss */
 page {
-    height: 100%;
-}
-
-.content {
-    background: whitesmoke;
-    padding: 2%;
-    position: relative;
-    height: 100%;
+  background: whitesmoke;
+  position: relative;
+  min-height: 100%;
 }
 
 .h5 {
-    color: black;
-    font-weight: bold;
-    font-size: 35rpx;
+  color: black;
+  font-weight: bold;
+  font-size: 35rpx;
 }
 
 .card {
-    background-color: #ffffff;
-    border-radius: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  margin: 20px;
 }
 
 .card_banner {
-    padding-left: 10px;
+  padding-left: 13px;
 }

@@ -13,7 +13,7 @@ page {
 
 .h4 {
   padding: 2%;
-  border-bottom: 1px solid;
+  border-top: 1px solid;
 }
 
 .canvas {

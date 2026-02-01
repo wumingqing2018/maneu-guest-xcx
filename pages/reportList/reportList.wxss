@@ -1,6 +1,8 @@
 /* pages/wxcharts/wxcharts.wxss */
 page {
-  height: 100%;
+  background: whitesmoke;
+  position: relative;
+  min-height: 100%;
 }
 
 .h5 {
@@ -9,57 +11,12 @@ page {
   font-size: 35rpx;
 }
 
-.canvas {
-  width: 750rpx;
-  height: 400rpx;
-}
-
-.navBox {
-  /* tab整体样式 */
-  height: 100rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
-.fontColorBox {
-  /* 选中tab样式 */
-  color: black;
-  font-weight: bold;
-}
-
-.titleBox {
-  /* 未选中tab样式 */
-  color: rgb(168, 170, 175);
-  font-size: 28rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.lineBox {
-  /* 线条样式 */
-  width: 32rpx;
-  height: 8rpx;
-  background: black;
-  margin-top: 10rpx;
-  border-radius: 4rpx;
-}
-
-.swiperTtemBox {
-  /* 内容样式 */
-  padding: 16rpx;
-  font-size: 28rpx;
-  height: calc(40vh - 150rpx);
-}
-
 .card {
   background-color: #ffffff;
   border-radius: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  margin: 20px;
 }
 
 .card_banner {
-  padding-left: 20px;
+  padding-left: 13px;
 }

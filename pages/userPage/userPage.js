@@ -5,7 +5,7 @@ Page({
     islogin: false,
     phone: "", // 手机号
     code: "", // 验证码
-    agree: true, // 协议勾选
+    agree: false, // 协议勾选
     isCountdown: false, // 倒计时状态
     countdownText: "获取验证码",
     countdown: 60 // 倒计时秒数
@@ -17,12 +17,11 @@ Page({
   onShow: function () {
     let that = this
     let token = wx.getStorageSync('token')
-    console.log(token)
     if (token) {
       that.setData({
         islogin: true
       });
-    }else{
+    } else {
       that.setData({
         islogin: false
       });
@@ -146,7 +145,7 @@ Page({
       success(res) {
         if (res.data.status == true) {
           console.log(res.data)
-          wx.setStorageSync('token',res.data.token)
+          wx.setStorageSync('token', res.data.token)
           wx.switchTab({
             url: '../index/index',
           });
@@ -162,12 +161,40 @@ Page({
 
   // 微信快捷登录
   onWechatLogin(e) {
+    const {
+      agree
+    } = this.data;
+
+    // 1. 协议校验
+    if (!agree) {
+      wx.showToast({
+        title: "请阅读并同意协议",
+        icon: "none"
+      });
+      return;
+    }
     if (e.detail.code) {
       // 通过code换取手机号（需后端解密）
-      wx.cloud.callFunction({
-        name: "wechatLogin",
+      wx.request({
+        url: 'https://maneu.online/login_wx/',
+        method: "GET",
         data: {
-          code: e.detail.code
+          "code": e.detail.code
+        },
+        success(res) {
+          console.log(res.data)
+          if (res.data.status == true) {
+            console.log(res.data)
+            wx.setStorageSync('token', res.data.token)
+            wx.switchTab({
+              url: '../index/index',
+            });
+          } else {
+            app.fail_Remind('登录失败，请在次尝试')
+          }
+        },
+        fail: (res) => {
+          app.fail_Remind('网络异常，请稍后再尝试')
         }
       });
     }
@@ -175,14 +202,50 @@ Page({
 
   // 登出处理
   handleLogout() {
-    wx.removeStorage({
-      key: 'token',
-      success(res){
-        console.log(res)
-      }
-    });
+    wx.removeStorageSync('token')
     wx.switchTab({
       url: '../index/index',
     });
   },
+
+  scanCode() {
+    wx.scanCode({
+      onlyFromCamera: true, // 可选：只通过相机扫码，禁止从相册选择
+      scanType: ['qrCode', 'barCode'], // 指定可扫描的码类型
+      success: (res) => {
+        const result = res.result; // 获取扫码得到的字符串
+        const code = encodeURIComponent(result)
+        console.log(code)
+        // 处理扫码结果，例如跳转到指定页面
+        wx.navigateTo({
+          url: `/pages/detail/detail?data=${encodeURIComponent(result)}`
+        });
+      },
+      fail: (err) => {
+        console.error(err);
+        // 处理失败情况，如用户拒绝授权
+        if (err.errMsg.includes('permission')) {
+          // 引导用户开启授权
+        }
+      }
+    });
+  },
+
+  getRepairList(){
+    wx.navigateTo({
+      url: '../repairList/repairList',
+    })
+  },
+
+  getReportList(){
+    wx.navigateTo({
+      url: '../reportList/reportList',
+    })
+  },
+
+  getOrederList(){
+    wx.navigateTo({
+      url: '../orderList/orderList',
+    })
+  }
 });

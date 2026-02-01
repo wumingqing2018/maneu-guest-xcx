@@ -11,6 +11,13 @@ App({
     })
   },
 
+  onShareAppMessage() {
+    return {
+      title: '徕可视光',
+      path: '/pages/index/index',
+    }
+  },
+  
   /**
    * 当小程序启动，或从后台进入前台显示，会触发 onShow
    */

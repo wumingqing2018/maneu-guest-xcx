@@ -1,4 +1,10 @@
 /* pages/login/login.wxss */
+
+.s_view {
+  margin: 5%;
+  width: 90%;
+}
+
 .login-container {
   height: 100%;
   background:  #003153;
@@ -13,10 +19,12 @@
   text-align: center;
   margin: 80rpx 0 60rpx;
 }
+
 .logo {
   height: 200rpx;
   border-radius: 32rpx;
 }
+
 .app-name {
   display: block;
   color: white;
@@ -31,6 +39,7 @@
   border-radius: 24rpx;
   box-shadow: 0 10rpx 30rpx rgba(0,0,0,0.1);
 }
+
 .title {
   font-size: 36rpx;
   font-weight: 600;
@@ -49,17 +58,20 @@
   margin: 40rpx;
   align-items: center;
 }
+
 .country-code {
   color: #333;
   font-size: 32rpx;
   min-width: 140rpx;
   padding-right: 20rpx;
 }
+
 .arrow-icon {
   width: 28rpx;
   height: 28rpx;
   margin-left: 10rpx;
 }
+
 .phone-input, .code-input {
   flex: 1;
   height: 100%;
@@ -78,6 +90,7 @@
   min-width: 180rpx;
   text-align: center;
 }
+
 .send-btn.disabled {
   color: #999;
 }
@@ -93,6 +106,7 @@
   margin: 35rpx;
   transition: all 0.3s;
 }
+
 .login-btn.disabled {
   opacity: 0.6;
 }
@@ -143,7 +157,6 @@
 .login-method .icon {
   width: 60rpx;
   height: 60rpx;
-  margin-bottom: 15rpx;
 }
 .login-method text {
   color: white;
