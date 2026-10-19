@@ -2,6 +2,9 @@
   "pages": [
     "pages/index/index",
     "pages/indexList/indexList",
+    "pages/admin/admin",
+    "pages/adminLogin/adminLogin",
+    "pages/adminSignup/adminSignup",
     "pages/order/order",
     "pages/orderList/orderList",
     "pages/report/report",
@@ -9,8 +12,7 @@
     "pages/repair/repair",
     "pages/repairList/repairList",
     "pages/verify/verify",
-    "pages/verifyList/verifyList",
-    "pages/userPage/userPage"
+    "pages/verifyList/verifyList"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -28,7 +30,7 @@
         "selectedIconPath": "/image/home2.png"
       },
       {
-        "pagePath": "pages/userPage/userPage",
+        "pagePath": "pages/admin/admin",
         "text": "我的",
         "iconPath": "/image/user1.png",
         "selectedIconPath": "/image/user2.png"

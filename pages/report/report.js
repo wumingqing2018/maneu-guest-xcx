@@ -1,173 +1,226 @@
-var app = getApp()
-Page({
-  /**
-   * 页面的初始数据
-   */
-  data: {
-    admin: {},
-    guest: {},
+// pages/report/report.js
+const app = getApp();
 
-    pd: "",
-    phone: "",
-    plan: "",
-    remark: "",
-    time: '',
+/* ==================== 常量 ==================== */
+const API = {
+  reportDetail: 'https://maneu.online/apis/auth/report_detail/',
+  storeDetail:  'https://maneu.online/apis/auth/store_detail/',
+  refresh:      'https://maneu.online/apis/refresh_access_token/'
+};
 
-    od_ad: "",
-    od_add: "",
-    od_ak: "",
-    od_al: "",
-    od_ax: "",
-    od_bc: "",
-    od_cct: "",
-    od_cyl: "",
-    od_fr: "",
-    od_lt: "",
-    od_pr: "",
-    od_sph: "",
-    od_va: "",
-    od_vt: "",
+const ROUTES = {
+  adminLogin: '/pages/adminLogin/adminLogin'
+};
 
-    os_ad: "",
-    os_add: "",
-    os_ak: "",
-    os_al: "",
-    os_ax: "",
-    os_bc: "",
-    os_cct: "",
-    os_cyl: "",
-    os_fr: "",
-    os_lt: "",
-    os_pr: "",
-    os_sph: "",
-    os_va: "",
-    os_vt: "",
-  },
+/* ==================== Token 工具 ==================== */
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-    if (options.code) {
-      this.get_report_content(options.code)
-    }
-  },
+function getAccessToken() {
+  return wx.getStorageSync('access_token') || '';
+}
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {},
+function getRefreshToken() {
+  return wx.getStorageSync('refresh_token') || '';
+}
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {},
+function saveTokens(accessToken) {
+  if (accessToken) wx.setStorageSync('access_token', accessToken);
+}
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {},
+function clearAllAuth() {
+  wx.removeStorageSync('access_token');
+  wx.removeStorageSync('refresh_token');
+}
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {},
+function refreshAccessToken() {
+  return new Promise((resolve, reject) => {
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) return reject(new Error('NO_REFRESH_TOKEN'));
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {},
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {},
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {},
-
-  get_report_content(code) {
-    let token = wx.getStorageSync('token')
-    console.log(token)
     wx.request({
-      url: 'https://maneu.online/get_detail/',
-      method: 'GET',
-      data: {
-        'token': token,
-        'text': '100003',
-        'code': code,
-      },
+      url: API.refresh,
+      method: 'POST',
+      header: { 'content-type': 'application/json' },
+      data: { refresh_token: refreshToken },
       success: (res) => {
-        console.log(res.data)
-        if (res.data.status) {
-          this.setData({
-            pd: res.data.content.pd,
-            phone: res.data.content.phone,
-            plan: res.data.content.plan,
-            remark: res.data.content.remark,
-            time: res.data.content.time,
-
-            od_ad: res.data.content.od_ad,
-            od_add: res.data.content.od_add,
-            od_ak: res.data.content.od_ak,
-            od_al: res.data.content.od_al,
-            od_ax: res.data.content.od_ax,
-            od_bc: res.data.content.od_bc,
-            od_cct: res.data.content.od_cct,
-            od_cyl: res.data.content.od_cyl,
-            od_fr: res.data.content.od_fr,
-            od_lt: res.data.content.od_lt,
-            od_pr: res.data.content.od_pr,
-            od_sph: res.data.content.od_sph,
-            od_va: res.data.content.od_va,
-            od_vt: res.data.content.od_vt,
-
-            os_ad: res.data.content.os_ad,
-            os_add: res.data.content.os_add,
-            os_ak: res.data.content.os_ak,
-            os_al: res.data.content.os_al,
-            os_ax: res.data.content.os_ax,
-            os_bc: res.data.content.os_bc,
-            os_cct: res.data.content.os_cct,
-            os_cyl: res.data.content.os_cyl,
-            os_fr: res.data.content.os_fr,
-            os_lt: res.data.content.os_lt,
-            os_pr: res.data.content.os_pr,
-            os_sph: res.data.content.os_sph,
-            os_va: res.data.content.os_va,
-            os_vt: res.data.content.os_vt,
-          })
-          wx.setStorageSync('token', res.data.token)
-          if (res.data.content.admin_id) {
-            this.get_admin_content(res.data.content.admin_id)
-          }
+        const d = res.data || {};
+        if (d.status && d.content && d.content.access_token) {
+          saveTokens(d.content.access_token);
+          resolve(d.content.access_token);
         } else {
-          wx.removeStorageSync('token')
-          app.fail_alter('请重新登录')
+          reject(new Error('REFRESH_FAILED'));
         }
-      }
-    })
+      },
+      fail: () => reject(new Error('REFRESH_NETWORK_ERROR'))
+    });
+  });
+}
+
+/* 统一请求：401 自动刷新 + 重试一次 */
+function requestWithAuth(url, data, _retried) {
+  const token = getAccessToken();
+
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url,
+      method: 'POST',
+      header: {
+        'content-type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      },
+      data: data || {},
+      success: (res) => {
+        if (res.statusCode === 401 && !_retried) {
+          refreshAccessToken()
+            .then(() => requestWithAuth(url, data, true).then(resolve).catch(reject))
+            .catch(() => reject(new Error('AUTH_EXPIRED')));
+          return;
+        }
+        resolve(res);
+      },
+      fail: (err) => reject(err)
+    });
+  });
+}
+
+/* ==================== 页面 ==================== */
+Page({
+  data: {
+    loading: true,
+    loadError: false,
+
+    /* 客户 / 订单 */
+    name: '',
+    phone: '',
+    time: '',
+    remark: '',
+
+    /* 机构 */
+    admin: {},
+
+    /* 处方 */
+    plan: '',
+    pd: '',
+    od_va: '',  os_va: '',
+    od_sph: '', os_sph: '',
+    od_cyl: '', os_cyl: '',
+    od_ax: '',  os_ax: '',
+    od_pr: '',  os_pr: '',
+    od_add: '', os_add: '',
+    od_bc: '',  os_bc: ''
   },
 
-  get_admin_content(code) {
-    let token = wx.getStorageSync('token')
-    wx.request({
-      url: 'https://maneu.online/get_detail/',
-      method: 'GET',
-      data: {
-        'token': token,
-        'text': '100005',
-        'code': code,
-      },
-      success: (res) => {
-        this.setData({
-          admin: res.data.content
-        })
-        wx.setStorageSync('token', res.data.token)
-        console.log(wx.getStorageSync('token'))
-      }
-    })
+  _code: '',
+  _adminId: '',
+  _isRedirectingLogin: false,
+
+  onLoad(options) {
+    this._code = options.code || '';
+
+    if (!this._code) {
+      this.setData({ loading: false, loadError: true });
+      wx.showToast({ title: '缺少订单编号', icon: 'none' });
+      return;
+    }
+
+    this.fetchReport();
   },
-})
+
+  onShow() {
+    this._isRedirectingLogin = false;
+  },
+
+  onPullDownRefresh() {
+    this.fetchReport(() => wx.stopPullDownRefresh());
+  },
+
+  /* ==================== 主流程 ==================== */
+  fetchReport(done) {
+    this.setData({ loading: true, loadError: false });
+
+    requestWithAuth(API.reportDetail, { code: this._code })
+      .then((res) => {
+        const data = res.data || {};
+
+        /* 401 已由 requestWithAuth 处理，这里再兜一层 */
+        if (res.statusCode === 401) throw new Error('AUTH_EXPIRED');
+
+        if (data.status === false) throw new Error('EMPTY');
+
+        const c = data.content || {};
+
+        /* 记录 admin_id 供后续查机构 */
+        this._adminId = c.admin_id || '';
+
+        this.setData({
+          name: c.name || '',
+          phone: c.phone || '',
+          time: c.time || '',
+          remark: c.remark || '',
+          plan: c.plan || '',
+          pd: c.pd || '',
+
+          od_va: c.od_va || '',   os_va: c.os_va || '',
+          od_sph: c.od_sph || '', os_sph: c.os_sph || '',
+          od_cyl: c.od_cyl || '', os_cyl: c.os_cyl || '',
+          od_ax: c.od_ax || '',   os_ax: c.os_ax || '',
+          od_pr: c.od_pr || '',   os_pr: c.os_pr || '',
+          od_add: c.od_add || '', os_add: c.os_add || '',
+          od_bc: c.od_bc || '',   os_bc: c.os_bc || ''
+        });
+
+        /* 有 admin_id 才继续拉机构信息 */
+        if (this._adminId) return this.fetchAdmin();
+      })
+      .catch((err) => {
+        console.error('[report]', err);
+
+        if (err.message === 'AUTH_EXPIRED') {
+          clearAllAuth();
+          this.redirectToLogin();
+          return;
+        }
+
+        this.setData({ loadError: true });
+        wx.showToast({ title: '网络异常，请稍后重试', icon: 'none' });
+      })
+      .finally(() => {
+        this.setData({ loading: false });
+        done && done();
+      });
+  },
+
+  /* ==================== 拉取机构信息 ==================== */
+  fetchAdmin() {
+    if (!this._adminId) return Promise.resolve();
+
+    return requestWithAuth(API.storeDetail, { code: this._adminId })
+      .then((res) => {
+        const data = res.data || {};
+        if (data.status && data.content) {
+          this.setData({ admin: data.content });
+        }
+      })
+      .catch((err) => {
+        /* 机构是次要信息：静默失败，不阻塞主流程 */
+        console.warn('[report] 拉取机构失败：', err);
+      });
+  },
+
+  /* ==================== 跳转登录页 ==================== */
+  redirectToLogin() {
+    if (this._isRedirectingLogin) return;
+    this._isRedirectingLogin = true;
+
+    wx.showToast({ title: '请先登录', icon: 'none' });
+
+    wx.reLaunch({
+      url: ROUTES.adminLogin,
+      fail: (err) => console.error('[report] 跳转登录失败：', err)
+    });
+  },
+
+  /* ==================== 错误页「重新加载」 ==================== */
+  onRetry() {
+    this.fetchReport();
+  }
+});

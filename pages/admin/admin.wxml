@@ -1,0 +1,77 @@
+<!--pages/admin/admin.wxml-->
+<!--
+  用户中心页
+  两态：
+  1. islogin = true  → 用户中心（账号卡 + 网格 + 退出）
+  2. islogin = false → 登录卡片（引导登录，风格与页面一致）
+-->
+
+<!-- ==================== 已登录：用户中心 ==================== -->
+<view wx:if="{{islogin}}" class="page">
+
+  <!-- 顶部品牌栏 -->
+  <view class="top-bar top-bar--short">
+    <view class="top-bar__inner">
+      <image class="brand-logo" src="https://maneu.online/static/img/maneu/logo.svg" mode="aspectFit" lazy-load />
+    </view>
+  </view>
+
+  <!-- 账号信息卡片 -->
+  <view class="account-card">
+    <text class="account-card__label">登录账号</text>
+    <text class="account-card__value">{{call || '--'}}</text>
+  </view>
+
+  <!-- 功能网格（2×2） -->
+  <view class="grid">
+    <view class="grid__item" bindtap="getOrderList" hover-class="grid__item--hover" hover-stay-time="80">
+      <view class="grid__icon grid__icon--order"></view>
+      <text class="grid__label">购买记录</text>
+    </view>
+
+    <view class="grid__item" bindtap="getReportList" hover-class="grid__item--hover" hover-stay-time="80">
+      <view class="grid__icon grid__icon--report"></view>
+      <text class="grid__label">验光报告</text>
+    </view>
+
+    <view class="grid__item" bindtap="getRepairList" hover-class="grid__item--hover" hover-stay-time="80">
+      <view class="grid__icon grid__icon--repair"></view>
+      <text class="grid__label">售后记录</text>
+    </view>
+
+    <view class="grid__item" bindtap="scanCode" hover-class="grid__item--hover" hover-stay-time="80">
+      <view class="grid__icon grid__icon--scan"></view>
+      <text class="grid__label">扫码识别</text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="menu-list">
+    <view class="menu-item menu-item--logout" bindtap="handleLogout" hover-class="menu-item--hover" hover-stay-time="80">
+      用户退出
+    </view>
+  </view>
+
+</view>
+
+<!-- ==================== 未登录：登录卡片 ==================== -->
+<view wx:else class="page">
+
+  <!-- 顶部品牌栏（与已登录状态完全一致） -->
+  <view class="top-bar top-bar--short">
+    <view class="top-bar__inner">
+      <image class="brand-logo" src="https://maneu.online/static/img/maneu/logo.svg" mode="aspectFit" lazy-load />
+    </view>
+  </view>
+
+  <!-- 登录卡片 -->
+  <view class="login-card">
+    <view class="login-card__icon"></view>
+    <text class="login-card__title">未登录</text>
+    <text class="login-card__desc">登录后可查看订单、验光报告和售后记录</text>
+    <view class="login-card__btn" bindtap="goLogin" hover-class="login-card__btn--hover" hover-stay-time="80"> 立即登录 </view>
+    <text class="login-card__desc"></text>
+    <view class="login-card__btn" bindtap="getAdminSignup" hover-class="login-card__btn--hover" hover-stay-time="80"> 立即注册 </view>
+  </view>
+
+</view>

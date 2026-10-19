@@ -1,3 +1,9 @@
 {
+  "navigationBarTitleText": "验光报告",
+  "navigationBarBackgroundColor": "#FBFBFD",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#FBFBFD",
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": true,
   "usingComponents": {}
 }

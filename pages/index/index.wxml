@@ -1,15 +1,27 @@
-<!--pages/index/index.wxml-->
-<view class="pure_top">
-  <view class="s_view">
-    <image bindtap="getOrderList" class="getOrder" mode="widthFix" mode="widthFix" src="https://maneu.online/static/img/L.jpg"></image>
-    <image bindtap="getReportList" class="getReport" mode="widthFix" mode="widthFix" src="https://maneu.online/static/img/R.jpg"></image>
+<view class="page">
+  <!-- 分区标题 -->
+  <view class="section">
+    <text class="section__title">精选</text>
   </view>
-</view>
-<view class="s_view banner-text">
-  <text class="h5">徕可丨专注视觉 Focus on vision</text>
-</view>
-<view wx:for="{{imageLink}}" wx:key="index">
-  <view class="s_view">
-    <image bind:tap="getDetail" class="m_show" data-hi="{{item.data}}" lazy-load="{{ true }}" mode="widthFix" show-menu-by-longpress="{{ false }}" src="{{item.index}}"></image>
+
+  <!-- ==================== 横向图片列表 ==================== -->
+  <scroll-view class="hscroll" scroll-x enable-flex show-scrollbar="{{false}}">
+    <view class="hscroll__inner">
+      <view class="hscroll__item" wx:for="{{imageLink}}" wx:for-index="idx" wx:key="data" wx:if="{{idx > 0}}" hover-class="hscroll__item--hover" hover-stay-time="80" data-hi="{{idx}}" bind:tap="getDetail">
+        <image class="hscroll__img" src="{{item.index}}" mode="aspectFill" lazy-load show-menu-by-longpress="{{false}}" />
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- Hero 大标题区 -->
+  <view class="hero">
+    <text class="hero__title">专注视觉</text>
+    <text class="hero__subtitle">Focus on Vision · 徕可</text>
   </view>
+
+  <!-- 首图卡片（固定 GIF） -->
+  <view class="feature">
+    <image class="feature__img" src="{{imageLink[0].index}}" mode="widthFix" lazy-load show-menu-by-longpress="{{false}}" data-hi="0" bind:tap="getDetail" />
+  </view>
+
 </view>

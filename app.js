@@ -17,7 +17,7 @@ App({
       path: '/pages/index/index',
     }
   },
-  
+
   /**
    * 当小程序启动，或从后台进入前台显示，会触发 onShow
    */
@@ -38,31 +38,4 @@ App({
   onError: function (msg) {
 
   },
-
-  fail_Remind(code) {
-    wx.showModal({
-      content: code,
-      showCancel: false,
-      complete: (res) => {
-        if (res.confirm) {
-
-        }
-      }
-    })
-  },
-
-
-  fail_alter(code) {
-    wx.showModal({
-      content: code,
-      showCancel: false,
-      complete: (res) => {
-        if (res.confirm) {
-          wx.switchTab({
-            url: '../userPage/userPage',
-          });
-        }
-      }
-    })
-  }
 })

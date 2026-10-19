@@ -1,226 +1,260 @@
 // pages/reportDetail/reportDetail.js
-//定义记录初始屏幕宽度比例，便于初始化
-var windowW = 0;
-// pages/reportList/reportList.js
-var app = getApp()
+
+/* ==================== 常量 ==================== */
+const API = {
+  orderDetail:  'https://maneu.online/apis/auth/order_detail/',
+  reportDetail: 'https://maneu.online/apis/auth/report_detail/',
+  storeDetail:  'https://maneu.online/apis/auth/store_detail/',
+  refresh:      'https://maneu.online/apis/refresh_access_token/'
+};
+
+const ROUTES = {
+  adminLogin: '/pages/adminLogin/adminLogin'
+};
+
+/* ==================== 统一请求 ==================== */
+
+/**
+ * 发起带鉴权的 POST 请求，401 时自动刷新 token 并重试一次
+ * @param {string} url 接口地址
+ * @param {Object} data 请求体
+ * @param {boolean} _retried 是否已重试过
+ * @returns {Promise<Object>} 成功返回 wx.request 的 res
+ */
+function requestWithAuth(url, data, _retried) {
+  return new Promise(function (resolve, reject) {
+    wx.request({
+      url: url,
+      method: 'POST',
+      header: {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + wx.getStorageSync('access_token')
+      },
+      data: data || {},
+      success: function (res) {
+        // 401 → 尝试刷新 token 并重试一次
+        if (res.statusCode === 401 && !_retried) {
+          refreshAccessToken()
+            .then(function () {
+              requestWithAuth(url, data, true).then(resolve).catch(reject);
+            })
+            .catch(function () {
+              reject(new Error('AUTH_EXPIRED'));
+            });
+          return;
+        }
+        resolve(res);
+      },
+      fail: function (err) {
+        reject(err);
+      }
+    });
+  });
+}
+
+/**
+ * 用 refresh_token 换新 access_token
+ * @returns {Promise<string>} 新 access_token
+ */
+function refreshAccessToken() {
+  return new Promise(function (resolve, reject) {
+    var refreshToken = wx.getStorageSync('refresh_token');
+    if (!refreshToken) {
+      reject(new Error('NO_REFRESH_TOKEN'));
+      return;
+    }
+
+    wx.request({
+      url: API.refresh,
+      method: 'POST',
+      header: {
+        'content-type': 'application/json'
+      },
+      data: {
+        refresh_token: refreshToken
+      },
+      success: function (res) {
+        var d = res.data || {};
+        if (d.status && d.content && d.content.access_token) {
+          wx.setStorageSync('access_token', d.content.access_token);
+          resolve(d.content.access_token);
+        } else {
+          reject(new Error('REFRESH_FAILED'));
+        }
+      },
+      fail: function () {
+        reject(new Error('REFRESH_NETWORK_ERROR'));
+      }
+    });
+  });
+}
+
+/* ==================== 页面 ==================== */
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
-    admin: {},
-    store: [],
+    loading: true,
 
-    pd: "",
-    phone: "",
-    plan: "",
-    remark: "",
+    /* 客户 / 订单 */
+    name: '',
+    phone: '',
     time: '',
+    remark: '',
 
-    od_ad: "",
-    od_add: "",
-    od_ak: "",
-    od_al: "",
-    od_ax: "",
-    od_bc: "",
-    od_cct: "",
-    od_cyl: "",
-    od_fr: "",
-    od_lt: "",
-    od_pr: "",
-    od_sph: "",
-    od_va: "",
-    od_vt: "",
+    /* 机构 */
+    admin: {},
 
-    os_ad: "",
-    os_add: "",
-    os_ak: "",
-    os_al: "",
-    os_ax: "",
-    os_bc: "",
-    os_cct: "",
-    os_cyl: "",
-    os_fr: "",
-    os_lt: "",
-    os_pr: "",
-    os_sph: "",
-    os_va: "",
-    os_vt: "",
+    /* 处方 */
+    plan: '',
+    pd: '',
+    od_va: '',  os_va: '',
+    od_sph: '', os_sph: '',
+    od_cyl: '', os_cyl: '',
+    od_ax: '',  os_ax: '',
+    od_pr: '',  os_pr: '',
+    od_add: '', os_add: '',
+    od_bc: '',  os_bc: '',
+
+    /* 配镜方案 */
+    store: []
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
+  _code: '',        // 订单/报告共用 id
+  _adminId: '',     // 验光机构 id
+  _isRedirectingLogin: false,
+
   onLoad(options) {
-    this.get_order(options.code)
+    this._code = options.code || wx.getStorageSync('code');
+
+    if (!this._code) {
+      this.setData({ loading: false });
+      wx.showToast({ title: '缺少订单编号', icon: 'none' });
+      return;
+    }
+
+    this.fetchDetail();
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
   onShow() {
-
+    this._isRedirectingLogin = false;
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
   onPullDownRefresh() {
-
+    this.fetchDetail(() => wx.stopPullDownRefresh());
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
+  /* ==================== 主流程：前两个并行，机构串行 ==================== */
+  fetchDetail(done) {
+    var that = this;
 
-  },
+    Promise.all([
+      that.fetchOrder(),
+      that.fetchReport()
+    ])
+      .then(function () {
+        return that.fetchAdmin();
+      })
+      .catch(function (err) {
+        console.error('[reportDetail]', err);
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  },
-  slideOn(e) {
-    // 拿到当前索引并动态改变
-    this.setData({
-      tabsId: e.detail.current
-    })
-  },
-
-  //点击tab时触发
-  tabsOn(e) {
-    this.setData({
-      //拿到当前索引并动态改变
-      tabsId: e.currentTarget.dataset.idx
-    })
-  },
-
-  get_order(code) {
-    let token = wx.getStorageSync('token')
-    if (code != null & token != null) {
-      wx.request({
-        url: 'https://maneu.online/get_detail/',
-        method: 'GET',
-        data: {
-          'text': '100001',
-          'token': token,
-          'code': code,
-        },
-        success: (res) => {
-          console.log('order', res.data)
-          wx.setStorageSync('token', res.data.token)
-          this.setData({
-            name: res.data.content.name,
-            time: res.data.content.time,
-            phone: res.data.content.phone,
-            remark: res.data.content.remark,
-            store: JSON.parse(res.data.content.content),
-          })
-          this.get_report(res.data.content.report_id)
+        if (err.message === 'AUTH_EXPIRED' || err.message === 'NO_TOKEN') {
+          wx.removeStorageSync('access_token');
+          wx.removeStorageSync('refresh_token');
+          that.redirectToLogin();
+        } else {
+          wx.showToast({ title: '网络异常，请稍后重试', icon: 'none' });
         }
       })
-    }
+      .then(function () {
+        that.setData({ loading: false });
+        done && done();
+      });
   },
 
-  get_admin(code) {
-    let token = wx.getStorageSync('token')
-    if (code != null & token != null) {
-      wx.request({
-        url: 'https://maneu.online/get_detail/',
-        method: 'GET',
-        data: {
-          'token': token,
-          'text': 100005,
-          'code': code,
-        },
-        success: (res) => {
-          console.log('admin', res.data)
-          wx.setStorageSync('token', res.data.token)
-          this.setData({
-            admin: res.data.content
-          })
+  /* ==================== 订单信息 ==================== */
+  fetchOrder() {
+    var that = this;
+
+    return requestWithAuth(API.orderDetail, { code: that._code })
+      .then(function (res) {
+        var data = res.data || {};
+        if (data.status === false) return;
+
+        var content = data.content || {};
+
+        /* 安全解析配镜方案（服务端返回 JSON 字符串） */
+        var store = [];
+        try {
+          store = content.content ? JSON.parse(content.content) : [];
+        } catch (e) {
+          console.warn('[reportDetail] 配镜方案解析失败', e);
         }
-      })
-    }
+
+        that.setData({
+          name: content.name || '',
+          time: content.time || '',
+          phone: content.phone || '',
+          remark: content.remark || '',
+          store: store
+        });
+      });
   },
 
-  get_report(code) {
-    let token = wx.getStorageSync('token')
-    if (code != null & token != null) {
-      wx.request({
-        url: 'https://maneu.online/get_detail/',
-        method: 'GET',
-        data: {
-          'token': token,
-          'text': '100003',
-          'code': code,
-        },
-        success: (res) => {
-          console.log('123report', res.data)
-          wx.setStorageSync('token', res.data.token)
-          this.setData({
-            pd: res.data.content.pd,
-            phone: res.data.content.phone,
-            plan: res.data.content.plan,
-            remark: res.data.content.remark,
-            time: res.data.content.time,
+  /* ==================== 验光处方 ==================== */
+  fetchReport() {
+    var that = this;
 
-            od_ad: res.data.content.od_ad,
-            od_add: res.data.content.od_add,
-            od_ak: res.data.content.od_ak,
-            od_al: res.data.content.od_al,
-            od_ax: res.data.content.od_ax,
-            od_bc: res.data.content.od_bc,
-            od_cct: res.data.content.od_cct,
-            od_cyl: res.data.content.od_cyl,
-            od_fr: res.data.content.od_fr,
-            od_lt: res.data.content.od_lt,
-            od_pr: res.data.content.od_pr,
-            od_sph: res.data.content.od_sph,
-            od_va: res.data.content.od_va,
-            od_vt: res.data.content.od_vt,
+    return requestWithAuth(API.reportDetail, { code: that._code })
+      .then(function (res) {
+        var data = res.data || {};
+        if (data.status === false) return;
 
-            os_ad: res.data.content.os_ad,
-            os_add: res.data.content.os_add,
-            os_ak: res.data.content.os_ak,
-            os_al: res.data.content.os_al,
-            os_ax: res.data.content.os_ax,
-            os_bc: res.data.content.os_bc,
-            os_cct: res.data.content.os_cct,
-            os_cyl: res.data.content.os_cyl,
-            os_fr: res.data.content.os_fr,
-            os_lt: res.data.content.os_lt,
-            os_pr: res.data.content.os_pr,
-            os_sph: res.data.content.os_sph,
-            os_va: res.data.content.os_va,
-            os_vt: res.data.content.os_vt,
-          })
-          this.get_admin(res.data.content.admin_id)
-        }
-      })
-    }
+        var c = data.content || {};
+
+        /* 用 admin_id 准备后续查机构 */
+        if (c.admin_id) that._adminId = c.admin_id;
+
+        that.setData({
+          plan: c.plan || '',
+          pd: c.pd || '',
+
+          od_va: c.od_va || '',   os_va: c.os_va || '',
+          od_sph: c.od_sph || '', os_sph: c.os_sph || '',
+          od_cyl: c.od_cyl || '', os_cyl: c.os_cyl || '',
+          od_ax: c.od_ax || '',   os_ax: c.os_ax || '',
+          od_pr: c.od_pr || '',   os_pr: c.os_pr || '',
+          od_add: c.od_add || '', os_add: c.os_add || '',
+          od_bc: c.od_bc || '',   os_bc: c.os_bc || ''
+        });
+      });
   },
-})
+
+  /* ==================== 验光机构 ==================== */
+  fetchAdmin() {
+    var that = this;
+
+    if (!that._adminId) return Promise.resolve();
+
+    return requestWithAuth(API.storeDetail, { code: that._adminId })
+      .then(function (res) {
+        var data = res.data || {};
+        if (data.status === false) return;
+
+        that.setData({ admin: data.content || {} });
+      });
+  },
+
+  /* ==================== 跳转登录页 ==================== */
+  redirectToLogin() {
+    if (this._isRedirectingLogin) return;
+    this._isRedirectingLogin = true;
+
+    wx.showToast({ title: '请先登录', icon: 'none' });
+
+    wx.reLaunch({
+      url: ROUTES.adminLogin,
+      fail: function (err) {
+        console.error('[reportDetail] 跳转登录失败：', err);
+      }
+    });
+  }
+});

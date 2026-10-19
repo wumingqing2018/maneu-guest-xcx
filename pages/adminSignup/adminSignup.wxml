@@ -1,0 +1,78 @@
+<!-- pages/register/register.wxml -->
+<view class="page">
+
+<!-- 顶部品牌栏（与 adminLogin 完全一致） -->
+<view class="top-bar top-bar--short">
+  <view class="top-bar__inner">
+    <image
+      class="brand-logo"
+      src="https://maneu.online/static/img/maneu/logo.svg"
+      mode="aspectFit"
+      lazy-load
+    />
+    <text class="brand-name">徕可视光</text>
+  </view>
+</view>
+
+<!-- 注册卡片 -->
+<view class="login-card">
+  <text class="card-title">注册新账号</text>
+
+  <!-- 手机号 -->
+  <view class="input-row">
+    <view class="input-row__icon input-row__icon--phone"></view>
+    <input
+      type="number"
+      placeholder="请输入手机号"
+      maxlength="11"
+      value="{{phone}}"
+      bindinput="onPhoneInput"
+      class="flex-input"
+    />
+  </view>
+
+  <!-- 验证码 -->
+  <view class="input-row">
+    <view class="input-row__icon input-row__icon--lock"></view>
+    <input
+      type="number"
+      placeholder="6位验证码"
+      maxlength="6"
+      value="{{code}}"
+      bindinput="onCodeInput"
+    />
+    <button
+      class="sms-btn {{isCountdown ? 'sms-btn--disabled' : ''}}"
+      bindtap="sendSmsCode"
+      disabled="{{isCountdown}}"
+    >
+      {{countdownText}}
+    </button>
+  </view>
+
+  <!-- 协议勾选 -->
+  <view class="agreement-row" bindtap="toggleAgree">
+    <view class="checkbox {{agree ? 'checkbox--checked' : ''}}">
+      <view wx:if="{{agree}}" class="checkbox__tick"></view>
+    </view>
+    <text class="agreement-text">我已阅读并同意</text>
+    <text class="agreement-link" catchtap="onOpenAgreement">《用户协议》</text>
+  </view>
+
+  <!-- 注册按钮 -->
+  <button
+    class="login-btn {{!phone || !code || !agree || submitting ? 'login-btn--disabled' : ''}}"
+    bindtap="handleRegister"
+    disabled="{{submitting}}"
+  >
+    {{submitting ? '注册中...' : '注册并登录'}}
+  </button>
+
+  <!-- 已有账号 → 回登录页 -->
+  <view class="login-card__extra">
+    <text class="login-card__extra-text">已有账号？</text>
+    <text class="login-card__extra-link" catchtap="goLogin">返回登录</text>
+  </view>
+</view>
+
+</view>

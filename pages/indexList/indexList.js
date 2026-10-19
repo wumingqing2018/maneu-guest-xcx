@@ -6,6 +6,24 @@ Page({
    */
   data: {
     imgscr: '',
+    imageLink: [
+      {
+        data: "https://maneu.online/static/img/gif2.jpg",
+        index: "https://maneu.online/static/img/3.gif",
+      },
+      {
+        data: "https://maneu.online/static/img/2mcjs.jpg",
+        index: "https://maneu.online/static/img/1mcjs.jpg",
+      },
+      {
+        data: "https://maneu.online/static/img/2yqs.jpg",
+        index: "https://maneu.online/static/img/1yqs.jpg",
+      },
+      {
+        data: "https://maneu.online/static/img/2njj.jpg",
+        index: "https://maneu.online/static/img/1njj.jpg",
+      },
+    ]
   },
 
   /**
@@ -15,7 +33,6 @@ Page({
     this.setData({
       imgscr: e.link
     })
-    console.log(e.link)
   },
 
   /**

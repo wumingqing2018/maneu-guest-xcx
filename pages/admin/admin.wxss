@@ -1,0 +1,363 @@
+/* ==========================================================
+   pages/admin/admin.wxss
+   ----------------------------------------------------------
+   Apple 风格设计系统 —— 用户中心页
+   ----------------------------------------------------------
+   bg        #FBFBFD   Apple.com 页面底色
+   surface   #FFFFFF
+   brand     #003153   品牌深蓝
+   accent    #0071E3   Apple Blue
+   danger    #FF3B30   iOS Red
+   text      #1D1D1F
+   text-2    #86868B
+   hairline  rgba(0,0,0,.08)
+   ========================================================== */
+
+/* ==================== 页面基础 ==================== */
+.page {
+  min-height: 100vh;
+  background: #fbfbfd;
+  padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Helvetica Neue", "PingFang SC", "Microsoft YaHei",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #1d1d1f;
+}
+
+/* ==================== 顶部品牌栏 ==================== */
+.top-bar {
+  width: 100%;
+  /* ✅ 移除 overflow: hidden，让 ::after 弧形正常显示 */
+  position: relative;
+  background: linear-gradient(180deg,
+      #004272 0%,
+      /* 顶部亮起，模拟光线 */
+      #003b62 25%,
+      /* 过渡 */
+      #003153 60%,
+      /* 品牌主色 */
+      #002a45 100%
+      /* 底部加深，形成纵深 */
+    );
+  padding-bottom: 20rpx;
+  /* 顶部玻璃高光 + 底部微弱反光 */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  /* 保证层级高于下方内容 */
+  z-index: 1;
+}
+
+/* 顶部横向扫光 —— 模拟 iOS Navigation Bar 的玻璃质感 */
+.top-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      /* ← 从 0.32 提到 0.5，高光更亮 */
+      rgba(255, 255, 255, 0) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 底部弧形装饰 —— 椭圆弧 + 底部投影 */
+.top-bar::after {
+  content: '';
+  width: 100%;
+  height: 60rpx;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #002a45;
+  /* 与渐变底部同色，视觉衔接 */
+}
+
+/* 内容容器 */
+.top-bar__inner {
+  width: 82%;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* 短版本（用于 adminLogin / userPage 顶部） */
+.top-bar--short {
+  padding: 96rpx 0 56rpx;
+}
+
+/* ==================== 品牌 logo + 名称 ==================== */
+.brand-logo {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 34rpx;
+  margin-bottom: 24rpx;
+  padding: 12rpx;
+}
+
+.brand-name {
+  display: block;
+  color: #ffffff;
+  font-size: 36rpx;
+  font-weight: 600;
+  letter-spacing: 0.8rpx;
+  /* ← 从 0.6rpx 微调到 0.8rpx，更精致 */
+  /* 文字微弱发光，模拟深色背景上的白字 */
+  text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.15);
+}
+
+/* ==================== 骨架屏 ==================== */
+.skeleton {
+  background: linear-gradient(90deg, #eef0f3 25%, #f7f8fa 37%, #eef0f3 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 12rpx;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+.skeleton--avatar {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 34rpx;
+  margin: 0 auto 24rpx;
+}
+
+.skeleton--brand {
+  width: 200rpx;
+  height: 36rpx;
+  margin: 0 auto;
+}
+
+.skeleton--text {
+  width: 60%;
+  height: 32rpx;
+  margin: 4rpx auto;
+}
+
+.skeleton--grid {
+  width: 100%;
+  height: 140rpx;
+  border-radius: 24rpx;
+}
+
+.skeleton--menu {
+  width: 100%;
+  height: 104rpx;
+  border-radius: 24rpx;
+}
+
+/* ==================== 账号信息卡片 ====================
+   与 adminLogin 的 login-card 保持相同圆角 / 阴影 / 宽度，
+   但内容改为 label + value 双层结构
+   ========================================================== */
+.account-card {
+  width: 82%;
+  margin: -32rpx auto 32rpx;
+  background: #ffffff;
+  border-radius: 36rpx;
+  padding: 48rpx 44rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
+    0 24rpx 64rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.account-card__label {
+  display: block;
+  font-size: 24rpx;
+  color: #86868b;
+  letter-spacing: 3rpx;
+  margin-bottom: 12rpx;
+}
+
+.account-card__value {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+  letter-spacing: -0.4rpx;
+  line-height: 1.2;
+}
+
+/* ==================== 功能网格（2×2） ==================== */
+.grid {
+  width: 82%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.grid__item {
+  width: calc((100% - 20rpx) / 2);
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 40rpx 0 34rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
+    0 16rpx 40rpx rgba(0, 0, 0, 0.06);
+  transition: transform 0.28s cubic-bezier(0.25, 0.1, 0.25, 1),
+    background 0.2s ease;
+}
+
+/* hover-class 反馈（兼容 Android） */
+.grid__item--hover {
+  background: #f2f2f7;
+  transform: scale(0.97);
+}
+
+/* 图标圆底 + SVG 图标 */
+.grid__icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background-color: rgba(0, 113, 227, 0.08);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 48rpx 48rpx;
+  margin-bottom: 18rpx;
+}
+
+.grid__icon--order {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230071E3' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 8h13l-1.2 11.2a1.6 1.6 0 0 1-1.6 1.4H8.3a1.6 1.6 0 0 1-1.6-1.4L5.5 8z'/%3E%3Cpath d='M9 8V6.4a3 3 0 0 1 6 0V8'/%3E%3C/svg%3E");
+}
+
+.grid__icon--report {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230071E3' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3h7l4 4v13.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z'/%3E%3Cpath d='M14 3v4h4'/%3E%3Cpath d='M9.5 12.5h5M9.5 16h3'/%3E%3C/svg%3E");
+}
+
+.grid__icon--repair {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230071E3' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l7 3v5c0 4.2-2.9 7.9-7 9-4.1-1.1-7-4.8-7-9V6l7-3z'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E");
+}
+
+.grid__icon--scan {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230071E3' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8V6a2 2 0 0 1 2-2h2'/%3E%3Cpath d='M16 4h2a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M20 16v2a2 2 0 0 1-2 2h-2'/%3E%3Cpath d='M8 20H6a2 2 0 0 1-2-2v-2'/%3E%3Cpath d='M4 12h16'/%3E%3C/svg%3E");
+}
+
+.grid__label {
+  font-size: 26rpx;
+  color: #1d1d1f;
+  font-weight: 500;
+  letter-spacing: 0.2rpx;
+}
+
+/* ==================== 退出卡片 ==================== */
+.menu-list {
+  width: 82%;
+  margin: 0 auto;
+}
+
+.menu-item {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 36rpx 30rpx;
+  margin-bottom: 20rpx;
+  font-size: 30rpx;
+  color: #1d1d1f;
+  text-align: center;
+  font-weight: 500;
+  letter-spacing: 0.2rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
+    0 16rpx 40rpx rgba(0, 0, 0, 0.06);
+  transition: transform 0.28s cubic-bezier(0.25, 0.1, 0.25, 1),
+    background 0.2s ease;
+}
+
+.menu-item--hover {
+  background: #f2f2f7;
+  transform: scale(0.98);
+}
+
+.menu-item--logout {
+  color: #ff3b30;
+}
+
+/* ==================== 未登录：登录卡片 ====================
+   与 account-card 同圆角 / 阴影 / 宽度，视觉无缝衔接
+   ========================================================== */
+.login-card {
+  width: 82%;
+  margin: -32rpx auto 32rpx;
+  background: #ffffff;
+  border-radius: 36rpx;
+  padding: 64rpx 44rpx 56rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
+    0 24rpx 64rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+/* 头像圆底 + 蓝色人物图标 */
+.login-card__icon {
+  width: 140rpx;
+  height: 140rpx;
+  margin: 0 auto 32rpx;
+  border-radius: 50%;
+  background-color: rgba(0, 113, 227, 0.08);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230071E3' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8.5' r='3.5'/%3E%3Cpath d='M4.5 20c.9-3.6 4-6 7.5-6s6.6 2.4 7.5 6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 72rpx 72rpx;
+}
+
+.login-card__title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+  letter-spacing: -0.8rpx;
+  margin-bottom: 12rpx;
+}
+
+.login-card__desc {
+  display: block;
+  font-size: 26rpx;
+  color: #86868b;
+  line-height: 1.6;
+  margin-bottom: 48rpx;
+  padding: 0 20rpx;
+  letter-spacing: 0.2rpx;
+}
+
+/* 登录按钮：与 Apple Blue 主按钮一致 */
+.login-card__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 96rpx;
+  background: #0071e3;
+  color: #ffffff;
+  font-size: 34rpx;
+  font-weight: 600;
+  border-radius: 24rpx;
+  letter-spacing: 0.6rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 113, 227, 0.3);
+  transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 0.25s ease;
+}
+
+.login-card__btn--hover {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(0, 113, 227, 0.2);
+}

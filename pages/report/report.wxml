@@ -1,109 +1,145 @@
-<view style="background: whitesmoke; padding: 2%;">
-  <view class="card" style="text-align: left;">
-    <text class="h5">配镜订单：{{ time }}</text>
-  </view>
-  <view style="padding:2%;"></view>
+<!-- pages/report/report.wxml -->
+<view class="page">
 
+<!-- ==================== 顶部标题 ==================== -->
+<view class="hero">
+  <text class="hero__label">配镜订单</text>
+  <text class="hero__time">{{time || '--'}}</text>
+</view>
 
+<!-- ==================== 骨架屏 ==================== -->
+<block wx:if="{{loading}}">
   <view class="card">
-    <view>
-      <view class="h5">客户信息：{{ name }}</view>
-      <view class="h4"></view>
-    </view>
-    <view class="fr2">
-      <view class="white" style="text-align: left; padding-left: 20px;">联系电话</view>
-      <view class="white">{{ phone }}</view>
-    </view>
+    <view class="card__head"><view class="skeleton skeleton--line-sm"></view></view>
+    <view class="cell"><view class="skeleton skeleton--line"></view></view>
+    <view class="cell"><view class="skeleton skeleton--line"></view></view>
   </view>
-  <view style="padding:2%;"></view>
-
-
   <view class="card">
-    <view>
-      <view class="h5">验光机构：{{ admin.nickname }}</view>
-      <view class="h4"></view>
-    </view>
-    <view class="fr2">
-      <view class="white" style="text-align: left; padding-left: 20px;">联系电话</view>
-      <view class="white">{{ admin.phone }}</view>
-    </view>
-    <view class="fr2">
-      <view class="somke" style="text-align: left; padding-left: 20px;">营业地址</view>
-      <view class="somke">{{ admin.location }}</view>
-    </view>
-    <view class="fr2">
-      <view class="white" style="text-align: left; padding-left: 20px;">店铺介绍</view>
-      <view class="white">{{ admin.remark }}</view>
-    </view>
+    <view class="card__head"><view class="skeleton skeleton--line-sm"></view></view>
+    <view class="cell"><view class="skeleton skeleton--line"></view></view>
+    <view class="cell"><view class="skeleton skeleton--line"></view></view>
+    <view class="cell"><view class="skeleton skeleton--line"></view></view>
   </view>
-  <view style="padding:2%;"></view>
+</block>
 
+<!-- ==================== 加载失败 ==================== -->
+<view wx:elif="{{loadError}}" class="empty">
+  <view class="empty__icon empty__icon--error"></view>
+  <text class="empty__title">加载失败</text>
+  <text class="empty__desc">请检查网络后重试</text>
+  <view class="empty__btn" bindtap="onRetry" hover-class="empty__btn--hover">重新加载</view>
+</view>
 
+<block wx:else>
+
+  <!-- ==================== 客户信息 ==================== -->
   <view class="card">
-    <view>
-      <view class="h5">配镜处方</view>
-      <view class="h4">根据您的视力检测结果，我们制定了以下配镜方案</view>
+    <view class="card__head">
+      <text class="card__title">客户信息</text>
     </view>
-    <view class="fr3">
-      <view class="blue" style="text-align: left; padding-left: 20px;">{{ plan }}</view>
-      <view class="blue">左眼</view>
-      <view class="blue">右眼</view>
+    <view class="cell">
+      <text class="cell__label">客户姓名</text>
+      <text class="cell__value">{{name || '--'}}</text>
     </view>
-    <view class="fr3">
-      <view class="somke" style="text-align: left; padding-left: 20px;">裸眼视力</view>
-      <view class="somke">{{ od_va }}</view>
-      <view class="somke">{{ os_va }}</view>
-    </view>
-    <view class="fr3">
-      <view class="white" style="text-align: left; padding-left: 20px;">球镜(DS)</view>
-      <view class="white">{{ od_sph }}</view>
-      <view class="white">{{ os_sph }}</view>
-    </view>
-    <view class="fr3">
-      <view class="somke" style="text-align: left; padding-left: 20px;">柱镜(DC)</view>
-      <view class="somke">{{ od_cyl }}</view>
-      <view class="somke">{{ os_cyl }}</view>
-    </view>
-    <view class="fr3">
-      <view class="white" style="text-align: left; padding-left: 20px;">轴位</view>
-      <view class="white">{{ od_ax }}</view>
-      <view class="white">{{ os_ax }}</view>
-    </view>
-    <view class="fr3">
-      <view class="somke" style="text-align: left; padding-left: 20px;">棱镜(△)</view>
-      <view class="somke">{{ od_pr }}</view>
-      <view class="somke">{{ os_pr }}</view>
-    </view>
-    <view class="fr2">
-      <view class="white" style="text-align: left; padding-left: 20px;">瞳距</view>
-      <view class="white">{{ pd }}</view>
-    </view>
-    <view class="fr3">
-      <view class="somke" style="text-align: left; padding-left: 20px;">下加光</view>
-      <view class="somke">{{ od_add }}</view>
-      <view class="somke">{{ os_add }}</view>
-    </view>
-    <view class="fr3">
-      <view class="white" style="text-align: left; padding-left: 20px;">矫正视力</view>
-      <view class="white">{{ od_bc }}</view>
-      <view class="white">{{ os_bc }}</view>
+    <view class="cell">
+      <text class="cell__label">联系电话</text>
+      <text class="cell__value">{{phone || '--'}}</text>
     </view>
   </view>
-  <view style="padding:2%;"></view>
 
-
+  <!-- ==================== 验光机构 ==================== -->
   <view class="card">
-    <view>
-      <view class="h5">订单备注</view>
-      <view class="h4"></view>
+    <view class="card__head">
+      <text class="card__title">验光机构</text>
     </view>
-    <view class="fr1" wx:if="{{ !remark }}">
-      <view class="white" style="text-align: left; padding-left: 20px;">无</view>
+    <view class="cell">
+      <text class="cell__label">店铺名称</text>
+      <text class="cell__value">{{admin.nickname || '--'}}</text>
     </view>
-    <view class="fr1" wx:else="">
-      <view class="white" style="text-align: left; padding-left: 20px;">{{remark}}</view>
+    <view class="cell">
+      <text class="cell__label">联系电话</text>
+      <text class="cell__value">{{admin.phone || '--'}}</text>
+    </view>
+    <view class="cell">
+      <text class="cell__label">营业地址</text>
+      <text class="cell__value">{{admin.location || '--'}}</text>
+    </view>
+    <view class="cell">
+      <text class="cell__label">店铺介绍</text>
+      <text class="cell__value">{{admin.remark || '--'}}</text>
     </view>
   </view>
-  <view style="padding:2%;"></view>
+
+  <!-- ==================== 配镜处方 ==================== -->
+  <view class="card">
+    <view class="card__head">
+      <text class="card__title">配镜处方</text>
+      <text class="card__desc">根据您的视力检测结果，我们制定了以下配镜方案</text>
+    </view>
+
+    <view class="table">
+      <!-- 表头 -->
+      <view class="table__row table__row--head">
+        <text class="table__cell">{{plan || '项目'}}</text>
+        <text class="table__cell">左眼</text>
+        <text class="table__cell">右眼</text>
+      </view>
+
+      <!-- 数据行 -->
+      <view class="table__row">
+        <text class="table__cell">裸眼视力</text>
+        <text class="table__cell">{{od_va || '--'}}</text>
+        <text class="table__cell">{{os_va || '--'}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">球镜 (DS)</text>
+        <text class="table__cell">{{od_sph || '--'}}</text>
+        <text class="table__cell">{{os_sph || '--'}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">柱镜 (DC)</text>
+        <text class="table__cell">{{od_cyl || '--'}}</text>
+        <text class="table__cell">{{os_cyl || '--'}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">轴位</text>
+        <text class="table__cell">{{od_ax || '--'}}</text>
+        <text class="table__cell">{{os_ax || '--'}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">棱镜 (△)</text>
+        <text class="table__cell">{{od_pr || '--'}}</text>
+        <text class="table__cell">{{os_pr || '--'}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">下加光</text>
+        <text class="table__cell">{{od_add || '--'}}</text>
+        <text class="table__cell">{{os_add || '--'}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">矫正视力</text>
+        <text class="table__cell">{{od_bc || '--'}}</text>
+        <text class="table__cell">{{os_bc || '--'}}</text>
+      </view>
+
+      <!-- 瞳距单独一行 -->
+      <view class="table__row table__row--single">
+        <text class="table__cell">瞳距</text>
+        <text class="table__cell table__cell--value">{{pd || '--'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 订单备注 ==================== -->
+  <view class="card">
+    <view class="card__head">
+      <text class="card__title">订单备注</text>
+    </view>
+    <view class="cell">
+      <text class="cell__value cell__value--block">{{remark || '无'}}</text>
+    </view>
+  </view>
+
+</block>
 
 </view>

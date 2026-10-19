@@ -1,0 +1,52 @@
+<!-- pages/adminLogin/adminLogin.wxml -->
+<view class="page">
+  <view class="top-bar top-bar--short">
+    <view class="top-bar__inner">
+      <image class="brand-logo" src="https://maneu.online/static/img/maneu/logo.svg" mode="aspectFit" lazy-load />
+    </view>
+  </view>
+
+  <!-- 登录表单卡片 -->
+  <view class="login-card">
+    <text class="card-title">短信验证登录</text>
+
+    <!-- 手机号 -->
+    <view class="input-row">
+      <view class="input-row__icon input-row__icon--phone"></view>
+      <input type="number" placeholder="请输入手机号" maxlength="11" value="{{phone}}" bindinput="onPhoneInput" class="flex-input" />
+    </view>
+
+    <!-- 验证码 -->
+    <view class="input-row">
+      <view class="input-row__icon input-row__icon--lock"></view>
+      <input type="number" placeholder="6位验证码" maxlength="6" value="{{code}}" bindinput="onCodeInput" />
+      <button class="sms-btn {{isCountdown ? 'sms-btn--disabled' : ''}}" bindtap="sendsmsCode" disabled="{{isCountdown}}">
+        {{countdownText}}
+      </button>
+    </view>
+
+    <!-- 协议勾选 -->
+    <view class="agreement-row" bindtap="toggleAgree">
+      <view class="checkbox {{agree ? 'checkbox--checked' : ''}}">
+        <view wx:if="{{agree}}" class="checkbox__tick"></view>
+      </view>
+      <text class="agreement-text">我已阅读并同意</text>
+      <text class="agreement-link" catchtap="onOpenAgreement">《用户协议》</text>
+    </view>
+
+    <!-- 登录按钮 -->
+    <button class="login-btn {{!phone || !code || !agree || submitting ? 'login-btn--disabled' : ''}}" bindtap="handleLogin" disabled="{{submitting}}"> {{submitting ? '登录中...' : '登录'}} </button>
+
+    <!-- 其他方式 -->
+    <view class="divider">
+      <view class="divider-line"></view>
+      <text class="divider-text">其他方式登录</text>
+      <view class="divider-line"></view>
+    </view>
+
+    <button class="wechat-btn" open-type="getPhoneNumber" bindgetphonenumber="onWechatLogin" disabled="{{submitting}}">
+      <image src="/image/wechat-icon.png" class="wechat-icon" />
+      <text>快捷登录</text>
+    </button>
+  </view>
+</view>
