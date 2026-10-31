@@ -1,23 +1,32 @@
-// 这是index的js代码
+// pages/index/index.js
 const API = {};
 
 Page({
   data: {
+    bannerLink: {
+      botton: "https://maneu.online/static/img/botton.jpeg",
+      content: "https://maneu.online/static/img/gif2.jpg",
+      banner: "https://maneu.online/static/img/3.gif",
+    },
     imageLink: [{
-        data: "https://maneu.online/static/img/gif2.jpg",
-        index: "https://maneu.online/static/img/3.gif",
+        content: "https://maneu.online/static/img/2mcjs.jpg",
+        banner: "https://maneu.online/static/img/1mcjs.jpg",
+        index: "0"
       },
       {
-        data: "https://maneu.online/static/img/2mcjs.jpg",
-        index: "https://maneu.online/static/img/1mcjs.jpg",
+        content: "https://maneu.online/static/img/2xzy.jpg",
+        banner: "https://maneu.online/static/img/1xzy.jpg",
+        index: "1"
       },
       {
-        data: "https://maneu.online/static/img/2yqs.jpg",
-        index: "https://maneu.online/static/img/1yqs.jpg",
+        content: "https://maneu.online/static/img/2njj.jpg",
+        banner: "https://maneu.online/static/img/1njj.jpg",
+        index: "2"
       },
       {
-        data: "https://maneu.online/static/img/2njj.jpg",
-        index: "https://maneu.online/static/img/1njj.jpg",
+        content: "https://maneu.online/static/img/2yqs.jpg",
+        banner: "https://maneu.online/static/img/1yqs.jpg",
+        index: "3"
       },
     ]
   },
@@ -25,8 +34,9 @@ Page({
   onLoad() {},
 
   getDetail(e) {
-    const link = e.currentTarget.dataset.hi;
-    if (!link) {
+    const index = e.currentTarget.dataset.index;
+
+    if (!index) {
       wx.showToast({
         title: '参数错误',
         icon: 'none'
@@ -34,7 +44,7 @@ Page({
       return;
     }
     wx.navigateTo({
-      url: `../indexList/indexList?link=${link}`
+      url: `../indexList/indexList?index=${index}`
     });
   }
 });

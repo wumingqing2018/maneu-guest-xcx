@@ -3,19 +3,23 @@
 
 <!-- ==================== 顶部标题 ==================== -->
 <view class="hero">
-  <text class="hero__label">配镜订单</text>
+  <text class="hero__label">验光报告</text>
   <text class="hero__time">{{time || '--'}}</text>
 </view>
 
 <!-- ==================== 骨架屏 ==================== -->
 <block wx:if="{{loading}}">
   <view class="card">
-    <view class="card__head"><view class="skeleton skeleton--line-sm"></view></view>
+    <view class="card__head">
+      <view class="skeleton skeleton--line-sm"></view>
+    </view>
     <view class="cell"><view class="skeleton skeleton--line"></view></view>
     <view class="cell"><view class="skeleton skeleton--line"></view></view>
   </view>
   <view class="card">
-    <view class="card__head"><view class="skeleton skeleton--line-sm"></view></view>
+    <view class="card__head">
+      <view class="skeleton skeleton--line-sm"></view>
+    </view>
     <view class="cell"><view class="skeleton skeleton--line"></view></view>
     <view class="cell"><view class="skeleton skeleton--line"></view></view>
     <view class="cell"><view class="skeleton skeleton--line"></view></view>
@@ -34,7 +38,7 @@
 
   <!-- ==================== 客户信息 ==================== -->
   <view class="card">
-    <view class="card__head">
+    <view class="cell">
       <text class="card__title">客户信息</text>
     </view>
     <view class="cell">
@@ -47,96 +51,189 @@
     </view>
   </view>
 
-  <!-- ==================== 验光机构 ==================== -->
-  <view class="card">
-    <view class="card__head">
-      <text class="card__title">验光机构</text>
-    </view>
-    <view class="cell">
-      <text class="cell__label">店铺名称</text>
-      <text class="cell__value">{{admin.nickname || '--'}}</text>
-    </view>
-    <view class="cell">
-      <text class="cell__label">联系电话</text>
-      <text class="cell__value">{{admin.phone || '--'}}</text>
-    </view>
-    <view class="cell">
-      <text class="cell__label">营业地址</text>
-      <text class="cell__value">{{admin.location || '--'}}</text>
-    </view>
-    <view class="cell">
-      <text class="cell__label">店铺介绍</text>
-      <text class="cell__value">{{admin.remark || '--'}}</text>
-    </view>
-  </view>
-
-  <!-- ==================== 配镜处方 ==================== -->
-  <view class="card">
-    <view class="card__head">
-      <text class="card__title">配镜处方</text>
-      <text class="card__desc">根据您的视力检测结果，我们制定了以下配镜方案</text>
-    </view>
-
-    <view class="table">
-      <!-- 表头 -->
-      <view class="table__row table__row--head">
-        <text class="table__cell">{{plan || '项目'}}</text>
-        <text class="table__cell">左眼</text>
-        <text class="table__cell">右眼</text>
-      </view>
-
-      <!-- 数据行 -->
-      <view class="table__row">
-        <text class="table__cell">裸眼视力</text>
-        <text class="table__cell">{{od_va || '--'}}</text>
-        <text class="table__cell">{{os_va || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">球镜 (DS)</text>
-        <text class="table__cell">{{od_sph || '--'}}</text>
-        <text class="table__cell">{{os_sph || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">柱镜 (DC)</text>
-        <text class="table__cell">{{od_cyl || '--'}}</text>
-        <text class="table__cell">{{os_cyl || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">轴位</text>
-        <text class="table__cell">{{od_ax || '--'}}</text>
-        <text class="table__cell">{{os_ax || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">棱镜 (△)</text>
-        <text class="table__cell">{{od_pr || '--'}}</text>
-        <text class="table__cell">{{os_pr || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">下加光</text>
-        <text class="table__cell">{{od_add || '--'}}</text>
-        <text class="table__cell">{{os_add || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">矫正视力</text>
-        <text class="table__cell">{{od_bc || '--'}}</text>
-        <text class="table__cell">{{os_bc || '--'}}</text>
-      </view>
-
-      <!-- 瞳距单独一行 -->
-      <view class="table__row table__row--single">
-        <text class="table__cell">瞳距</text>
-        <text class="table__cell table__cell--value">{{pd || '--'}}</text>
-      </view>
-    </view>
-  </view>
-
   <!-- ==================== 订单备注 ==================== -->
   <view class="card">
-    <view class="card__head">
+    <view class="cell">
       <text class="card__title">订单备注</text>
     </view>
     <view class="cell">
       <text class="cell__value cell__value--block">{{remark || '无'}}</text>
+    </view>
+  </view>
+
+  <!-- ==================== 验光机构 ==================== -->
+  <view class="card">
+    <view class="cell">
+      <text class="card__title">验光机构</text>
+    </view>
+    <view class="cell">
+      <text class="cell__label">店铺名称</text>
+      <text class="cell__value">{{admin.nickname}}</text>
+    </view>
+    <view class="cell">
+      <text class="cell__label">联系电话</text>
+      <text class="cell__value">{{admin.phone}}</text>
+    </view>
+    <view class="cell">
+      <text class="cell__label">营业地址</text>
+      <text class="cell__value">{{admin.location}}</text>
+    </view>
+    <view class="cell">
+      <text class="cell__label">店铺介绍</text>
+      <text class="cell__value">{{admin.remark}}</text>
+    </view>
+  </view>
+
+  <!-- ==================== 基础信息（2 列 table--kv） ==================== -->
+  <view class="card">
+    <view class="card__head">
+      <text class="card__title">基础信息</text>
+    </view>
+    <view class="table table--kv">
+      <view class="table__row table__row--head">
+        <text class="table__cell">参数</text>
+        <text class="table__cell">内容</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">性别</text>
+        <text class="table__cell">{{sex}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">年龄</text>
+        <text class="table__cell">{{age}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">瞳距</text>
+        <text class="table__cell">{{pd}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">眼位</text>
+        <text class="table__cell">{{ot}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">主视眼</text>
+        <text class="table__cell">{{em}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">病族史</text>
+        <text class="table__cell">{{dfh}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">配镜方案</text>
+        <text class="table__cell">{{plan}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 屈光处方 ==================== -->
+  <view class="card">
+    <view class="card__head">
+      <text class="card__title">屈光处方</text>
+    </view>
+    <view class="table">
+      <view class="table__row table__row--head">
+        <text class="table__cell">参数</text>
+        <text class="table__cell">右眼 (OD)</text>
+        <text class="table__cell">左眼 (OS)</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">球镜 (SPH)</text>
+        <text class="table__cell">{{od_sph}}</text>
+        <text class="table__cell">{{os_sph}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">柱镜 (CYL)</text>
+        <text class="table__cell">{{od_cyl}}</text>
+        <text class="table__cell">{{os_cyl}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">轴位 (AX)</text>
+        <text class="table__cell">{{od_ax}}</text>
+        <text class="table__cell">{{os_ax}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">棱镜 (PR)</text>
+        <text class="table__cell">{{od_pr}}</text>
+        <text class="table__cell">{{os_pr}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">基底取向 (FR)</text>
+        <text class="table__cell">{{od_fr}}</text>
+        <text class="table__cell">{{os_fr}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">下加光 (ADD)</text>
+        <text class="table__cell">{{od_add}}</text>
+        <text class="table__cell">{{os_add}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 视力检查 ==================== -->
+  <view class="card">
+    <view class="card__head">
+      <text class="card__title">视力检查</text>
+    </view>
+    <view class="table">
+      <view class="table__row table__row--head">
+        <text class="table__cell">参数</text>
+        <text class="table__cell">右眼 (OD)</text>
+        <text class="table__cell">左眼 (OS)</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">裸眼视力 (VA)</text>
+        <text class="table__cell">{{od_va}}</text>
+        <text class="table__cell">{{os_va}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">矫正视力 (BC)</text>
+        <text class="table__cell">{{od_bc}}</text>
+        <text class="table__cell">{{os_bc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 眼生物测量 ==================== -->
+  <view class="card">
+    <view class="card__head">
+      <text class="card__title">眼生物测量</text>
+    </view>
+    <view class="table">
+      <view class="table__row table__row--head">
+        <text class="table__cell">参数</text>
+        <text class="table__cell">右眼 (OD)</text>
+        <text class="table__cell">左眼 (OS)</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">眼轴长度 (AL)</text>
+        <text class="table__cell">{{od_al}}</text>
+        <text class="table__cell">{{os_al}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">角膜曲度 (AK)</text>
+        <text class="table__cell">{{od_ak}}</text>
+        <text class="table__cell">{{os_ak}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">前房深度 (AD)</text>
+        <text class="table__cell">{{od_ad}}</text>
+        <text class="table__cell">{{os_ad}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">角膜厚度 (CCT)</text>
+        <text class="table__cell">{{od_cct}}</text>
+        <text class="table__cell">{{os_cct}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">晶体厚度 (LT)</text>
+        <text class="table__cell">{{od_lt}}</text>
+        <text class="table__cell">{{os_lt}}</text>
+      </view>
+      <view class="table__row">
+        <text class="table__cell">玻璃体厚度 (VT)</text>
+        <text class="table__cell">{{od_vt}}</text>
+        <text class="table__cell">{{os_vt}}</text>
+      </view>
     </view>
   </view>
 

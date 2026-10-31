@@ -1,4 +1,6 @@
 /* ==========================================================
+   pages/index/index.wxss
+   ----------------------------------------------------------
    Apple 风格设计系统 —— 首页
    ----------------------------------------------------------
    色板
@@ -66,7 +68,14 @@ page {
   box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.04);
 }
 
+.feature__gif {
+  width: 100%;
+  display: block;
+}
+
 .feature__img {
+  padding-top: 30rpx;
+  padding-bottom: 40rpx;
   width: 100%;
   display: block;
 }
@@ -89,6 +98,11 @@ page {
   box-sizing: border-box;
 }
 
+.hscroll__spacer {
+  flex: 0 0 16rpx;
+  width: 32rpx;
+}
+
 .hscroll__inner {
   display: flex;
   padding: 0 32rpx;
@@ -103,8 +117,6 @@ page {
   border-radius: 28rpx;
   overflow: hidden;
   background: #ffffff;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
-    0 16rpx 40rpx rgba(0, 0, 0, 0.06);
   transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
     box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }

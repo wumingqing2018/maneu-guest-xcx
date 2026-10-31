@@ -6,5 +6,18 @@
     "urlCheck": true,
     "skylineRenderEnable": false
   },
-  "libVersion": "3.12.1"
+  "libVersion": "3.12.1",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/storeVerify/storeVerify",
+          "pathName": "pages/storeVerify/storeVerify",
+          "query": "q=https%3A%2F%2Fmaneu.online%2Fverify_store%2F%3Findex_id%3Dc489a141-af30-467c-bbd0-2e5606d55bab&scancode_time=1792684588",
+          "launchMode": "default",
+          "scene": 1047
+        }
+      ]
+    }
+  }
 }

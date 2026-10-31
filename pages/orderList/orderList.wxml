@@ -36,7 +36,7 @@
     <!-- 头部：时间 + 状态徽章 -->
     <view class="order__head">
       <text class="order__time">{{item.time}}</text>
-      <view class="order__badge">已完成</view>
+      <view class="order__badge">配镜</view>
     </view>
 
     <!-- 字段列表 -->

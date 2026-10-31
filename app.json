@@ -4,15 +4,20 @@
     "pages/indexList/indexList",
     "pages/admin/admin",
     "pages/adminLogin/adminLogin",
-    "pages/adminSignup/adminSignup",
+    "pages/agreement-service/agreement-service",
+    "pages/agreement-user/agreement-user",
     "pages/order/order",
     "pages/orderList/orderList",
+    "pages/orderVerify/orderVerify",
     "pages/report/report",
     "pages/reportList/reportList",
+    "pages/reportVerify/reportVerify",
     "pages/repair/repair",
     "pages/repairList/repairList",
-    "pages/verify/verify",
-    "pages/verifyList/verifyList"
+    "pages/repairVerify/repairVerify",
+    "pages/store/store",
+    "pages/storeList/storeList",
+    "pages/storeVerify/storeVerify"
   ],
   "window": {
     "backgroundTextStyle": "dark",

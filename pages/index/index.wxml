@@ -1,15 +1,18 @@
+<!-- pages/index/index.wxml -->
 <view class="page">
-  <!-- 分区标题 -->
+
+  <!-- ==================== 分区标题 ====================  -->
   <view class="section">
     <text class="section__title">精选</text>
   </view>
 
-  <!-- ==================== 横向图片列表 ==================== -->
+  <!-- ==================== 横向滚动列表 ====================  -->
   <scroll-view class="hscroll" scroll-x enable-flex show-scrollbar="{{false}}">
     <view class="hscroll__inner">
-      <view class="hscroll__item" wx:for="{{imageLink}}" wx:for-index="idx" wx:key="data" wx:if="{{idx > 0}}" hover-class="hscroll__item--hover" hover-stay-time="80" data-hi="{{idx}}" bind:tap="getDetail">
-        <image class="hscroll__img" src="{{item.index}}" mode="aspectFill" lazy-load show-menu-by-longpress="{{false}}" />
+      <view class="hscroll__item" wx:for="{{imageLink}}" wx:key="data" hover-class="hscroll__item--hover" hover-stay-time="80" data-index="{{item.index}}" bind:tap="getDetail">
+        <image class="hscroll__img" src="{{item.banner}}" mode="aspectFill" lazy-load show-menu-by-longpress="{{false}}" />
       </view>
+      <view class="hscroll__spacer"></view>
     </view>
   </scroll-view>
 
@@ -21,7 +24,10 @@
 
   <!-- 首图卡片（固定 GIF） -->
   <view class="feature">
-    <image class="feature__img" src="{{imageLink[0].index}}" mode="widthFix" lazy-load show-menu-by-longpress="{{false}}" data-hi="0" bind:tap="getDetail" />
+    <image class="feature__gif" src="{{bannerLink.banner}}" mode="widthFix" lazy-load show-menu-by-longpress="{{false}}" />
+  </view>
+  <view class="feature">
+    <image class="feature__img" src="{{bannerLink.content}}" mode="widthFix" lazy-load show-menu-by-longpress="{{false}}" />
   </view>
 
 </view>

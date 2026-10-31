@@ -13,7 +13,7 @@ const ROUTES = {
   orderList: '/pages/orderList/orderList',
   reportList: '/pages/reportList/reportList',
   repairList: '/pages/repairList/repairList',
-  detail: '/pages/detail/detail'
+  detail: '/pages/detail/detail',
 };
 
 const PHONE_REG = /^1[3-9]\d{9}$/;
@@ -28,9 +28,39 @@ function getRefreshToken() {
   return wx.getStorageSync('refresh_token') || '';
 }
 
-/* 判断是否已登录：两个 token 都存在才算登录 */
 function hasLogin() {
   return !!(getAccessToken() && getRefreshToken());
+}
+
+/**
+ * 获取微信临时登录凭证 code。
+ * ⚠️ 这不是 openid！后端需用此 code 调微信 jscode2session 接口换取 openid。
+ *    code 5 分钟有效、仅能使用一次。
+ */
+function wxLogin() {
+  return new Promise((resolve, reject) => {
+    wx.login({
+      success: (res) => {
+        if (res.code) resolve(res.code);
+        else reject(new Error('wx.login 未返回 code'));
+      },
+      fail: (err) => reject(err)
+    });
+  });
+}
+
+/** 把 wx.request 封装成 Promise，避免每个调用点手写 resolve/reject 漏掉 */
+function wxPost(url, data) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url,
+      method: 'POST',
+      header: { 'content-type': 'application/json' },
+      data: data || {},
+      success: (res) => resolve(res.data || {}),
+      fail: (err) => reject(err)
+    });
+  });
 }
 
 /* ==================== 页面 ==================== */
@@ -49,47 +79,35 @@ Page({
 
   /* ==================== 生命周期 ==================== */
   onShow() {
-    /* 已登录 → 自动切回「我的」 */
-    if (getAccessToken()) {
+    if (hasLogin()) {                                   // ⭐ 用 hasLogin
       wx.reLaunch({
         url: ROUTES.admin,
         fail: (err) => console.error('[adminLogin] 跳 admin 失败：', err)
       });
       return;
     }
-
-    /* 恢复倒计时（切后台再回来） */
     this.resumeCountdown();
   },
 
-  onHide() {
-    /* tabBar 页面切换只触发 onHide，不触发 onUnload */
-    this.clearSmsTimer();
-  },
-
-  onUnload() {
-    this.clearSmsTimer();
-  },
+  onHide() { this.clearSmsTimer(); },
+  onUnload() { this.clearSmsTimer(); },
 
   /* ==================== 协议 ==================== */
   toggleAgree() {
     this.setData({ agree: !this.data.agree });
   },
-
-  onOpenAgreement() {
-    wx.showToast({ title: '查看用户协议', icon: 'none' });
+  onOpenAgreementService() {
+    wx.navigateTo({ url: '/pages/agreement-service/agreement-service' });
+  },
+  onOpenAgreementUser() {
+    wx.navigateTo({ url: '/pages/agreement-user/agreement-user' });
   },
 
   /* ==================== 输入 ==================== */
-  onPhoneInput(e) {
-    this.setData({ phone: e.detail.value });
-  },
+  onPhoneInput(e) { this.setData({ phone: e.detail.value }); },
+  onCodeInput(e)  { this.setData({ code: e.detail.value }); },
 
-  onCodeInput(e) {
-    this.setData({ code: e.detail.value });
-  },
-
-  /* ==================== 发送验证码 ==================== */
+  /* ==================== 发送验证码（成功后才倒计时） ==================== */
   sendsmsCode() {
     const { phone, isCountdown } = this.data;
     if (isCountdown) return;
@@ -99,77 +117,50 @@ Page({
       return;
     }
 
-    this.startCountdown();
-
-    wx.request({
-      url: API.sendsms,
-      method: 'POST',
-      header: { 
-        'content-type': 'application/json',
-      },
-      data: { call: phone },
-      success: (res) => {
-        if (res.data && res.data.status) {
-          /* ✅ 用户能看到 */
-          wx.showToast({ 
-            title: '验证码已发送', 
-            icon: 'success' 
-          });
+    wxPost(API.sendsms, { call: phone })
+      .then((data) => {
+        if (data.status) {
+          this.startCountdown();                       // ⭐ 成功后才倒计时
+          wx.showToast({ title: '验证码已发送', icon: 'success' });
         } else {
-          wx.showToast({
-            title: (res.data && res.data.message) || '获取验证码失败',
-            icon: 'none'
-          });
+          wx.showToast({ title: data.message || '获取验证码失败', icon: 'none' });
         }
-      },
-      fail: () => {
+      })
+      .catch(() => {
         wx.showToast({ title: '网络异常，请重试', icon: 'none' });
-      }
-    });
+      });
   },
 
-  /* ==================== 倒计时（时间戳方案） ==================== */
+  /* ==================== 倒计时 ==================== */
   startCountdown() {
     this._smsDeadline = Date.now() + COUNTDOWN_SECONDS * 1000;
-    this.setData({
-      isCountdown: true,
-      countdownText: `${COUNTDOWN_SECONDS}秒`
-    });
+    this.setData({ isCountdown: true, countdownText: `${COUNTDOWN_SECONDS}秒` });
     this.startSmsTimer();
   },
-
   startSmsTimer() {
     this.clearSmsTimer();
-
     this._smsTimer = setInterval(() => {
       const remain = Math.ceil((this._smsDeadline - Date.now()) / 1000);
-
       if (remain <= 0) {
         this.clearSmsTimer();
         this._smsDeadline = 0;
         this.setData({ isCountdown: false, countdownText: '重新发送' });
         return;
       }
-
       this.setData({ countdownText: `${remain}秒` });
     }, 1000);
   },
-
   resumeCountdown() {
     if (!this._smsDeadline) return;
-
     const remain = Math.ceil((this._smsDeadline - Date.now()) / 1000);
-
     if (remain <= 0) {
       this._smsDeadline = 0;
       this.setData({ isCountdown: false, countdownText: '获取验证码' });
       return;
     }
-
     this.setData({ isCountdown: true, countdownText: `${remain}秒` });
     this.startSmsTimer();
   },
-
   clearSmsTimer() {
     if (this._smsTimer) {
       clearInterval(this._smsTimer);
@@ -178,20 +169,15 @@ Page({
   },
 
   /* ==================== 登录成功统一处理 ==================== */
-  /**
-   * @param {Object} content 服务端返回的 content
-   * @param {string} [phone] 短信登录时手动补的账号
-   */
   onLoginSuccess(content, phone) {
-    /* 1. 存 token（双写兼容旧字段） */
     wx.setStorageSync('access_token', content.access_token);
     wx.setStorageSync('refresh_token', content.refresh_token);
 
-    /* 2. 缓存登录账号：优先用后端返回的 call，没有就用手机号补 */
-    const account = content.call || phone || '';
+    const account = content.call || phone || content.phone || '';
     if (account) wx.setStorageSync('call', account);
 
-    /* 3. 跳到「我的」tab */
+    if (content.openid) wx.setStorageSync('openid', content.openid);
+
     wx.reLaunch({
       url: ROUTES.admin,
       fail: (err) => console.error('[adminLogin] 跳 admin 失败：', err)
@@ -214,37 +200,26 @@ Page({
 
     this.setData({ submitting: true });
 
-    wx.request({
-      url: API.login_by_sms,
-      method: 'POST',
-      header: { 
-        'content-type': 'application/json',
-        // 'Authorization': 'Bearer ' + wx.getStorageSync('access_token')
-      },
-      data: { call: phone, code: code },
-      success: (res) => {
-        const data = res.data || {};
+    wxLogin()
+      .then((loginCode) => wxPost(API.login_by_sms, {
+        call: phone,
+        code: code,
+        login_code: loginCode                 // ⭐ 临时 code，后端换 openid
+      }))
+      .then((data) => {
         if (data.status && data.content) {
-          /* 把 phone 传进去，用于缓存 call */
           this.onLoginSuccess(data.content, phone);
         } else {
-          /* ✅ 用户能看到失败原因 */
-          wx.showToast({
-            title: data.message || '登录失败，请重试',
-            icon: 'none'
-          });
+          wx.showToast({ title: data.message || '登录失败', icon: 'none' });
         }
-      },
-      fail: () => {
-        wx.showToast({ 
-          title: '网络异常，请稍后再试', 
-          icon: 'none' 
-        });
-      },
-      complete: () => {
+      })
+      .catch((err) => {
+        console.error('[adminLogin] 短信登录失败：', err);
+        wx.showToast({ title: '网络异常，请稍后再试', icon: 'none' });
+      })
+      .finally(() => {
         this.setData({ submitting: false });
-      }
-    });
+      });
   },
 
   /* ==================== 微信快捷登录 ==================== */
@@ -261,35 +236,27 @@ Page({
       return;
     }
 
+    const phoneCode = e.detail.code;
     this.setData({ submitting: true });
 
-    wx.request({
-      url: API.login_by_wechat,
-      method: 'POST',
-      header: { 
-        'content-type': 'application/json',
-      },
-      data: { code: e.detail.code },
-      success: (res) => {
-        const data = res.data || {};
+    wxLogin()
+      .then((loginCode) => wxPost(API.login_by_wechat, {
+        code: phoneCode,                      // 手机号 code
+        login_code: loginCode                 // ⭐ 临时 code，后端换 openid
+      }))
+      .then((data) => {
         if (data.status && data.content) {
           this.onLoginSuccess(data.content);
         } else {
-          wx.showToast({
-            title: data.message || '登录失败，请重试',
-            icon: 'none'
-          });
+          wx.showToast({ title: data.message || '登录失败，请重试', icon: 'none' });
         }
-      },
-      fail: () => {
-        wx.showToast({ 
-          title: '网络异常，请稍后再试', 
-          icon: 'none' 
-        });
-      },
-      complete: () => {
+      })
+      .catch((err) => {
+        console.error('[adminLogin] 微信登录失败：', err);   // ⭐ 修正文案
+        wx.showToast({ title: '网络异常，请稍后再试', icon: 'none' });
+      })
+      .finally(() => {
         this.setData({ submitting: false });
-      }
-    });
+      });
   }
 });

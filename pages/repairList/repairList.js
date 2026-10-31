@@ -1,5 +1,4 @@
 // pages/repairList/repairList.js
-const app = getApp();
 
 /* ==================== 常量 ==================== */
 const API = {
@@ -30,11 +29,17 @@ function saveTokens(accessToken) {
 function clearAllAuth() {
   wx.removeStorageSync('access_token');
   wx.removeStorageSync('refresh_token');
+  wx.removeStorageSync('token');
 }
+
+/* 模块级：并发刷新去重 */
+let _refreshPromise = null;
 
 /* 用 refresh_token 换新 access_token */
 function refreshAccessToken() {
-  return new Promise((resolve, reject) => {
+  if (_refreshPromise) return _refreshPromise;
+
+  _refreshPromise = new Promise((resolve, reject) => {
     const refreshToken = getRefreshToken();
     if (!refreshToken) return reject(new Error('NO_REFRESH_TOKEN'));
 
@@ -47,6 +52,10 @@ function refreshAccessToken() {
         const d = res.data || {};
         if (d.status && d.content && d.content.access_token) {
           saveTokens(d.content.access_token);
+          // 保存后端轮换的新 refresh_token
+          if (d.content.refresh_token) {
+            wx.setStorageSync('refresh_token', d.content.refresh_token);
+          }
           resolve(d.content.access_token);
         } else {
           reject(new Error('REFRESH_FAILED'));
@@ -54,6 +63,10 @@ function refreshAccessToken() {
       },
       fail: () => reject(new Error('REFRESH_NETWORK_ERROR'))
     });
+  });
+
+  return _refreshPromise.finally(() => {
+    _refreshPromise = null;
   });
 }
 
@@ -70,11 +83,16 @@ function requestWithAuth(options, _retried) {
         ...(token ? { 'Authorization': `Bearer ${token}` } : {})
       },
       success: (res) => {
-        // 401 → 尝试刷新并重试
         if (res.statusCode === 401 && !_retried) {
           refreshAccessToken()
             .then(() => requestWithAuth(options, true).then(resolve).catch(reject))
-            .catch(() => reject(new Error('AUTH_EXPIRED')));
+            .catch((err) => {
+              if (err && err.message === 'REFRESH_NETWORK_ERROR') {
+                reject(err);
+              } else {
+                reject(new Error('AUTH_EXPIRED'));
+              }
+            });
           return;
         }
         resolve(res);
@@ -99,7 +117,6 @@ Page({
   },
 
   onShow() {
-    // 从登录页返回时，复位跳转锁
     this._isRedirectingLogin = false;
   },
 
@@ -107,9 +124,8 @@ Page({
     this.fetchList(() => wx.stopPullDownRefresh());
   },
 
-  /* ==================== 拉取维修记录列表 ==================== */
+  /* ==================== 拉取维修记录 ==================== */
   fetchList(done) {
-    // 没有 access_token 也没有 refresh_token → 直接跳登录
     if (!getAccessToken() && !getRefreshToken()) {
       this.setData({ loading: false });
       this.redirectToLogin();
@@ -134,13 +150,11 @@ Page({
           return;
         }
 
-        // 非成功：只有 401 才跳登录
         if (res.statusCode === 401) {
           clearAllAuth();
           this.setData({ content: [], code: 0 });
           this.redirectToLogin();
         } else {
-          // 其他错误只提示，不清 token
           wx.showToast({
             title: data.message || '加载失败',
             icon: 'none'
@@ -170,10 +184,7 @@ Page({
     if (this._isRedirectingLogin) return;
     this._isRedirectingLogin = true;
 
-    wx.showToast({
-      title: '请先登录',
-      icon: 'none'
-    });
+    wx.showToast({ title: '请先登录', icon: 'none' });
 
     wx.reLaunch({
       url: ROUTES.adminLogin,

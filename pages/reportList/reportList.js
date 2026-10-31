@@ -1,5 +1,4 @@
 // pages/reportList/reportList.js
-const app = getApp();
 
 /* ==================== 常量 ==================== */
 const API = {
@@ -30,11 +29,17 @@ function saveTokens(accessToken) {
 function clearAllAuth() {
   wx.removeStorageSync('access_token');
   wx.removeStorageSync('refresh_token');
+  wx.removeStorageSync('token');
 }
+
+/* 模块级：并发刷新去重 */
+let _refreshPromise = null;
 
 /* 用 refresh_token 换新 access_token */
 function refreshAccessToken() {
-  return new Promise((resolve, reject) => {
+  if (_refreshPromise) return _refreshPromise;
+
+  _refreshPromise = new Promise((resolve, reject) => {
     const refreshToken = getRefreshToken();
     if (!refreshToken) return reject(new Error('NO_REFRESH_TOKEN'));
 
@@ -47,6 +52,10 @@ function refreshAccessToken() {
         const d = res.data || {};
         if (d.status && d.content && d.content.access_token) {
           saveTokens(d.content.access_token);
+          // 保存后端轮换的新 refresh_token
+          if (d.content.refresh_token) {
+            wx.setStorageSync('refresh_token', d.content.refresh_token);
+          }
           resolve(d.content.access_token);
         } else {
           reject(new Error('REFRESH_FAILED'));
@@ -54,6 +63,10 @@ function refreshAccessToken() {
       },
       fail: () => reject(new Error('REFRESH_NETWORK_ERROR'))
     });
+  });
+
+  return _refreshPromise.finally(() => {
+    _refreshPromise = null;
   });
 }
 
@@ -73,7 +86,14 @@ function requestWithAuth(options, _retried) {
         if (res.statusCode === 401 && !_retried) {
           refreshAccessToken()
             .then(() => requestWithAuth(options, true).then(resolve).catch(reject))
-            .catch(() => reject(new Error('AUTH_EXPIRED')));
+            .catch((err) => {
+              // 网络问题不清 token
+              if (err && err.message === 'REFRESH_NETWORK_ERROR') {
+                reject(err);
+              } else {
+                reject(new Error('AUTH_EXPIRED'));
+              }
+            });
           return;
         }
         resolve(res);

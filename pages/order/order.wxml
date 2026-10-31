@@ -1,158 +1,122 @@
-<!-- pages/reportDetail/reportDetail.wxml -->
+<!-- pages/order/order.wxml -->
 <view class="page">
 
-<!-- ==================== 顶部标题 ==================== -->
-<view class="hero">
-  <text class="hero__label">配镜订单</text>
-  <text class="hero__time">{{time || '--'}}</text>
-</view>
-
-<!-- ==================== 骨架屏 ==================== -->
-<block wx:if="{{loading}}">
-  <view class="card">
-    <view class="card__head"><view class="skeleton skeleton--line-sm"></view></view>
-    <view class="cell"><view class="skeleton skeleton--line"></view></view>
-    <view class="cell"><view class="skeleton skeleton--line"></view></view>
-  </view>
-  <view class="card">
-    <view class="card__head"><view class="skeleton skeleton--line-sm"></view></view>
-    <view class="cell"><view class="skeleton skeleton--line"></view></view>
-    <view class="cell"><view class="skeleton skeleton--line"></view></view>
-    <view class="cell"><view class="skeleton skeleton--line"></view></view>
-  </view>
-</block>
-
-<block wx:else>
-
-  <!-- ==================== 客户信息 ==================== -->
-  <view class="card">
-    <view class="card__head">
-      <text class="card__title">客户信息</text>
-    </view>
-    <view class="cell">
-      <text class="cell__label">客户姓名</text>
-      <text class="cell__value">{{name || '--'}}</text>
-    </view>
-    <view class="cell">
-      <text class="cell__label">联系电话</text>
-      <text class="cell__value">{{phone || '--'}}</text>
-    </view>
+  <!-- ==================== 顶部标题 ==================== -->
+  <view class="hero">
+    <text class="hero__label">配镜订单</text>
+    <text class="hero__time">{{time || '--'}}</text>
   </view>
 
-  <!-- ==================== 验光机构 ==================== -->
-  <view class="card">
-    <view class="card__head">
-      <text class="card__title">验光机构</text>
+  <!-- ==================== 骨架屏 ==================== -->
+  <block wx:if="{{loading}}">
+    <view class="card">
+      <view class="card__head">
+        <view class="skeleton skeleton--line-sm"></view>
+      </view>
+      <view class="cell">
+        <view class="skeleton skeleton--line"></view>
+      </view>
+      <view class="cell">
+        <view class="skeleton skeleton--line"></view>
+      </view>
     </view>
-    <view class="cell">
-      <text class="cell__label">店铺名称</text>
-      <text class="cell__value">{{admin.nickname || '--'}}</text>
+    <view class="card">
+      <view class="card__head">
+        <view class="skeleton skeleton--line-sm"></view>
+      </view>
+      <view class="cell">
+        <view class="skeleton skeleton--line"></view>
+      </view>
+      <view class="cell">
+        <view class="skeleton skeleton--line"></view>
+      </view>
+      <view class="cell">
+        <view class="skeleton skeleton--line"></view>
+      </view>
     </view>
-    <view class="cell">
-      <text class="cell__label">联系电话</text>
-      <text class="cell__value">{{admin.phone || '--'}}</text>
-    </view>
-    <view class="cell">
-      <text class="cell__label">营业地址</text>
-      <text class="cell__value">{{admin.location || '--'}}</text>
-    </view>
-    <view class="cell">
-      <text class="cell__label">店铺介绍</text>
-      <text class="cell__value">{{admin.remark || '--'}}</text>
-    </view>
-  </view>
+  </block>
 
-  <!-- ==================== 订单备注 ==================== -->
-  <view class="card">
-    <view class="card__head">
-      <text class="card__title">订单备注</text>
-    </view>
-    <view class="cell">
-      <text class="cell__value cell__value--block">{{remark || '无'}}</text>
-    </view>
-  </view>
+  <block wx:else>
 
-  <!-- ==================== 配镜处方 ==================== -->
-  <view class="card">
-    <view class="card__head">
-      <text class="card__title">配镜处方</text>
-      <text class="card__desc">根据您的视力检测结果，我们制定了以下配镜方案</text>
-    </view>
-
-    <view class="table">
-      <!-- 表头 -->
-      <view class="table__row table__row--head">
-        <text class="table__cell">{{plan || '项目'}}</text>
-        <text class="table__cell">左眼</text>
-        <text class="table__cell">右眼</text>
+    <!-- ==================== 客户信息 ==================== -->
+    <view class="card">
+      <view class="card__head">
+        <text class="card__title">客户信息</text>
       </view>
-
-      <!-- 处方数据 -->
-      <view class="table__row">
-        <text class="table__cell">裸眼视力</text>
-        <text class="table__cell">{{od_va || '--'}}</text>
-        <text class="table__cell">{{os_va || '--'}}</text>
+      <view class="cell">
+        <text class="cell__label">客户姓名</text>
+        <text class="cell__value">{{name || '--'}}</text>
       </view>
-      <view class="table__row">
-        <text class="table__cell">球镜 (DS)</text>
-        <text class="table__cell">{{od_sph || '--'}}</text>
-        <text class="table__cell">{{os_sph || '--'}}</text>
+      <view class="cell">
+        <text class="cell__label">联系电话</text>
+        <text class="cell__value">{{phone || '--'}}</text>
       </view>
-      <view class="table__row">
-        <text class="table__cell">柱镜 (DC)</text>
-        <text class="table__cell">{{od_cyl || '--'}}</text>
-        <text class="table__cell">{{os_cyl || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">轴位</text>
-        <text class="table__cell">{{od_ax || '--'}}</text>
-        <text class="table__cell">{{os_ax || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">棱镜 (△)</text>
-        <text class="table__cell">{{od_pr || '--'}}</text>
-        <text class="table__cell">{{os_pr || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">下加光</text>
-        <text class="table__cell">{{od_add || '--'}}</text>
-        <text class="table__cell">{{os_add || '--'}}</text>
-      </view>
-      <view class="table__row">
-        <text class="table__cell">矫正视力</text>
-        <text class="table__cell">{{od_bc || '--'}}</text>
-        <text class="table__cell">{{os_bc || '--'}}</text>
-      </view>
-
-      <!-- 瞳距单独一行 -->
-      <view class="table__row table__row--single">
-        <text class="table__cell">瞳距</text>
-        <text class="table__cell table__cell--value">{{pd || '--'}}</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- ==================== 配镜方案 ==================== -->
-  <view class="card" wx:if="{{store.length}}">
-    <view class="card__head">
-      <text class="card__title">配镜方案</text>
-      <text class="card__desc">根据您的视力检测结果，我们给您定制了以下配镜方案</text>
     </view>
 
-    <view class="plan-list">
-      <view class="plan" wx:for="{{store}}" wx:key="index">
-        <text class="plan__title">{{item.arg10}}</text>
-        <view class="plan__meta">
-          <text class="plan__meta-item">{{item.arg11}}</text>
-          <text class="plan__meta-item">× 1</text>
-          <text class="plan__meta-item plan__meta-item--price">{{item.arg14}}</text>
+    <!-- ==================== 订单备注 ==================== -->
+    <view class="card">
+      <view class="card__head">
+        <text class="card__title">订单备注</text>
+      </view>
+      <view class="cell">
+        <text class="cell__value cell__value--block">{{remark || '无'}}</text>
+      </view>
+    </view>
+
+    <!-- ==================== 验光机构 ==================== -->
+    <view class="card">
+      <view class="card__head">
+        <text class="card__title">验光机构</text>
+      </view>
+      <view class="cell">
+        <text class="cell__label">店铺名称</text>
+        <text class="cell__value">{{admin_name || '--'}}</text>
+      </view>
+      <view class="cell">
+        <text class="cell__label">联系电话</text>
+        <text class="cell__value">{{admin_phone || '--'}}</text>
+      </view>
+      <view class="cell">
+        <text class="cell__label">营业地址</text>
+        <text class="cell__value">{{admin_location || '--'}}</text>
+      </view>
+      <view class="cell">
+        <text class="cell__label">店铺介绍</text>
+        <text class="cell__value">{{admin_content || '--'}}</text>
+      </view>
+    </view>
+
+    <!-- ==================== 配镜方案（重构） ==================== -->
+    <view class="card" wx:if="{{store.length}}">
+      <view class="card__head">
+        <text class="card__title">配镜方案</text>
+        <text class="card__desc">根据您的视力检测结果，我们给您定制了以下配镜方案</text>
+      </view>
+
+      <view class="plan-list">
+        <view class="plan" wx:for="{{store}}" wx:key="index" hover-class="plan--hover" hover-stay-time="60">
+          <!-- 类型 + 侧别徽章 -->
+          <view class="plan__badges" wx:if="{{item.typeLabel || item.sideLabel}}">
+            <text class="plan__badge plan__badge--type" wx:if="{{item.typeLabel}}">{{item.typeLabel}}</text>
+            <text class="plan__badge plan__badge--side" wx:if="{{item.sideLabel}}">{{item.sideLabel}}</text>
+          </view>
+
+          <!-- 品牌 + 型号 -->
+          <view class="plan__title-area" wx:if="{{item.brand || item.model}}">
+            <text class="plan__brand" wx:if="{{item.brand}}">{{item.brand}}</text>
+            <text class="plan__model" wx:if="{{item.model}}">{{item.model}}</text>
+          </view>
+
+          <!-- 详情列表 -->
+          <view class="plan__details" wx:if="{{item.details.length > 0}}">
+            <view class="plan__detail" wx:for="{{item.details}}" wx:for-item="d" wx:for-index="dIdx" wx:key="dIdx">
+              <text class="plan__detail-key">{{d.key}}</text>
+              <text class="plan__detail-val {{d.isPrice ? 'plan__detail-val--price' : ''}}">{{d.val}}</text>
+            </view>
+          </view>
         </view>
-        <text class="plan__line">{{item.arg12}}</text>
-        <text class="plan__line">{{item.arg13}}</text>
       </view>
     </view>
-  </view>
-
-</block>
+  </block>
 
 </view>

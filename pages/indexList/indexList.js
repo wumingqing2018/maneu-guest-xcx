@@ -6,32 +6,36 @@ Page({
    */
   data: {
     imgscr: '',
-    imageLink: [
-      {
-        data: "https://maneu.online/static/img/gif2.jpg",
-        index: "https://maneu.online/static/img/3.gif",
-      },
-      {
-        data: "https://maneu.online/static/img/2mcjs.jpg",
-        index: "https://maneu.online/static/img/1mcjs.jpg",
-      },
-      {
-        data: "https://maneu.online/static/img/2yqs.jpg",
-        index: "https://maneu.online/static/img/1yqs.jpg",
-      },
-      {
-        data: "https://maneu.online/static/img/2njj.jpg",
-        index: "https://maneu.online/static/img/1njj.jpg",
-      },
-    ]
+    imageLink: [{
+      content: "https://maneu.online/static/img/2mcjs.jpg",
+      banner: "https://maneu.online/static/img/1mcjs.jpg",
+      index: "0"
+    },
+    {
+      content: "https://maneu.online/static/img/2xzy.jpg",
+      banner: "https://maneu.online/static/img/1xzy.jpg",
+      index: "1"
+    },
+    {
+      content: "https://maneu.online/static/img/2njj.jpg",
+      banner: "https://maneu.online/static/img/1njj.jpg",
+      index: "2"
+    },
+    {
+      content: "https://maneu.online/static/img/2yqs.jpg",
+      banner: "https://maneu.online/static/img/1yqs.jpg",
+      index: "3"
+    },
+  ]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (e) {
+    console.log(e)
     this.setData({
-      imgscr: e.link
+      imgscr: e.index
     })
   },
 

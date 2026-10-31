@@ -7,12 +7,12 @@ const API = {
 
 const ROUTES = {
   index: '/pages/index/index',
-  adminSignup: '/pages/adminSignup/adminSignup',
+  detail: '/pages/detail/detail',
   adminLogin: '/pages/adminLogin/adminLogin',
   orderList: '/pages/orderList/orderList',
+  storeList: '/pages/storeList/storeList',
   reportList: '/pages/reportList/reportList',
-  repairList: '/pages/repairList/repairList',
-  detail: '/pages/detail/detail'
+  repairList: '/pages/repairList/repairList'
 };
 
 const NAV_LOCK_MS = 800;
@@ -148,8 +148,9 @@ Page({
     });
   },
 
-  getAdminSignup()  { this.safeNavigate(ROUTES.adminSignup); },
   getOrderList()  { this.safeNavigate(ROUTES.orderList); },
-  getReportList() { this.safeNavigate(ROUTES.reportList); },
+  getStoreList() { this.safeNavigate(ROUTES.storeList); },
   getRepairList() { this.safeNavigate(ROUTES.repairList); },
+  getReportList() { this.safeNavigate(ROUTES.reportList); },
+
 });
