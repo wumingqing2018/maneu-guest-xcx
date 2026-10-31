@@ -1,0 +1,66 @@
+<!-- pages/storeList/storeList.wxml -->
+<view class="page">
+
+<!-- ==================== 顶部标题卡 ==================== -->
+<view class="card card--header">
+  <text class="card__title">定制记录</text>
+  <text class="card__subtitle">共 {{code}} 条记录</text>
+</view>
+
+<!-- ==================== 骨架屏 ==================== -->
+<block wx:if="{{loading}}">
+  <view class="order" wx:for="{{[1, 2, 3]}}" wx:key="*this">
+    <view class="skeleton skeleton--line-sm"></view>
+    <view class="skeleton skeleton--line"></view>
+    <view class="skeleton skeleton--line"></view>
+    <view class="skeleton skeleton--line"></view>
+  </view>
+</block>
+
+<!-- ==================== 空状态 ==================== -->
+<view wx:elif="{{!content.length}}" class="empty">
+  <view class="empty__icon"></view>
+  <text class="empty__title">暂无定制记录</text>
+  <text class="empty__desc">下拉刷新试试</text>
+</view>
+
+<!-- ==================== 订单列表 ==================== -->
+<block wx:else>
+  <view
+    class="order"
+    wx:for="{{content}}"
+    wx:key="id"
+    bindtap="getDetail"
+    data-bar_code="{{item.id}}"
+  >
+    <!-- 头部：时间 + 状态徽章 -->
+    <view class="order__head">
+      <text class="order__time">{{item.time}}</text>
+      <view class="order__badge">定制</view>
+    </view>
+
+    <!-- 字段列表 -->
+    <view class="order__row">
+      <text class="order__label">姓名</text>
+      <text class="order__value">{{item.name}}</text>
+    </view>
+
+    <view class="order__row">
+      <text class="order__label">电话</text>
+      <text class="order__value">{{item.phone}}</text>
+    </view>
+
+    <view class="order__row order__row--remark">
+      <text class="order__label">备注</text>
+      <text class="order__value">{{item.remark || '无'}}</text>
+    </view>
+
+    <!-- 底部：查看详情 -->
+    <view class="order__foot">
+      <text class="order__more">查看详情</text>
+      <view class="order__arrow"></view>
+    </view>
+  </view>
+</block>
+
+</view>

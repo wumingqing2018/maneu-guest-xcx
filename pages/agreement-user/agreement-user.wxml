@@ -1,0 +1,36 @@
+<!--pages/agreement-user/agreement-user.wxml-->
+<view class="doc">
+  <view class="doc-title">{{title}}</view>
+  <view class="doc-meta">
+    <text>更新日期：{{updateDate}}</text>
+    <text>生效日期：{{effectiveDate}}</text>
+  </view>
+
+  <view class="sec" wx:for="{{sections}}" wx:for-item="sec" wx:for-index="sIdx" wx:key="sIdx">
+    <view class="sec-title" wx:if="{{sec.title}}">{{sec.title}}</view>
+
+    <block wx:for="{{sec.blocks}}" wx:for-item="b" wx:for-index="bIdx" wx:key="bIdx">
+      <!-- 普通段落 -->
+      <rich-text wx:if="{{b.type === 'p'}}" class="para" nodes="{{b.html}}"></rich-text>
+
+      <!-- 表格（横向滚动） -->
+      <view wx:elif="{{b.type === 'table'}}" class="table-wrap">
+        <scroll-view scroll-x class="table-scroll" enhanced show-scrollbar="{{false}}">
+          <view class="table">
+            <view class="tr th">
+              <view class="td" wx:for="{{b.head}}" wx:for-item="h" wx:for-index="hIdx" wx:key="hIdx">{{h}}</view>
+            </view>
+            <view class="tr" wx:for="{{b.rows}}" wx:for-item="row" wx:for-index="rIdx" wx:key="rIdx">
+              <view class="td" wx:for="{{row}}" wx:for-item="cell" wx:for-index="cIdx" wx:key="cIdx">{{cell}}</view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 注释 / 小字 -->
+      <rich-text wx:else class="para note" nodes="{{b.html}}"></rich-text>
+    </block>
+  </view>
+
+  <view class="doc-footer">— 正文结束 —</view>
+</view>

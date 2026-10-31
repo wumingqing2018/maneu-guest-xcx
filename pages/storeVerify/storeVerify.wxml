@@ -1,0 +1,109 @@
+<!-- pages/storeVerify/storeVerify.wxml -->
+<view class="page">
+
+<!-- ==================== 品牌区 ==================== -->
+<view class="brand-section">
+  <image
+    class="brand-logo"
+    src="https://maneu.online/static/img/maneu/logo.svg"
+    mode="aspectFit"
+    lazy-load
+    bind:error="onImageError"
+  />
+  <view class="brand-text">
+    <text class="brand-title">徕可官方授权许可正品</text>
+    <text class="brand-subtitle">Officially Licensed Products</text>
+  </view>
+</view>
+
+<!-- ==================== 验证卡片 ==================== -->
+<view class="verify-card">
+
+  <!-- ==================== 骨架屏（加载中） ==================== -->
+  <block wx:if="{{loading}}">
+    <!-- 状态徽章骨架 -->
+    <view class="skeleton skeleton--badge"></view>
+
+    <!-- 购买时间骨架 -->
+    <view class="skeleton skeleton--time"></view>
+
+    <!-- 产品条目骨架 1 -->
+    <view class="skeleton-product">
+      <view class="skeleton skeleton--title"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line-short"></view>
+    </view>
+
+    <!-- 产品条目骨架 2 -->
+    <view class="skeleton-product">
+      <view class="skeleton skeleton--title"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line"></view>
+    </view>
+  </block>
+
+  <!-- 无订单号 -->
+  <view wx:elif="{{!indexId}}" class="info-placeholder">
+    未提供订单号，请使用正确的链接访问
+  </view>
+
+  <!-- 网络/请求失败 -->
+  <view wx:elif="{{errorMsg}}" class="error-block">
+    <view class="status-badge status-badge--fail">请求失败</view>
+    <view class="fail-message">{{errorMsg}}</view>
+  </view>
+
+  <!-- 验证结果 -->
+  <block wx:else>
+
+    <!-- 成功 -->
+    <block wx:if="{{isSuccess && productList.length > 0}}">
+      <view class="status-badge status-badge--success">正品验证通过</view>
+
+      <view class="time-section" wx:if="{{purchaseTime}}">
+        <text class="time-key">购买时间：</text>
+        <text class="time-val">{{purchaseTime}}</text>
+      </view>
+
+      <!-- 产品列表 -->
+      <view
+        class="product-item"
+        wx:for="{{productList}}"
+        wx:key="index"
+        hover-class="product-item--hover"
+        hover-stay-time="60"
+      >
+        <!-- 主标题：第一个 key-value -->
+        <view class="first-property">
+          <text class="first-key">{{item.titleKey}}：</text>
+          <text class="first-val">{{item.titleVal}}</text>
+        </view>
+
+        <!-- 其余 key-value 网格排列 -->
+        <view class="props-grid" wx:if="{{item.props.length > 0}}">
+          <view
+            class="prop-item"
+            wx:for="{{item.props}}"
+            wx:for-item="prop"
+            wx:for-index="pIdx"
+            wx:key="pIdx"
+          >
+            <text class="prop-key">{{prop.key}}</text>
+            <text class="prop-val">{{prop.val}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 失败 -->
+    <block wx:else>
+      <view class="status-badge status-badge--fail">验证失败</view>
+      <view class="fail-message">{{failMessage}}</view>
+    </block>
+
+  </block>
+
+</view>
+
+</view>

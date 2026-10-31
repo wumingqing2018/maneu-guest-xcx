@@ -1,0 +1,111 @@
+<!-- pages/reportVerify/reportVerify.wxml -->
+<view class="page">
+
+<!-- ==================== 品牌区 ==================== -->
+<view class="brand-section">
+  <image
+    class="brand-logo"
+    src="https://maneu.online/static/img/maneu/logo.svg"
+    mode="aspectFit"
+    bind:error="onImageError"
+  />
+  <view class="brand-text">
+    <text class="brand-title">徕可官方授权许可正品</text>
+    <text class="brand-subtitle">Officially Licensed Products</text>
+  </view>
+</view>
+
+<!-- ==================== 验证卡片 ==================== -->
+<view class="verify-card">
+
+  <!-- ==================== 骨架屏（加载中） ==================== -->
+  <block wx:if="{{loading}}">
+    <view class="skeleton skeleton--badge"></view>
+    <view class="skeleton skeleton--time"></view>
+    <view class="skeleton skeleton--plan"></view>
+
+    <!-- 右眼骨架 -->
+    <view class="skeleton-product">
+      <view class="skeleton skeleton--title"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line-short"></view>
+    </view>
+
+    <!-- 左眼骨架 -->
+    <view class="skeleton-product">
+      <view class="skeleton skeleton--title"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line-short"></view>
+    </view>
+  </block>
+
+  <!-- 无订单号 -->
+  <view wx:elif="{{!indexId}}" class="info-placeholder">
+    未提供订单号，请使用正确的链接访问
+  </view>
+
+  <!-- 网络/请求失败 -->
+  <view wx:elif="{{errorMsg}}" class="error-block">
+    <view class="status-badge status-badge--fail">请求失败</view>
+    <view class="fail-message">{{errorMsg}}</view>
+  </view>
+
+  <!-- 验证结果 -->
+  <block wx:else>
+
+    <!-- 成功 -->
+    <block wx:if="{{isSuccess && eyeList.length > 0}}">
+      <view class="status-badge status-badge--success">验光报告验证通过</view>
+
+      <!-- 验光时间 -->
+      <view class="time-section" wx:if="{{reportTime}}">
+        <text class="time-key">验光时间：</text>
+        <text class="time-val">{{reportTime}}</text>
+      </view>
+
+      <!-- 处方类型 -->
+      <view class="plan-info" wx:if="{{plan}}">
+        <text class="plan-key">处方类型：</text>
+        <text class="plan-val">{{plan}}</text>
+      </view>
+
+      <!-- 右眼 / 左眼 分块 -->
+      <view
+        class="product-item"
+        wx:for="{{eyeList}}"
+        wx:key="eye"
+        hover-class="product-item--hover"
+        hover-stay-time="60"
+      >
+        <view class="first-property">
+          <text class="first-key">{{item.eye}}</text>
+        </view>
+
+        <view class="props-grid" wx:if="{{item.props.length > 0}}">
+          <view
+            class="prop-item"
+            wx:for="{{item.props}}"
+            wx:for-item="prop"
+            wx:for-index="pIdx"
+            wx:key="pIdx"
+          >
+            <text class="prop-key">{{prop.key}}</text>
+            <text class="prop-val">{{prop.val}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 失败 -->
+    <block wx:else>
+      <view class="status-badge status-badge--fail">验证失败</view>
+      <view class="fail-message">{{failMessage}}</view>
+    </block>
+
+  </block>
+
+</view>
+
+</view>

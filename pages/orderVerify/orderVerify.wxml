@@ -1,0 +1,136 @@
+<!-- pages/orderVerify/orderVerify.wxml -->
+<view class="page">
+
+<!-- ==================== 品牌区 ==================== -->
+<view class="brand-section">
+  <image
+    class="brand-logo"
+    src="https://maneu.online/static/img/maneu/logo.svg"
+    mode="aspectFit"
+    bind:error="onImageError"
+  />
+  <view class="brand-text">
+    <text class="brand-title">徕可官方授权许可正品</text>
+    <text class="brand-subtitle">Officially Licensed Products</text>
+  </view>
+</view>
+
+<!-- ==================== 验证卡片 ==================== -->
+<view class="verify-card">
+
+  <!-- ==================== 骨架屏 ==================== -->
+  <block wx:if="{{loading}}">
+    <view class="skeleton skeleton--badge"></view>
+    <view class="skeleton skeleton--time"></view>
+
+    <view class="skeleton-product">
+      <view class="skeleton skeleton--title"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line-short"></view>
+    </view>
+
+    <view class="skeleton-product">
+      <view class="skeleton skeleton--title"></view>
+      <view class="skeleton skeleton--line"></view>
+      <view class="skeleton skeleton--line"></view>
+    </view>
+  </block>
+
+  <!-- 无订单号 -->
+  <view wx:elif="{{!indexId}}" class="info-placeholder">
+    🔍 未提供订单号，请使用正确的链接访问
+  </view>
+
+  <!-- 网络/请求失败 -->
+  <view wx:elif="{{errorMsg}}" class="error-block">
+    <view class="status-badge status-badge--fail">请求失败</view>
+    <view class="fail-message">{{errorMsg}}</view>
+  </view>
+
+  <!-- 验证结果 -->
+  <block wx:else>
+
+    <!-- 成功 -->
+    <block wx:if="{{isSuccess && productList.length > 0}}">
+      <view class="status-badge status-badge--success">正品验证通过</view>
+
+      <view class="time-section" wx:if="{{purchaseTime}}">
+        <text class="time-key">购买时间：</text>
+        <text class="time-val">{{purchaseTime}}</text>
+      </view>
+
+      <!-- 产品列表（新结构化数据） -->
+      <view
+        class="product-item"
+        wx:for="{{productList}}"
+        wx:key="index"
+        hover-class="product-item--hover"
+        hover-stay-time="60"
+      >
+        <!-- 标题：品牌 · 型号 -->
+        <view class="product-title-row">
+          <text class="product-name">
+            <text wx:if="{{item.brand}}">{{item.brand}}</text>
+            <text wx:if="{{item.brand && item.model}}"> · </text>
+            <text wx:if="{{item.model}}">{{item.model}}</text>
+            <text wx:if="{{!item.brand && !item.model}}">未命名配件</text>
+          </text>
+          <text class="product-qty">× {{item.quantity}}</text>
+        </view>
+
+        <!-- 类型 · 侧别 / 单价 -->
+        <view class="product-meta">
+          <text class="product-meta-type">
+            <text wx:if="{{item.itemTypeLabel}}">{{item.itemTypeLabel}}</text>
+            <text wx:if="{{item.itemTypeLabel && item.sideLabel}}"> · </text>
+            <text wx:if="{{item.sideLabel}}">{{item.sideLabel}}</text>
+          </text>
+          <text class="product-meta-price" wx:if="{{item.unitPrice !== ''}}">¥{{item.unitPrice}}</text>
+        </view>
+
+        <!-- 详情行：有值才显示 -->
+        <view class="product-detail">
+          <view class="product-detail-row" wx:if="{{item.spec}}">
+            <text class="product-detail-key">规格</text>
+            <text class="product-detail-val">{{item.spec}}</text>
+          </view>
+          <view class="product-detail-row" wx:if="{{item.color}}">
+            <text class="product-detail-key">颜色</text>
+            <text class="product-detail-val">{{item.color}}</text>
+          </view>
+          <view class="product-detail-row" wx:if="{{item.material}}">
+            <text class="product-detail-key">材质</text>
+            <text class="product-detail-val">{{item.material}}</text>
+          </view>
+          <view class="product-detail-row" wx:if="{{item.remark}}">
+            <text class="product-detail-key">备注</text>
+            <text class="product-detail-val">{{item.remark}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 成功但无产品 -->
+    <block wx:elif="{{isSuccess}}">
+      <view class="status-badge status-badge--success">正品验证通过</view>
+
+      <view class="time-section" wx:if="{{purchaseTime}}">
+        <text class="time-key">购买时间：</text>
+        <text class="time-val">{{purchaseTime}}</text>
+      </view>
+
+      <view class="info-placeholder">暂无详细产品信息</view>
+    </block>
+
+    <!-- 失败 -->
+    <block wx:else>
+      <view class="status-badge status-badge--fail">验证失败</view>
+      <view class="fail-message">{{failMessage}}</view>
+    </block>
+
+  </block>
+
+</view>
+
+</view>
