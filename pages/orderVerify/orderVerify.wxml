@@ -7,6 +7,7 @@
     class="brand-logo"
     src="https://maneu.online/static/img/maneu/logo.svg"
     mode="aspectFit"
+    lazy-load
     bind:error="onImageError"
   />
   <view class="brand-text">
@@ -76,17 +77,23 @@
             <text wx:if="{{item.model}}">{{item.model}}</text>
             <text wx:if="{{!item.brand && !item.model}}">未命名配件</text>
           </text>
-          <text class="product-qty">× {{item.quantity}}</text>
+          <text class="product-qty" wx:if="{{item.quantity}}">× {{item.quantity}}</text>
         </view>
 
         <!-- 类型 · 侧别 / 单价 -->
-        <view class="product-meta">
+        <view
+          class="product-meta"
+          wx:if="{{item.itemTypeLabel || item.sideLabel || item.unitPrice || item.unitPrice === 0}}"
+        >
           <text class="product-meta-type">
             <text wx:if="{{item.itemTypeLabel}}">{{item.itemTypeLabel}}</text>
             <text wx:if="{{item.itemTypeLabel && item.sideLabel}}"> · </text>
             <text wx:if="{{item.sideLabel}}">{{item.sideLabel}}</text>
           </text>
-          <text class="product-meta-price" wx:if="{{item.unitPrice !== ''}}">¥{{item.unitPrice}}</text>
+          <text
+            class="product-meta-price"
+            wx:if="{{item.unitPrice || item.unitPrice === 0}}"
+          >¥{{item.unitPrice}}</text>
         </view>
 
         <!-- 详情行：有值才显示 -->

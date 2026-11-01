@@ -26,6 +26,19 @@ const API = {
 
 const REQUEST_TIMEOUT = 10000;
 
+/* ==================== 枚举映射（按后端实际值扩展） ==================== */
+const ITEM_TYPE_LABEL = {
+  frame: '镜架',
+  lens: '镜片',
+  accessory: '配件'
+};
+
+const SIDE_LABEL = {
+  OD: '右眼',
+  OS: '左眼',
+  OU: '双眼'
+};
+
 /* ==================== 工具函数 ==================== */
 function isEmptyValue(val) {
   if (val === null || val === undefined) return true;
@@ -48,6 +61,24 @@ function clearAuth() {
   wx.removeStorageSync('access_token');
   wx.removeStorageSync('refresh_token');
   wx.removeStorageSync('token');
+}
+
+/**
+ * 循环解码：应对 q / scene 被多重 URL 编码
+ * 遇到非法序列立即停止，不会抛异常
+ */
+function safeDecode(raw) {
+  let v = String(raw);
+  for (let i = 0; i < 4; i++) {
+    try {
+      const d = decodeURIComponent(v);
+      if (d === v) break;
+      v = d;
+    } catch (e) {
+      break;
+    }
+  }
+  return v;
 }
 
 /**
@@ -171,8 +202,8 @@ Page({
     this.resetState();
 
     this.verifyWithRetry(indexId)
-      .then((data) => {
-        this.renderResult(data);
+      .then((content) => {
+        this.renderResult(content);
       })
       .catch((err) => {
         console.error('[storeVerify] 验证流程失败：', err);
@@ -192,20 +223,16 @@ Page({
    *     → 401 → 尝试 refresh → 成功则重试
    *     → refresh 失败 → 清 token → 静默登录 → 重试
    *     → 任一步失败 → 抛错
-   * @returns {Promise<Object>} 后端返回的 body（{time, data}）
+   * @returns {Promise<Object>} content 形如 { time, data }
    */
   verifyWithRetry(indexId) {
     return this.ensureToken()
       .then((token) => this.requestVerify(indexId, token))
       .then((res) => {
-        console.log(res);
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          return res.data || {};
-        }
         if (res.statusCode === 401) {
           return this.retryAfterRefreshOrReLogin(indexId);
         }
-        throw new Error(`服务器异常（${res.statusCode}）`);
+        return this.parseVerifyResponse(res);
       });
   },
 
@@ -224,15 +251,6 @@ Page({
         console.log('[storeVerify] refresh 成功，重试验证');
         return this.requestVerify(indexId, newToken);
       })
-      .then((res) => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          return res.data || {};
-        }
-        if (res.statusCode === 401) {
-          throw new Error('401_AFTER_REFRESH');
-        }
-        throw new Error(`服务器异常（${res.statusCode}）`);
-      })
       .catch((refreshErr) => {
         console.warn(
           '[storeVerify] refresh 未成功，重新静默登录：',
@@ -241,21 +259,50 @@ Page({
 
         clearAuth();
 
-        return this.silentLogin()
-          .then((ok) => {
-            if (!ok) throw new Error('LOGIN_FAILED');
-            return this.requestVerify(indexId, getAccessToken());
-          })
-          .then((res) => {
-            if (res.statusCode >= 200 && res.statusCode < 300) {
-              return res.data || {};
-            }
-            if (res.statusCode === 401) {
-              throw new Error('LOGIN_EXPIRED');
-            }
-            throw new Error(`服务器异常（${res.statusCode}）`);
-          });
+        return this.silentLogin().then((ok) => {
+          if (!ok) throw new Error('LOGIN_FAILED');
+          return this.requestVerify(indexId, getAccessToken());
+        });
+      })
+      .then((res) => {
+        if (res.statusCode === 401) {
+          throw new Error('LOGIN_EXPIRED');
+        }
+        return this.parseVerifyResponse(res);
       });
+  },
+
+  /* ==================== 解析 order_verify 响应 ==================== */
+  /**
+   * 统一把响应体归一化为 content（{ time, data }）
+   * 兼容：
+   *   A) { status, message, content: { time, data } }
+   *   B) { time, data }
+   * status=false 时抛业务错误，err.code='VERIFY_FAILED'
+   */
+  parseVerifyResponse(res) {
+    if (!(res.statusCode >= 200 && res.statusCode < 300)) {
+      throw new Error(`服务器异常（${res.statusCode}）`);
+    }
+
+    const body = res.data || {};
+
+    // 带包装层（有 status 字段或 content 字段）
+    if (
+      Object.prototype.hasOwnProperty.call(body, 'status') ||
+      body.content
+    ) {
+      const ok = body.status === true || body.status === 'true';
+      if (!ok) {
+        const err = new Error(body.message || '验证未通过');
+        err.code = 'VERIFY_FAILED';
+        throw err;
+      }
+      return body.content || {};
+    }
+
+    // 无包装层：本身就是 { time, data }
+    return body;
   },
 
   /* ==================== 确保有 token ==================== */
@@ -363,59 +410,72 @@ Page({
   extractIndexId(options) {
     if (!options) return '';
 
+    // 兼容多种参数名
+    const KEY_RE = /(?:^|[?&])(index_id|indexId|order_id|orderId|order_sn|id)=([^&#]+)/i;
+
+    // ---------- 1. 直传参数（分享卡片 / 页面跳转） ----------
+    const directKeys = ['index_id', 'indexId', 'order_id', 'orderId', 'order_sn', 'id'];
+    for (const k of directKeys) {
+      if (
+        options[k] !== undefined &&
+        options[k] !== null &&
+        String(options[k]).trim() !== ''
+      ) {
+        const val = safeDecode(options[k]).trim();
+        console.log('[storeVerify] 命中直传参数', k, '=', val);
+        return val;
+      }
+    }
+
+    // ---------- 2. 扫普通二维码：q 是完整 URL（可能多重编码） ----------
     if (options.q) {
-      try {
-        const url = decodeURIComponent(options.q);
-        console.log('[storeVerify] 解码后 URL：', url);
-        const match = url.match(/[?&]index_id=([^&#]+)/);
-        if (match && match[1]) {
-          console.log('[storeVerify] 从 q 提取：', match[1]);
-          return match[1];
-        }
-      } catch (e) {
-        console.error('[storeVerify] 解析 q 失败：', e);
+      const url = safeDecode(options.q);
+      console.log('[storeVerify] q 完全解码后 URL：', url);
+      const m = url.match(KEY_RE);
+      if (m && m[2]) {
+        const val = safeDecode(m[2]).trim();
+        console.log('[storeVerify] 从 q 提取（key=' + m[1] + '）：', val);
+        return val;
       }
     }
 
-    if (options.index_id) {
-      console.log('[storeVerify] 从 index_id 提取：', options.index_id);
-      return options.index_id;
-    }
-
+    // ---------- 3. 扫小程序码：scene ----------
     if (options.scene) {
-      try {
-        const scene = decodeURIComponent(options.scene);
-        console.log('[storeVerify] 解码后 scene：', scene);
-        const match = scene.match(/[?&]?index_id=([^&#]+)/);
-        if (match && match[1]) {
-          console.log('[storeVerify] 从 scene 提取：', match[1]);
-          return match[1];
-        }
-      } catch (e) {
-        console.error('[storeVerify] 解析 scene 失败：', e);
+      const scene = safeDecode(options.scene);
+      console.log('[storeVerify] scene 完全解码后：', scene);
+
+      // 3a. 带 key：index_id=xxx
+      const m = scene.match(KEY_RE);
+      if (m && m[2]) {
+        const val = safeDecode(m[2]).trim();
+        console.log('[storeVerify] 从 scene(key) 提取：', val);
+        return val;
+      }
+
+      // 3b. 纯值形式（微信官方推荐，scene 只放订单号）
+      if (scene && !scene.includes('=') && !scene.includes('&')) {
+        console.log('[storeVerify] 从 scene(纯值) 提取：', scene);
+        return scene.trim();
       }
     }
 
-    console.warn('[storeVerify] 未找到 index_id');
+    console.warn('[storeVerify] 未找到 index_id，options =', JSON.stringify(options));
     return '';
   },
 
   /* ==================== 渲染结果 ==================== */
   /**
-   * 新响应格式：{ time: string, data: [ { item_type, side, brand, ... } ] }
-   *   - data 为数组且非空 → 验证通过
-   *   - data 为空数组 / 缺失 → 验证失败
+   * @param {Object} content 形如 { time, data: [] }
    */
-  renderResult(data) {
-    const content = data || {};
-    const timeStr = content.time || '';
-    const rawList = Array.isArray(content.data) ? content.data : [];
+  renderResult(content) {
+    const body = content || {};
+    const timeStr = body.time || '';
+    const rawList = Array.isArray(body.data) ? body.data : [];
 
     if (rawList.length === 0) {
       this.safeSetData({
         isSuccess: false,
-        failMessage:
-          (content && content.message) || '未查询到授权信息，请核对购买渠道。'
+        failMessage: body.message || '未查询到授权信息，请核对购买渠道。'
       });
       return;
     }
@@ -424,19 +484,48 @@ Page({
       .map((item) => {
         if (!item || typeof item !== 'object') return null;
 
-        const entries = Object.keys(item)
-          .filter((k) => k && k.trim() !== '' && !isEmptyValue(item[k]))
-          .map((k) => ({
-            key: String(k).trim(),
-            val: String(item[k]).trim()
-          }));
+        const pick = (...keys) => {
+          for (const k of keys) {
+            if (item[k] !== undefined && item[k] !== null) return item[k];
+          }
+          return '';
+        };
 
-        if (entries.length === 0) return null;
+        const brand = String(pick('brand') || '').trim();
+        const model = String(pick('model') || '').trim();
+        const itemType = String(pick('item_type', 'itemType') || '').trim();
+        const side = String(pick('side') || '').trim();
+        const quantity = pick('quantity');
+        const rawPrice = pick('unit_price', 'unitPrice');
+        const spec = String(pick('spec') || '').trim();
+        const color = String(pick('color') || '').trim();
+        const material = String(pick('material') || '').trim();
+        const remark = String(pick('remark') || '').trim();
+
+        // 全部为空 → 丢弃
+        const hasAny =
+          brand || model || itemType || side || spec || color || material || remark ||
+          (rawPrice !== '' && rawPrice !== undefined && rawPrice !== null);
+        if (!hasAny) return null;
+
+        // 单价：数字或 ''，0 也要显示
+        let unitPrice = '';
+        if (rawPrice !== '' && rawPrice !== undefined && rawPrice !== null) {
+          const n = Number(rawPrice);
+          unitPrice = Number.isFinite(n) ? n : String(rawPrice);
+        }
 
         return {
-          titleKey: entries[0].key,
-          titleVal: entries[0].val,
-          props: entries.slice(1)
+          brand,
+          model,
+          quantity: quantity || 1,
+          itemTypeLabel: ITEM_TYPE_LABEL[itemType] || itemType,
+          sideLabel: SIDE_LABEL[side] || side,
+          unitPrice,
+          spec,
+          color,
+          material,
+          remark
         };
       })
       .filter(Boolean);
@@ -451,13 +540,30 @@ Page({
 
     this.safeSetData({
       isSuccess: true,
-      purchaseTime: timeStr,
+      purchaseTime: this.formatTime(timeStr),
       productList
     });
   },
 
+  /* ==================== 格式化时间 ==================== */
+  formatTime(iso) {
+    if (!iso) return '';
+    // "2026-10-30T23:41:00" → "2026-10-30 23:41"
+    const m = String(iso).match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})/);
+    return m ? `${m[1]} ${m[2]}` : String(iso);
+  },
+
   /* ==================== 错误处理 ==================== */
   handleFlowError(err) {
+    // 业务失败（status=false）→ 走“验证失败”展示，不走“请求失败”
+    if (err && err.code === 'VERIFY_FAILED') {
+      this.safeSetData({
+        errorMsg: '',
+        failMessage: err.message || '未查询到授权信息，请核对购买渠道。'
+      });
+      return;
+    }
+
     const msg = (err && err.message) || '';
 
     let userMsg = '验证失败，请稍后重试。';
