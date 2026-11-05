@@ -2,7 +2,7 @@
    ==========================================================
    深色玻璃态风格 —— 门店官方授权验证页
    ----------------------------------------------------------
-   deep-blue  #0071E3
+   deep-blue  #003153
    gold       #FFC048
    gold-soft  #FFD580
    success    #2ECC71
@@ -10,7 +10,7 @@
    ========================================================== */
 
    page {
-    background-color: #0071E3;
+    background-color: #003153;
     min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
       "SF Pro Text", "Helvetica Neue", "PingFang SC", "Microsoft YaHei",
@@ -29,7 +29,7 @@
       rgba(255, 192, 72, 0.06) 0%,
       transparent 60%
     );
-    background-color: #0071E3;
+    background-color: #003153;
     animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   
