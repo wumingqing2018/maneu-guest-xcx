@@ -1,4 +1,4 @@
-<!--pages/agreement-user/agreement-user.wxml-->
+<!--pages/agreement-Privacy/agreement-Privacy.wxml-->
 <view class="doc">
   <view class="doc-title">{{title}}</view>
   <view class="doc-meta">

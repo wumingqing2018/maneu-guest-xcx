@@ -1,4 +1,4 @@
-// pages/agreement-user/agreement-user.js
+// pages/agreement-Privacy/agreement-Privacy.js
 // 加粗统一用内联 style，rich-text 内部节点不响应外部 class
 const B = (t) => '<strong style="font-weight:600;color:#1a1a1a;">' + t + '</strong>';
 const N = (t) => '<span style="color:#999999;font-size:24rpx;">' + t + '</span>';

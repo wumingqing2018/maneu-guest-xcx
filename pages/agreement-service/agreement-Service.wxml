@@ -1,4 +1,4 @@
-<!--pages/agreement-service/agreement-service.wxml-->
+<!--pages/agreement-Service/agreement-Service.wxml-->
 <view class="doc">
   <view class="doc-title">{{title}}</view>
   <view class="doc-meta">

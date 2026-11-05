@@ -1,4 +1,4 @@
-// pages/agreement-service/agreement-service.js
+// pages/agreement-Service/agreement-Service.js
 // 加粗统一用内联 style，rich-text 内部节点不响应外部 class
 const B = (t) => '<strong style="font-weight:600;color:#1a1a1a;">' + t + '</strong>';
 

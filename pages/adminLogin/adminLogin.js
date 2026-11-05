@@ -97,10 +97,10 @@ Page({
     this.setData({ agree: !this.data.agree });
   },
   onOpenAgreementService() {
-    wx.navigateTo({ url: '/pages/agreement-service/agreement-service' });
+    wx.navigateTo({ url: '/pages/agreement-Service/agreement-Service' });
   },
-  onOpenAgreementUser() {
-    wx.navigateTo({ url: '/pages/agreement-user/agreement-user' });
+  onOpenAgreementPrivacy() {
+    wx.navigateTo({ url: '/pages/agreement-Privacy/agreement-Privacy' });
   },
 
   /* ==================== 输入 ==================== */
