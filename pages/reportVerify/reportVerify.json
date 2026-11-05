@@ -1,9 +1,9 @@
 {
-  "navigationBarTitleText": "验光报告",
-  "navigationBarBackgroundColor": "#FBFBFD",
-  "navigationBarTextStyle": "black",
+  "navigationBarTitleText": "徕可视光",
+  "navigationBarBackgroundColor": "#003153",
+  "navigationBarTextStyle": "white",
   "backgroundColor": "#FBFBFD",
   "backgroundTextStyle": "dark",
-  "enablePullDownRefresh": true,
+  "component": true,
   "usingComponents": {}
 }

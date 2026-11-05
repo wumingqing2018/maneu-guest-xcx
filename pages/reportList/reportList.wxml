@@ -43,9 +43,6 @@
     <view class="report__row">
       <text class="report__label">姓名</text>
       <text class="report__value">{{item.name}}</text>
-    </view>
-
-    <view class="report__row">
       <text class="report__label">电话</text>
       <text class="report__value">{{item.phone}}</text>
     </view>

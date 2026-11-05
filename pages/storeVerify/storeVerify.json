@@ -1,9 +1,9 @@
 {
   "navigationBarTitleText": "徕可视光",
-  "navigationBarBackgroundColor": "#FBFBFD",
-  "navigationBarTextStyle": "black",
-  "backgroundColor": "#FBFBFD",
-  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#003153",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#003153",
+  "backgroundTextStyle": "light",
   "component": true,
   "usingComponents": {}
 }

@@ -43,9 +43,6 @@
     <view class="order__row">
       <text class="order__label">姓名</text>
       <text class="order__value">{{item.name}}</text>
-    </view>
-
-    <view class="order__row">
       <text class="order__label">电话</text>
       <text class="order__value">{{item.phone}}</text>
     </view>

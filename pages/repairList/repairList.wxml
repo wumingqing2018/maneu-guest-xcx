@@ -43,9 +43,6 @@
     <view class="repair__row">
       <text class="repair__label">姓名</text>
       <text class="repair__value">{{item.name}}</text>
-    </view>
-
-    <view class="repair__row">
       <text class="repair__label">电话</text>
       <text class="repair__value">{{item.phone}}</text>
     </view>

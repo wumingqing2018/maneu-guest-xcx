@@ -2,96 +2,65 @@
 /**
  * 门店官方授权验证页
  *
- * 核心流程：
- *   1. 从二维码参数提取 index_id
- *   2. 确保拿到 access_token（本地 / 静默登录）
- *   3. 用 token 请求 store_verify
- *   4. 若 401：尝试 refresh_token 换新 access_token 后重试
- *   5. 若刷新失败（refresh_token 也过期）：清 token → 静默登录 → 重试验证
- *   6. 任一步失败，显示对应错误提示，用户可下拉刷新重试
+ * 该接口不需要 JWT，直接 POST index_id 即可。
  *
- * 防并发：
- *   - _verifying 锁：下拉刷新 / onRetry 期间不会重复发起完整流程
+ * 入口：
+ *   - 扫描普通二维码：微信通过 options.q 传入完整 URL（可能多重编码）
+ *   - 分享卡片：微信通过 options.index_id 直传（onShareAppMessage 的 path）
  *
- * 卸载保护：
- *   - _unloaded 标记：页面卸载后所有 setData 被 safeSetData 拦截，避免警告
+ * 流程：
+ *   1. 从 options 提取 index_id
+ *   2. 直接请求 store_verify（无认证）
+ *   3. 渲染结果
+ *
+ * 禁止下拉刷新（page.json 未开启 enablePullDownRefresh）
+ * 卸载保护：_unloaded 标记，页面卸载后所有 setData 被拦截
  */
 
 /* ==================== 常量 ==================== */
 const API = {
-  verifyStore: 'https://maneu.online/store_verify/',
-  loginByWechat: 'https://maneu.online/apis/login_by_wechat/',
-  refresh: 'https://maneu.online/apis/refresh_access_token/'
+  verifyStore: 'https://maneu.online/store_verify/'
 };
 
 const REQUEST_TIMEOUT = 10000;
 
+/* ==================== 枚举映射（按后端实际值扩展） ==================== */
+const ITEM_TYPE_LABEL = {
+  frame: '镜架',
+  lens: '镜片',
+  accessory: '配件'
+};
+
+const SIDE_LABEL = {
+  OD: '右眼',
+  OS: '左眼',
+  OU: '双眼'
+};
+
 /* ==================== 工具函数 ==================== */
-function isEmptyValue(val) {
-  if (val === null || val === undefined) return true;
-  return String(val).trim() === '';
-}
-
-function getAccessToken() {
-  return wx.getStorageSync('access_token') || '';
-}
-
-function getRefreshToken() {
-  return wx.getStorageSync('refresh_token') || '';
-}
-
-function hasLogin() {
-  return !!(getAccessToken() && getRefreshToken());
-}
-
-function clearAuth() {
-  wx.removeStorageSync('access_token');
-  wx.removeStorageSync('refresh_token');
-  wx.removeStorageSync('token');
-}
-
 /**
- * 用 refresh_token 换新 access_token
- * @returns {Promise<string>} 新 access_token
+ * 循环解码：应对 q 被多重 URL 编码
+ * 遇到非法序列立即停止，不会抛异常
  */
-function refreshAccessToken() {
-  return new Promise((resolve, reject) => {
-    const refreshToken = getRefreshToken();
-    if (!refreshToken) {
-      reject(new Error('NO_REFRESH_TOKEN'));
-      return;
+function safeDecode(raw) {
+  let v = String(raw);
+  for (let i = 0; i < 4; i++) {
+    try {
+      const d = decodeURIComponent(v);
+      if (d === v) break;
+      v = d;
+    } catch (e) {
+      break;
     }
+  }
+  return v;
+}
 
-    wx.request({
-      url: API.refresh,
-      method: 'POST',
-      header: { 'content-type': 'application/json' },
-      data: { refresh_token: refreshToken },
-      timeout: REQUEST_TIMEOUT,
-
-      success: (res) => {
-        const d = res.data || {};
-        if (
-          res.statusCode >= 200 &&
-          res.statusCode < 300 &&
-          d.status &&
-          d.content &&
-          d.content.access_token
-        ) {
-          wx.setStorageSync('access_token', d.content.access_token);
-          wx.setStorageSync('token', d.content.access_token);
-          if (d.content.refresh_token) {
-            wx.setStorageSync('refresh_token', d.content.refresh_token);
-          }
-          resolve(d.content.access_token);
-        } else {
-          reject(new Error('REFRESH_FAILED'));
-        }
-      },
-
-      fail: () => reject(new Error('REFRESH_NETWORK_ERROR'))
-    });
-  });
+/** "2026-10-30T23:41:00" → "2026-10-30 23:41" */
+function formatTime(iso) {
+  if (!iso) return '';
+  const m = String(iso).match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})/);
+  return m ? `${m[1]} ${m[2]}` : String(iso);
 }
 
 /* ==================== 页面 ==================== */
@@ -105,12 +74,6 @@ Page({
     purchaseTime: '',
     productList: []
   },
-
-  /* 静默登录 Promise 复用 */
-  _silentLoginPromise: null,
-
-  /* 防并发锁：完整流程进行中时为 true */
-  _verifying: false,
 
   /* 页面卸载标记：true 后所有 setData 被拦截 */
   _unloaded: false,
@@ -128,341 +91,218 @@ Page({
     }
 
     this.safeSetData({ indexId });
-    this.ensureLoginAndVerify(indexId);
+    this.runVerify(indexId);
   },
 
   onUnload() {
-    /* 标记卸载，后续所有 setData 被 safeSetData 拦截 */
     this._unloaded = true;
   },
 
-  onPullDownRefresh() {
-    if (!this.data.indexId) {
-      wx.stopPullDownRefresh();
-      return;
-    }
-    this.ensureLoginAndVerify(this.data.indexId, () => wx.stopPullDownRefresh());
-  },
-
   /* ==================== 安全 setData ==================== */
-  /**
-   * 页面卸载后调用 setData 会被微信拦截并报警告，
-   * 所有异步回调统一走这个方法，避免报警。
-   */
   safeSetData(obj, cb) {
     if (this._unloaded) return;
     this.setData(obj, cb);
   },
 
-  /* ==================== 主流程：确保登录 + 验证 ==================== */
-  /**
-   * @param {string} indexId 订单编号
-   * @param {Function} [done] 结束回调（用于停止下拉刷新）
-   */
-  ensureLoginAndVerify(indexId, done) {
-    /* 防并发：已有流程在跑，直接返回 */
-    if (this._verifying) {
-      console.log('[storeVerify] 流程进行中，跳过本次请求');
-      done && done();
-      return;
-    }
-
-    this._verifying = true;
+  /* ==================== 主流程 ==================== */
+  runVerify(indexId) {
     this.resetState();
 
-    this.verifyWithRetry(indexId)
-      .then((data) => {
-        this.renderResult(data);
+    this.requestVerify(indexId)
+      .then((content) => {
+        this.renderResult(content);
       })
       .catch((err) => {
         console.error('[storeVerify] 验证流程失败：', err);
         this.handleFlowError(err);
       })
       .then(() => {
-        this._verifying = false;
         this.safeSetData({ loading: false });
-        done && done();
       });
   },
 
-  /* ==================== 验证 + 自动修复 ==================== */
-  /**
-   * 核心自愈链：
-   *   确保 token → 请求验证
-   *     → 401 → 尝试 refresh → 成功则重试
-   *     → refresh 失败 → 清 token → 静默登录 → 重试
-   *     → 任一步失败 → 抛错
-   * @returns {Promise<Object>} 后端返回的 body
-   */
-  verifyWithRetry(indexId) {
-    return this.ensureToken()
-      .then((token) => this.requestVerify(indexId, token))
-      .then((res) => {
-        console.log(res)
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          return res.data || {};
-        }
-        if (res.statusCode === 401) {
-          return this.retryAfterRefreshOrReLogin(indexId);
-        }
-        throw new Error(`服务器异常（${res.statusCode}）`);
-      });
-  },
-
-  /**
-   * 401 后的自愈：
-   *   1. 尝试 refresh_access_token
-   *   2. refresh 成功 → 重试 verify
-   *   3. refresh 失败 → 清 token → 静默登录 → 重试 verify
-   *   4. 静默登录失败 / 重试仍 401 → 抛错
-   */
-  retryAfterRefreshOrReLogin(indexId) {
-    console.log('[storeVerify] 401，尝试刷新 access_token');
-
-    return refreshAccessToken()
-      .then((newToken) => {
-        console.log('[storeVerify] refresh 成功，重试验证');
-        return this.requestVerify(indexId, newToken);
-      })
-      .then((res) => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          return res.data || {};
-        }
-        if (res.statusCode === 401) {
-          throw new Error('401_AFTER_REFRESH');
-        }
-        throw new Error(`服务器异常（${res.statusCode}）`);
-      })
-      .catch((refreshErr) => {
-        console.warn(
-          '[storeVerify] refresh 未成功，重新静默登录：',
-          refreshErr.message
-        );
-
-        clearAuth();
-
-        return this.silentLogin()
-          .then((ok) => {
-            if (!ok) throw new Error('LOGIN_FAILED');
-            return this.requestVerify(indexId, getAccessToken());
-          })
-          .then((res) => {
-            if (res.statusCode >= 200 && res.statusCode < 300) {
-              return res.data || {};
-            }
-            if (res.statusCode === 401) {
-              throw new Error('LOGIN_EXPIRED');
-            }
-            throw new Error(`服务器异常（${res.statusCode}）`);
-          });
-      });
-  },
-
-  /* ==================== 确保有 token ==================== */
-  ensureToken() {
-    if (hasLogin()) {
-      console.log('[storeVerify] 已登录，使用本地 token');
-      return Promise.resolve(getAccessToken());
-    }
-
-    console.log('[storeVerify] 未登录，开始静默登录');
-    return this.silentLogin().then((ok) => {
-      if (!ok) throw new Error('LOGIN_FAILED');
-      return getAccessToken();
-    });
-  },
-
-  /* ==================== 静默登录 ==================== */
-  silentLogin() {
-    if (this._silentLoginPromise) {
-      return this._silentLoginPromise;
-    }
-
-    this._silentLoginPromise = new Promise((resolve) => {
-      wx.login({
-        success: (loginRes) => {
-          if (!loginRes.code) {
-            console.warn('[storeVerify] wx.login 无 code');
-            resolve(false);
-            return;
-          }
-
-          console.log('[storeVerify] wx.login code：', loginRes.code);
-
-          wx.request({
-            url: API.loginByWechat,
-            method: 'POST',
-            header: { 'content-type': 'application/json' },
-            data: { code: loginRes.code },
-            timeout: REQUEST_TIMEOUT,
-
-            success: (res) => {
-              const data = res.data || {};
-              if (
-                res.statusCode >= 200 &&
-                res.statusCode < 300 &&
-                data.status &&
-                data.content &&
-                data.content.access_token
-              ) {
-                wx.setStorageSync('access_token', data.content.access_token);
-                wx.setStorageSync('refresh_token', data.content.refresh_token || '');
-                wx.setStorageSync('token', data.content.access_token);
-                if (data.content.call) {
-                  wx.setStorageSync('call', data.content.call);
-                }
-                console.log('[storeVerify] 静默登录成功');
-                resolve(true);
-              } else {
-                console.warn('[storeVerify] 静默登录失败：', data.message || '未知');
-                resolve(false);
-              }
-            },
-
-            fail: (err) => {
-              console.warn('[storeVerify] 静默登录网络错误：', err);
-              resolve(false);
-            },
-
-            complete: () => {
-              this._silentLoginPromise = null;
-            }
-          });
-        },
-
-        fail: (err) => {
-          console.warn('[storeVerify] wx.login 失败：', err);
-          this._silentLoginPromise = null;
-          resolve(false);
-        }
-      });
-    });
-
-    return this._silentLoginPromise;
-  },
-
-  /* ==================== 请求 store_verify ==================== */
-  requestVerify(indexId, token) {
+  /* ==================== 请求 store_verify（无需 JWT） ==================== */
+  requestVerify(indexId) {
     return new Promise((resolve, reject) => {
       wx.request({
         url: API.verifyStore,
         method: 'POST',
-        header: {
-          'content-type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
+        header: { 'content-type': 'application/json' },
         data: { index_id: indexId },
         timeout: REQUEST_TIMEOUT,
-        success: (res) => resolve(res),
+
+        success: (res) => {
+          try {
+            resolve(this.parseVerifyResponse(res));
+          } catch (err) {
+            reject(err);
+          }
+        },
+
         fail: () => reject(new Error('NETWORK_ERROR'))
       });
     });
   },
 
+  /* ==================== 解析响应 ==================== */
+  /**
+   * 兼容：
+   *   A) { status, message, content: { time, data } }   ← 当前后端
+   *   B) { time, data }                                 ← 旧约定
+   * status=false 时抛业务错误，err.code='VERIFY_FAILED'
+   */
+  parseVerifyResponse(res) {
+    if (!(res.statusCode >= 200 && res.statusCode < 300)) {
+      throw new Error(`服务器异常（${res.statusCode}）`);
+    }
+
+    const body = res.data || {};
+
+    if (Object.prototype.hasOwnProperty.call(body, 'status') || body.content) {
+      const ok = body.status === true || body.status === 'true';
+      if (!ok) {
+        const err = new Error(body.message || '验证未通过');
+        err.code = 'VERIFY_FAILED';
+        throw err;
+      }
+      return body.content || {};
+    }
+
+    return body;
+  },
+
   /* ==================== 提取 index_id ==================== */
+  /**
+   * 入口：
+   *   1. 分享卡片：options.index_id 直传
+   *   2. 扫普通二维码：options.q 传入完整 URL（可能多重编码）
+   */
   extractIndexId(options) {
-    if (!options) return '';
+    if (!options) {
+      console.warn('[storeVerify] options 为空');
+      return '';
+    }
 
+    // ---------- 1. 分享卡片直传 ----------
+    if (options.index_id && String(options.index_id).trim() !== '') {
+      const val = safeDecode(options.index_id).trim();
+      console.log('[storeVerify] 命中分享卡片 index_id =', val);
+      return val;
+    }
+
+    // ---------- 2. 扫普通二维码：q 是完整 URL ----------
     if (options.q) {
-      try {
-        const url = decodeURIComponent(options.q);
-        console.log('[storeVerify] 解码后 URL：', url);
-        const match = url.match(/[?&]index_id=([^&#]+)/);
-        if (match && match[1]) {
-          console.log('[storeVerify] 从 q 提取：', match[1]);
-          return match[1];
-        }
-      } catch (e) {
-        console.error('[storeVerify] 解析 q 失败：', e);
+      const url = safeDecode(options.q);
+      console.log('[storeVerify] q 完全解码后 URL：', url);
+
+      const m = url.match(/[?&]index_id=([^&#]*)/);
+      if (m && m[1]) {
+        const val = safeDecode(m[1]).trim();
+        console.log('[storeVerify] 从 q 提取 index_id：', val);
+        return val;
       }
+
+      console.warn('[storeVerify] URL 中未找到 index_id：', url);
+      return '';
     }
 
-    if (options.index_id) {
-      console.log('[storeVerify] 从 index_id 提取：', options.index_id);
-      return options.index_id;
-    }
-
-    if (options.scene) {
-      try {
-        const scene = decodeURIComponent(options.scene);
-        console.log('[storeVerify] 解码后 scene：', scene);
-        const match = scene.match(/[?&]?index_id=([^&#]+)/);
-        if (match && match[1]) {
-          console.log('[storeVerify] 从 scene 提取：', match[1]);
-          return match[1];
-        }
-      } catch (e) {
-        console.error('[storeVerify] 解析 scene 失败：', e);
-      }
-    }
-
-    console.warn('[storeVerify] 未找到 index_id');
+    console.warn('[storeVerify] 未找到 index_id，options =', JSON.stringify(options));
     return '';
   },
 
-  /* ==================== 渲染结果 ==================== */
-  renderResult(data) {
-    const isSuccess = data.status === true || data.status === 'true';
-    const content = data.content || {};
-    const timeStr = content.time || '';
-    const rawList = Array.isArray(content.data) ? content.data : [];
 
-    if (!isSuccess || rawList.length === 0) {
+    /* ==================== 渲染结果 ==================== */
+    renderResult(content) {
+      const body = content || {};
+      const timeStr = body.time || '';
+      const rawList = Array.isArray(body.data) ? body.data : [];
+  
+      if (rawList.length === 0) {
+        this.safeSetData({
+          isSuccess: false,
+          failMessage: body.message || '未查询到授权信息，请核对购买渠道。'
+        });
+        return;
+      }
+  
+      const productList = rawList
+        .map((item) => {
+          if (!item || typeof item !== 'object') return null;
+  
+          // 1. 提取所有有效字段
+          const validEntries = [];
+          Object.keys(item).forEach((k) => {
+            if (!k) return;
+            if (item[k] === null || item[k] === undefined) return;
+            
+            const val = String(item[k]).trim();
+            if (val === '' || val === '无') return;
+  
+            validEntries.push({ key: String(k).trim(), val });
+          });
+  
+          if (validEntries.length === 0) return null;
+  
+          // 2. 确定主标题和剩余的属性
+          let titleKey = '';
+          let titleVal = '';
+          let props = [];
+  
+          // 优先寻找 "产品名称" 作为主标题
+          const nameIndex = validEntries.findIndex((e) => e.key === '产品名称');
+          
+          if (nameIndex > -1) {
+            titleKey = validEntries[nameIndex].key;
+            titleVal = validEntries[nameIndex].val;
+            // 剩下的所有字段作为 props
+            props = validEntries.filter((_, idx) => idx !== nameIndex);
+          } else {
+            // 如果没有"产品名称"，就把第一个有效字段作为主标题
+            titleKey = validEntries[0].key;
+            titleVal = validEntries[0].val;
+            props = validEntries.slice(1);
+          }
+  
+          return {
+            titleKey,
+            titleVal,
+            props
+          };
+        })
+        .filter(Boolean);
+  
+      if (productList.length === 0) {
+        this.safeSetData({
+          isSuccess: false,
+          failMessage: '未查询到有效的授权信息。'
+        });
+        return;
+      }
+  
       this.safeSetData({
-        isSuccess: false,
-        failMessage:
-          (data && data.message) || '未查询到授权信息，请核对购买渠道。'
+        isSuccess: true,
+        purchaseTime: formatTime(timeStr),
+        productList
       });
-      return;
-    }
+    },
 
-    const productList = rawList
-      .map((item) => {
-        if (!item || typeof item !== 'object') return null;
-
-        const entries = Object.keys(item)
-          .filter((k) => k && k.trim() !== '' && !isEmptyValue(item[k]))
-          .map((k) => ({
-            key: String(k).trim(),
-            val: String(item[k]).trim()
-          }));
-
-        if (entries.length === 0) return null;
-
-        return {
-          titleKey: entries[0].key,
-          titleVal: entries[0].val,
-          props: entries.slice(1)
-        };
-      })
-      .filter(Boolean);
-
-    if (productList.length === 0) {
-      this.safeSetData({
-        isSuccess: false,
-        failMessage: '未查询到有效的授权信息。'
-      });
-      return;
-    }
-
-    this.safeSetData({
-      isSuccess: true,
-      purchaseTime: timeStr,
-      productList
-    });
-  },
-
+    
   /* ==================== 错误处理 ==================== */
   handleFlowError(err) {
+    // 业务失败（status=false）→ “验证失败”
+    if (err && err.code === 'VERIFY_FAILED') {
+      this.safeSetData({
+        errorMsg: '',
+        failMessage: err.message || '未查询到门店授权信息，请核对购买渠道。'
+      });
+      return;
+    }
+
     const msg = (err && err.message) || '';
 
     let userMsg = '验证失败，请稍后重试。';
-    if (msg === 'LOGIN_FAILED') {
-      userMsg = '登录失败，请检查网络后下拉刷新重试。';
-    } else if (msg === 'LOGIN_EXPIRED') {
-      userMsg = '登录已失效，请下拉刷新重试。';
-    } else if (msg === 'NETWORK_ERROR') {
-      userMsg = '网络错误或服务器无响应，请刷新页面后重试。';
+    if (msg === 'NETWORK_ERROR') {
+      userMsg = '网络错误或服务器无响应，请稍后重试。';
     } else if (msg.indexOf('服务器异常') === 0) {
       userMsg = msg;
     }
