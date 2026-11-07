@@ -86,11 +86,15 @@ Page({
     console.log('[storeVerify] 最终 indexId：', indexId);
 
     if (!indexId) {
-      this.safeSetData({ loading: false });
+      this.safeSetData({
+        loading: false
+      });
       return;
     }
 
-    this.safeSetData({ indexId });
+    this.safeSetData({
+      indexId
+    });
     this.runVerify(indexId);
   },
 
@@ -117,7 +121,9 @@ Page({
         this.handleFlowError(err);
       })
       .then(() => {
-        this.safeSetData({ loading: false });
+        this.safeSetData({
+          loading: false
+        });
       });
   },
 
@@ -127,8 +133,12 @@ Page({
       wx.request({
         url: API.verifyStore,
         method: 'POST',
-        header: { 'content-type': 'application/json' },
-        data: { index_id: indexId },
+        header: {
+          'content-type': 'application/json'
+        },
+        data: {
+          index_id: indexId
+        },
         timeout: REQUEST_TIMEOUT,
 
         success: (res) => {
@@ -211,82 +221,85 @@ Page({
   },
 
 
-    /* ==================== 渲染结果 ==================== */
-    renderResult(content) {
-      const body = content || {};
-      const timeStr = body.time || '';
-      const rawList = Array.isArray(body.data) ? body.data : [];
-  
-      if (rawList.length === 0) {
-        this.safeSetData({
-          isSuccess: false,
-          failMessage: body.message || '未查询到授权信息，请核对购买渠道。'
-        });
-        return;
-      }
-  
-      const productList = rawList
-        .map((item) => {
-          if (!item || typeof item !== 'object') return null;
-  
-          // 1. 提取所有有效字段
-          const validEntries = [];
-          Object.keys(item).forEach((k) => {
-            if (!k) return;
-            if (item[k] === null || item[k] === undefined) return;
-            
-            const val = String(item[k]).trim();
-            if (val === '' || val === '无') return;
-  
-            validEntries.push({ key: String(k).trim(), val });
-          });
-  
-          if (validEntries.length === 0) return null;
-  
-          // 2. 确定主标题和剩余的属性
-          let titleKey = '';
-          let titleVal = '';
-          let props = [];
-  
-          // 优先寻找 "产品名称" 作为主标题
-          const nameIndex = validEntries.findIndex((e) => e.key === '产品名称');
-          
-          if (nameIndex > -1) {
-            titleKey = validEntries[nameIndex].key;
-            titleVal = validEntries[nameIndex].val;
-            // 剩下的所有字段作为 props
-            props = validEntries.filter((_, idx) => idx !== nameIndex);
-          } else {
-            // 如果没有"产品名称"，就把第一个有效字段作为主标题
-            titleKey = validEntries[0].key;
-            titleVal = validEntries[0].val;
-            props = validEntries.slice(1);
-          }
-  
-          return {
-            titleKey,
-            titleVal,
-            props
-          };
-        })
-        .filter(Boolean);
-  
-      if (productList.length === 0) {
-        this.safeSetData({
-          isSuccess: false,
-          failMessage: '未查询到有效的授权信息。'
-        });
-        return;
-      }
-  
-      this.safeSetData({
-        isSuccess: true,
-        purchaseTime: formatTime(timeStr),
-        productList
-      });
-    },
+  /* ==================== 渲染结果 ==================== */
+  renderResult(content) {
+    const body = content || {};
+    const timeStr = body.time || '';
+    const rawList = Array.isArray(body.data) ? body.data : [];
 
-    
+    if (rawList.length === 0) {
+      this.safeSetData({
+        isSuccess: false,
+        failMessage: body.message || '未查询到授权信息，请核对购买渠道。'
+      });
+      return;
+    }
+
+    const productList = rawList
+      .map((item) => {
+        if (!item || typeof item !== 'object') return null;
+
+        // 1. 提取所有有效字段
+        const validEntries = [];
+        Object.keys(item).forEach((k) => {
+          if (!k) return;
+          if (item[k] === null || item[k] === undefined) return;
+
+          const val = String(item[k]).trim();
+          if (val === '' || val === '无') return;
+
+          validEntries.push({
+            key: String(k).trim(),
+            val
+          });
+        });
+
+        if (validEntries.length === 0) return null;
+
+        // 2. 确定主标题和剩余的属性
+        let titleKey = '';
+        let titleVal = '';
+        let props = [];
+
+        // 优先寻找 "产品名称" 作为主标题
+        const nameIndex = validEntries.findIndex((e) => e.key === '产品名称');
+
+        if (nameIndex > -1) {
+          titleKey = validEntries[nameIndex].key;
+          titleVal = validEntries[nameIndex].val;
+          // 剩下的所有字段作为 props
+          props = validEntries.filter((_, idx) => idx !== nameIndex);
+        } else {
+          // 如果没有"产品名称"，就把第一个有效字段作为主标题
+          titleKey = validEntries[0].key;
+          titleVal = validEntries[0].val;
+          props = validEntries.slice(1);
+        }
+
+        return {
+          titleKey,
+          titleVal,
+          props
+        };
+      })
+      .filter(Boolean);
+
+    if (productList.length === 0) {
+      this.safeSetData({
+        isSuccess: false,
+        failMessage: '未查询到有效的授权信息。'
+      });
+      return;
+    }
+
+    this.safeSetData({
+      isSuccess: true,
+      purchaseTime: formatTime(timeStr),
+      productList
+    });
+  },
+
+
   /* ==================== 错误处理 ==================== */
   handleFlowError(err) {
     // 业务失败（status=false）→ “验证失败”
@@ -307,7 +320,9 @@ Page({
       userMsg = msg;
     }
 
-    this.safeSetData({ errorMsg: userMsg });
+    this.safeSetData({
+      errorMsg: userMsg
+    });
   },
 
   /* ==================== 重置状态 ==================== */
@@ -329,12 +344,14 @@ Page({
 
   /* ==================== 分享 ==================== */
   onShareAppMessage() {
-    const { indexId } = this.data;
+    const {
+      indexId
+    } = this.data;
     return {
       title: '徕可官方授权验证',
-      path: indexId
-        ? `/pages/storeVerify/storeVerify?index_id=${encodeURIComponent(indexId)}`
-        : '/pages/storeVerify/storeVerify'
+      path: indexId ?
+        `/pages/storeVerify/storeVerify?index_id=${encodeURIComponent(indexId)}` :
+        '/pages/storeVerify/storeVerify'
     };
   }
 });

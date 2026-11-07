@@ -43,7 +43,7 @@ const API = {
 };
 
 const ROUTES = {
-  adminLogin: '/pages/adminLogin/adminLogin'
+  userLogin: '/pages/userLogin/userLogin'
 };
 
 /* 产品详情行顺序（中文字段 -> 展示名），有值才显示 */
@@ -283,7 +283,7 @@ Page({
     wx.showToast({ title: '请先登录', icon: 'none' });
 
     wx.reLaunch({
-      url: ROUTES.adminLogin,
+      url: ROUTES.userLogin,
       fail: function (err) {
         console.error('[store] 跳转登录失败：', err);
       }

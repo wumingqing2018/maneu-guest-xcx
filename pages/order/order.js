@@ -31,7 +31,7 @@ const API = {
 };
 
 const ROUTES = {
-  adminLogin: '/pages/adminLogin/adminLogin'
+  userLogin: '/pages/userLogin/userLogin'
 };
 
 /* 商品类型映射 */
@@ -345,7 +345,7 @@ Page({
     });
 
     wx.reLaunch({
-      url: ROUTES.adminLogin,
+      url: ROUTES.userLogin,
       fail: function (err) {
         console.error('[order] 跳转登录失败：', err);
       }

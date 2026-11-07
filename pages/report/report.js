@@ -7,7 +7,7 @@ const API = {
 };
 
 const ROUTES = {
-  adminLogin: '/pages/adminLogin/adminLogin'
+  userLogin: '/pages/userLogin/userLogin'
 };
 
 /* ==================== Token 工具 ==================== */
@@ -323,7 +323,7 @@ Page({
     wx.showToast({ title: '请先登录', icon: 'none' });
 
     wx.reLaunch({
-      url: ROUTES.adminLogin,
+      url: ROUTES.userLogin,
       fail: (err) => console.error('[report] 跳转登录失败：', err)
     });
   },
