@@ -1,9 +1,9 @@
 {
   "pages": [
+    "pages/agreement-service/agreement-service",
+    "pages/agreement-user/agreement-user",
     "pages/index/index",
     "pages/indexList/indexList",
-    "pages/agreement-Service/agreement-Service",
-    "pages/agreement-Privacy/agreement-Privacy",
     "pages/order/order",
     "pages/orderList/orderList",
     "pages/orderVerify/orderVerify",
@@ -15,23 +15,16 @@
     "pages/repairVerify/repairVerify",
     "pages/store/store",
     "pages/storeList/storeList",
-    "pages/storeVerify/storeVerify",
-    "pages/user/user",
-    "pages/userLogin/userLogin"
+    "pages/storeVerify/storeVerify"
   ],
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#003153",
-    "navigationBarTitleText": "徕可视光",
-    "navigationBarTextStyle": "black",
-    "enablePullDownRefresh": false,
-    "backgroundColor": "#FBFBFD"
+    "navigationBarTitleText": "",
+    "navigationBarTextStyle": "white",
+    "enablePullDownRefresh": false
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#0071e3",
-    "backgroundColor": "#FFFFFF",
-    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/index/index",
@@ -40,7 +33,7 @@
         "selectedIconPath": "/image/home2.png"
       },
       {
-        "pagePath": "pages/user/user",
+        "pagePath": "pages/admin/admin",
         "text": "我的",
         "iconPath": "/image/user1.png",
         "selectedIconPath": "/image/user2.png"
