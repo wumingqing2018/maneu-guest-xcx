@@ -4,6 +4,5 @@
   "navigationBarTextStyle": "white",
   "backgroundColor": "#004272",
   "backgroundTextStyle": "dark",
-  "component": true,
   "usingComponents": {}
 }

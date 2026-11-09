@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/agreement-service/agreement-service",
-    "pages/agreement-user/agreement-user",
+    "pages/agreement-privacy/agreement-privacy",
     "pages/index/index",
     "pages/indexList/indexList",
     "pages/order/order",
@@ -15,7 +15,9 @@
     "pages/repairVerify/repairVerify",
     "pages/store/store",
     "pages/storeList/storeList",
-    "pages/storeVerify/storeVerify"
+    "pages/storeVerify/storeVerify",
+    "pages/user/user",
+    "pages/userLogin/userLogin"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -24,6 +26,7 @@
     "navigationBarTextStyle": "white",
     "enablePullDownRefresh": false
   },
+  "entryPagePath": "pages/index/index",
   "tabBar": {
     "list": [
       {
@@ -33,7 +36,7 @@
         "selectedIconPath": "/image/home2.png"
       },
       {
-        "pagePath": "pages/admin/admin",
+        "pagePath": "pages/user/user",
         "text": "我的",
         "iconPath": "/image/user1.png",
         "selectedIconPath": "/image/user2.png"

@@ -25,8 +25,6 @@
   <!-- 首图卡片（固定 GIF） -->
   <view class="feature">
     <image class="feature__gif" src="{{bannerLink.banner}}" mode="widthFix" lazy-load show-menu-by-longpress="{{false}}" />
-  </view>
-  <view class="feature">
     <image class="feature__img" src="{{bannerLink.content}}" mode="widthFix" lazy-load show-menu-by-longpress="{{false}}" />
   </view>
 

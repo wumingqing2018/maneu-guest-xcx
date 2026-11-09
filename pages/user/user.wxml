@@ -43,11 +43,6 @@
     <view class="grid__icon grid__icon--store"></view>
     <text class="grid__label">定制产品</text>
   </view>
-
-  <view class="grid__item" bindtap="scanCode" hover-class="grid__item--hover" hover-stay-time="80">
-    <view class="grid__icon grid__icon--scan"></view>
-    <text class="grid__label">扫码识别</text>
-  </view>
 </view>
 
 <!-- 退出登录 -->
@@ -74,7 +69,7 @@
   <view class="login-card__icon"></view>
   <text class="login-card__title">未登录</text>
   <text class="login-card__desc">登录后可查看订单、验光报告和售后记录</text>
-  <view class="login-card__btn" bindtap="goLogin" hover-class="login-card__btn--hover" hover-stay-time="80"> 立即登录 </view>
+  <view class="login-card__btn" bindtap="goLogin" hover-class="login-card__btn--hover" hover-stay-time="80">立即登录</view>
 </view>
 
 </view>
