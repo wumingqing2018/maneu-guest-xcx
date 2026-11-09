@@ -97,8 +97,8 @@ page {
 .order__badge {
     font-size: 26rpx;
     font-weight: 500;
-    color: #34c759;
-    background: rgba(52, 199, 89, 0.1);
+    color: #0071E3;
+    background: rgba(0, 113, 227, 0.2);
     padding: 10rpx 20rpx;
     border-radius: 999rpx;
     line-height: 1;
