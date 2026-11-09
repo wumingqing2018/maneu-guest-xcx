@@ -1,88 +1,89 @@
 <!-- pages/reportVerify/reportVerify.wxml -->
 <view class="page">
 
-  <!-- ==================== 品牌区 ==================== -->
-  <view class="brand-section">
-    <image class="brand-logo" src="https://maneu.online/static/img/maneu/logo.svg" mode="aspectFit" bind:error="onImageError" />
-    <view class="brand-text">
-      <text class="brand-title">徕可官方授权许可正品</text>
-      <text class="brand-subtitle">Officially Licensed Products</text>
-    </view>
-  </view>
-
-  <!-- ==================== 验证卡片 ==================== -->
-  <view class="verify-card">
-
-    <!-- ==================== 骨架屏（加载中） ==================== -->
-    <block wx:if="{{loading}}">
-      <view class="skeleton skeleton--badge"></view>
-      <view class="skeleton skeleton--time"></view>
-      <view class="skeleton skeleton--plan"></view>
-
-      <!-- 右眼骨架 -->
-      <view class="skeleton-product">
-        <view class="skeleton skeleton--title"></view>
-        <view class="skeleton skeleton--line"></view>
-        <view class="skeleton skeleton--line"></view>
-        <view class="skeleton skeleton--line-short"></view>
-      </view>
-
-      <!-- 左眼骨架 -->
-      <view class="skeleton-product">
-        <view class="skeleton skeleton--title"></view>
-        <view class="skeleton skeleton--line"></view>
-        <view class="skeleton skeleton--line"></view>
-        <view class="skeleton skeleton--line-short"></view>
-      </view>
-    </block>
-
-    <!-- 无订单号 -->
-    <view wx:elif="{{!indexId}}" class="info-placeholder">
-      未提供订单号，请使用正确的链接访问
+    <!-- ==================== 品牌区 ==================== -->
+    <view class="brand-section">
+        <image bind:error="onImageError" class="brand-logo" mode="aspectFit"
+               src="https://maneu.online/static/img/maneu/logo.svg"/>
+        <view class="brand-text">
+            <text class="brand-title">徕可官方授权许可正品</text>
+            <text class="brand-subtitle">Officially Licensed Products</text>
+        </view>
     </view>
 
-    <!-- 网络/请求失败 -->
-    <view wx:elif="{{errorMsg}}" class="error-block">
-      <view class="status-badge status-badge--fail">请求失败</view>
-      <view class="fail-message">{{errorMsg}}</view>
-    </view>
+    <!-- ==================== 验证卡片 ==================== -->
+    <view class="verify-card">
 
-    <!-- 验证结果 -->
-    <block wx:else>
+        <!-- ==================== 骨架屏（加载中） ==================== -->
+        <block wx:if="{{loading}}">
+            <view class="skeleton skeleton--badge"></view>
+            <view class="skeleton skeleton--time"></view>
+            <view class="skeleton skeleton--plan"></view>
 
-      <!-- 成功 -->
-      <block wx:if="{{isSuccess}}">
-        <view class="status-badge status-badge--success">验光报告验证通过</view>
+            <!-- 右眼骨架 -->
+            <view class="skeleton-product">
+                <view class="skeleton skeleton--title"></view>
+                <view class="skeleton skeleton--line"></view>
+                <view class="skeleton skeleton--line"></view>
+                <view class="skeleton skeleton--line-short"></view>
+            </view>
 
-        <!-- 验光时间 -->
-        <view class="time-section" wx:if="{{reportTime}}">
-          <text class="time-key">验光时间：</text>
-          <text class="time-val">{{reportTime}}</text>
+            <!-- 左眼骨架 -->
+            <view class="skeleton-product">
+                <view class="skeleton skeleton--title"></view>
+                <view class="skeleton skeleton--line"></view>
+                <view class="skeleton skeleton--line"></view>
+                <view class="skeleton skeleton--line-short"></view>
+            </view>
+        </block>
+
+        <!-- 无订单号 -->
+        <view class="info-placeholder" wx:elif="{{!indexId}}">
+            未提供订单号，请使用正确的链接访问
         </view>
 
-        <!-- 左右眼合并对比表格 -->
-        <view class="compare-table" wx:if="{{compareList.length > 0}}">
-          <view class="table-header">
-            <text class="th-item">检查项</text>
-            <text class="th-eye">右眼 (OD)</text>
-            <text class="th-eye">左眼 (OS)</text>
-          </view>
-          <view class="table-row" wx:for="{{compareList}}" wx:key="key">
-            <text class="td-item">{{item.key}}</text>
-            <text class="td-val">{{item.od || '-'}}</text>
-            <text class="td-val">{{item.os || '-'}}</text>
-          </view>
+        <!-- 网络/请求失败 -->
+        <view class="error-block" wx:elif="{{errorMsg}}">
+            <view class="status-badge status-badge--fail">请求失败</view>
+            <view class="fail-message">{{errorMsg}}</view>
         </view>
-      </block>
 
-      <!-- 失败 -->
-      <block wx:else>
-        <view class="status-badge status-badge--fail">验证失败</view>
-        <view class="fail-message">{{failMessage}}</view>
-      </block>
+        <!-- 验证结果 -->
+        <block wx:else>
 
-    </block>
+            <!-- 成功 -->
+            <block wx:if="{{isSuccess}}">
+                <view class="status-badge status-badge--success">验光报告验证通过</view>
 
-  </view>
+                <!-- 验光时间 -->
+                <view class="time-section" wx:if="{{reportTime}}">
+                    <text class="time-key">验光时间：</text>
+                    <text class="time-val">{{reportTime}}</text>
+                </view>
+
+                <!-- 左右眼合并对比表格 -->
+                <view class="compare-table" wx:if="{{compareList.length > 0}}">
+                    <view class="table-header">
+                        <text class="th-item">检查项</text>
+                        <text class="th-eye">右眼 (OD)</text>
+                        <text class="th-eye">左眼 (OS)</text>
+                    </view>
+                    <view class="table-row" wx:for="{{compareList}}" wx:key="key">
+                        <text class="td-item">{{item.key}}</text>
+                        <text class="td-val">{{item.od || '-'}}</text>
+                        <text class="td-val">{{item.os || '-'}}</text>
+                    </view>
+                </view>
+            </block>
+
+            <!-- 失败 -->
+            <block wx:else>
+                <view class="status-badge status-badge--fail">验证失败</view>
+                <view class="fail-message">{{failMessage}}</view>
+            </block>
+
+        </block>
+
+    </view>
 
 </view>

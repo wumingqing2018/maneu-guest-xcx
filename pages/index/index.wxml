@@ -1,31 +1,35 @@
 <!-- pages/index/index.wxml -->
 <view class="page">
 
-  <!-- ==================== 分区标题 ====================  -->
-  <view class="section">
-    <text class="section__title">精选</text>
-  </view>
-
-  <!-- ==================== 横向滚动列表 ====================  -->
-  <scroll-view class="hscroll" scroll-x enable-flex show-scrollbar="{{false}}">
-    <view class="hscroll__inner">
-      <view class="hscroll__item" wx:for="{{imageLink}}" wx:key="data" hover-class="hscroll__item--hover" hover-stay-time="80" data-index="{{item.index}}" bind:tap="getDetail">
-        <image class="hscroll__img" src="{{item.banner}}" mode="aspectFill" lazy-load show-menu-by-longpress="{{false}}" />
-      </view>
-      <view class="hscroll__spacer"></view>
+    <!-- ==================== 分区标题 ====================  -->
+    <view class="section">
+        <text class="section__title">精选</text>
     </view>
-  </scroll-view>
 
-  <!-- Hero 大标题区 -->
-  <view class="hero">
-    <text class="hero__title">专注视觉</text>
-    <text class="hero__subtitle">Focus on Vision · 徕可</text>
-  </view>
+    <!-- ==================== 横向滚动列表 ====================  -->
+    <scroll-view class="hscroll" enable-flex scroll-x show-scrollbar="{{false}}">
+        <view class="hscroll__inner">
+            <view bind:tap="getDetail" class="hscroll__item" data-index="{{item.index}}" hover-class="hscroll__item--hover"
+                  hover-stay-time="80" wx:for="{{imageLink}}" wx:key="data">
+                <image class="hscroll__img" lazy-load mode="aspectFill" show-menu-by-longpress="{{false}}"
+                       src="{{item.banner}}"/>
+            </view>
+            <view class="hscroll__spacer"></view>
+        </view>
+    </scroll-view>
 
-  <!-- 首图卡片（固定 GIF） -->
-  <view class="feature">
-    <image class="feature__gif" src="{{bannerLink.banner}}" mode="widthFix" lazy-load show-menu-by-longpress="{{false}}" />
-    <image class="feature__img" src="{{bannerLink.content}}" mode="widthFix" lazy-load show-menu-by-longpress="{{false}}" />
-  </view>
+    <!-- Hero 大标题区 -->
+    <view class="hero">
+        <text class="hero__title">专注视觉</text>
+        <text class="hero__subtitle">Focus on Vision · 徕可</text>
+    </view>
+
+    <!-- 首图卡片（固定 GIF） -->
+    <view class="feature">
+        <image class="feature__gif" lazy-load mode="widthFix" show-menu-by-longpress="{{false}}"
+               src="{{bannerLink.banner}}"/>
+        <image class="feature__img" lazy-load mode="widthFix" show-menu-by-longpress="{{false}}"
+               src="{{bannerLink.content}}"/>
+    </view>
 
 </view>

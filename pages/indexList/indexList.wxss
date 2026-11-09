@@ -1,16 +1,16 @@
 /* pages/indexDetail/indexDetail.wxss */
 .s_view {
-  margin: 10%;
-  width: 82%;
-  text-align: center;
+    margin: 10%;
+    width: 82%;
+    text-align: center;
 }
 
 .m_view {
-  padding-left: 10%;
-  width: 80%;
+    padding-left: 10%;
+    width: 80%;
 }
 
 .m_show {
-  width: 100%;
-  border-radius: 30rpx;
+    width: 100%;
+    border-radius: 30rpx;
 }

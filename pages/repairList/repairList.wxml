@@ -1,63 +1,63 @@
 <!-- pages/repairList/repairList.wxml -->
 <view class="page">
 
-<!-- ==================== 顶部标题卡 ==================== -->
-<view class="card card--header">
-  <text class="card__title">维修记录</text>
-  <text class="card__subtitle">共 {{code}} 条记录</text>
-</view>
-
-<!-- ==================== 骨架屏 ==================== -->
-<block wx:if="{{loading}}">
-  <view class="repair" wx:for="{{[1, 2, 3]}}" wx:key="*this">
-    <view class="skeleton skeleton--line-sm"></view>
-    <view class="skeleton skeleton--line"></view>
-    <view class="skeleton skeleton--line"></view>
-    <view class="skeleton skeleton--line"></view>
-  </view>
-</block>
-
-<!-- ==================== 空状态 ==================== -->
-<view wx:elif="{{!content.length}}" class="empty">
-  <view class="empty__icon"></view>
-  <text class="empty__title">暂无维修记录</text>
-  <text class="empty__desc">下拉刷新试试</text>
-</view>
-
-<!-- ==================== 维修记录列表 ==================== -->
-<block wx:else>
-  <view
-    class="repair"
-    wx:for="{{content}}"
-    wx:key="id"
-    bindtap="getDetail"
-    data-bar_code="{{item.id}}"
-  >
-    <!-- 头部：时间 + 类型徽章 -->
-    <view class="repair__head">
-      <text class="repair__time">{{item.time}}</text>
-      <view class="repair__badge">维修</view>
+    <!-- ==================== 顶部标题卡 ==================== -->
+    <view class="card card--header">
+        <text class="card__title">维修记录</text>
+        <text class="card__subtitle">共 {{code}} 条记录</text>
     </view>
 
-    <!-- 字段列表 -->
-    <view class="repair__row">
-      <text class="repair__label">姓名</text>
-      <text class="repair__value">{{item.name}}</text>
-      <text class="repair__label">电话</text>
-      <text class="repair__value">{{item.phone}}</text>
+    <!-- ==================== 骨架屏 ==================== -->
+    <block wx:if="{{loading}}">
+        <view class="repair" wx:for="{{[1, 2, 3]}}" wx:key="*this">
+            <view class="skeleton skeleton--line-sm"></view>
+            <view class="skeleton skeleton--line"></view>
+            <view class="skeleton skeleton--line"></view>
+            <view class="skeleton skeleton--line"></view>
+        </view>
+    </block>
+
+    <!-- ==================== 空状态 ==================== -->
+    <view class="empty" wx:elif="{{!content.length}}">
+        <view class="empty__icon"></view>
+        <text class="empty__title">暂无维修记录</text>
+        <text class="empty__desc">下拉刷新试试</text>
     </view>
 
-    <view class="repair__row repair__row--remark">
-      <text class="repair__label">备注</text>
-      <text class="repair__value">{{item.remark || '无'}}</text>
-    </view>
+    <!-- ==================== 维修记录列表 ==================== -->
+    <block wx:else>
+        <view
+                bindtap="getDetail"
+                class="repair"
+                data-bar_code="{{item.id}}"
+                wx:for="{{content}}"
+                wx:key="id"
+        >
+            <!-- 头部：时间 + 类型徽章 -->
+            <view class="repair__head">
+                <text class="repair__time">{{item.time}}</text>
+                <view class="repair__badge">维修</view>
+            </view>
 
-    <!-- 底部「查看详情」 -->
-    <view class="repair__foot">
-      <text class="repair__more">查看详情</text>
-      <view class="repair__arrow"></view>
-    </view>
-  </view>
-</block>
+            <!-- 字段列表 -->
+            <view class="repair__row">
+                <text class="repair__label">姓名</text>
+                <text class="repair__value">{{item.name}}</text>
+                <text class="repair__label">电话</text>
+                <text class="repair__value">{{item.phone}}</text>
+            </view>
+
+            <view class="repair__row repair__row--remark">
+                <text class="repair__label">备注</text>
+                <text class="repair__value">{{item.remark || '无'}}</text>
+            </view>
+
+            <!-- 底部「查看详情」 -->
+            <view class="repair__foot">
+                <text class="repair__more">查看详情</text>
+                <view class="repair__arrow"></view>
+            </view>
+        </view>
+    </block>
 
 </view>

@@ -17,7 +17,8 @@
     "pages/storeList/storeList",
     "pages/storeVerify/storeVerify",
     "pages/user/user",
-    "pages/userLogin/userLogin"
+    "pages/userLogin/userLogin",
+    "pages/userPage/userPage"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -27,6 +28,7 @@
     "enablePullDownRefresh": false
   },
   "entryPagePath": "pages/index/index",
+  "lazyCodeLoading": "requiredComponents",
   "tabBar": {
     "color": "#999999",
     "selectedColor": "#004272",
@@ -44,6 +46,5 @@
         "selectedIconPath": "/image/user2.png"
       }
     ]
-  },
-  "lazyCodeLoading": "requiredComponents"
+  }
 }

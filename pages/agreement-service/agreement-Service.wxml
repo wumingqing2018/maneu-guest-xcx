@@ -1,22 +1,22 @@
 <!--pages/agreement-Service/agreement-Service.wxml-->
 <view class="doc">
-  <view class="doc-title">{{title}}</view>
-  <view class="doc-meta">
-    <text>更新日期：{{updateDate}}</text>
-    <text>生效日期：{{effectiveDate}}</text>
-  </view>
+    <view class="doc-title">{{title}}</view>
+    <view class="doc-meta">
+        <text>更新日期：{{updateDate}}</text>
+        <text>生效日期：{{effectiveDate}}</text>
+    </view>
 
-  <view class="sec" wx:for="{{sections}}" wx:for-item="sec" wx:for-index="sIdx" wx:key="sIdx">
-    <view class="sec-title" wx:if="{{sec.title}}">{{sec.title}}</view>
-    <rich-text
-      wx:for="{{sec.paragraphs}}"
-      wx:for-item="p"
-      wx:for-index="pIdx"
-      wx:key="pIdx"
-      class="para"
-      nodes="{{p}}"
-    ></rich-text>
-  </view>
+    <view class="sec" wx:for="{{sections}}" wx:for-index="sIdx" wx:for-item="sec" wx:key="sIdx">
+        <view class="sec-title" wx:if="{{sec.title}}">{{sec.title}}</view>
+        <rich-text
+                class="para"
+                nodes="{{p}}"
+                wx:for="{{sec.paragraphs}}"
+                wx:for-index="pIdx"
+                wx:for-item="p"
+                wx:key="pIdx"
+        ></rich-text>
+    </view>
 
-  <view class="doc-footer">— 正文结束 —</view>
+    <view class="doc-footer">— 正文结束 —</view>
 </view>
