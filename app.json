@@ -28,6 +28,8 @@
   },
   "entryPagePath": "pages/index/index",
   "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#004272",
     "list": [
       {
         "pagePath": "pages/index/index",
