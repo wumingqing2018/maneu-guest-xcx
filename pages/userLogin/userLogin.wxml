@@ -1,61 +1,61 @@
 <!-- pages/userLogin/userLogin.wxml -->
+
+<!-- ==================== 已登录：用户中心 ==================== -->
 <view class="page">
 
-    <!-- ==================== 顶部品牌栏 ==================== -->
-    <view class="top-bar top-bar--short">
-        <view class="top-bar__inner">
-            <image class="brand-logo" lazy-load mode="aspectFit" src="https://maneu.online/static/img/maneu/logo.svg"/>
-        </view>
+  <!-- 顶部品牌栏 -->
+  <view class="top-bar top-bar--short">
+    <view class="top-bar__inner">
+      <image class="brand-logo" lazy-load mode="aspectFit" src="https://maneu.online/static/img/maneu/logo.svg" />
+    </view>
+  </view>
+
+  <!-- ==================== 登录表单卡片 ==================== -->
+  <view class="login-card">
+  
+    <text class="card-title">短信验证登录</text>
+
+    <!-- 手机号 -->
+    <view class="input-row">
+      <view class="input-row__icon input-row__icon--phone"></view>
+      <input bindinput="onPhoneInput" class="flex-input" maxlength="11" placeholder="请输入手机号" type="number" value="{{phone}}" />
     </view>
 
-    <!-- ==================== 登录表单卡片 ==================== -->
-    <view class="login-card">
-        <text class="card-title">短信验证登录</text>
-
-        <!-- 手机号 -->
-        <view class="input-row">
-            <view class="input-row__icon input-row__icon--phone"></view>
-            <input bindinput="onPhoneInput" class="flex-input" maxlength="11" placeholder="请输入手机号" type="number"
-                   value="{{phone}}"/>
-        </view>
-
-        <!-- 验证码 -->
-        <view class="input-row">
-            <view class="input-row__icon input-row__icon--lock"></view>
-            <input bindinput="onCodeInput" maxlength="6" placeholder="6位验证码" type="number" value="{{code}}"/>
-            <button bindtap="sendsmsCode" class="sms-btn {{isCountdown ? 'sms-btn--disabled' : ''}}"
-                    disabled="{{isCountdown}}">
-                {{countdownText}}
-            </button>
-        </view>
-
-        <!-- 协议勾选 -->
-        <view bindtap="toggleAgree" class="agreement-row">
-            <view class="checkbox {{agree ? 'checkbox--checked' : ''}}">
-                <view class="checkbox__tick" wx:if="{{agree}}"></view>
-            </view>
-            <text class="agreement-text">我已阅读并同意</text>
-            <text catchtap="onOpenAgreementService" class="agreement-link">《用户服务协议》</text>
-            <text catchtap="onOpenAgreementPrivacy" class="agreement-link">《用户隐私协议》</text>
-        </view>
-
-        <!-- 登录按钮：未填完时仅置灰，仍可点击以给出校验提示 -->
-        <button bindtap="handleLogin"
-                class="login-btn {{!phone || !code || !agree || submitting ? 'login-btn--disabled' : ''}}" disabled="{{submitting}}">
-            {{submitting ? '登录中...' : '登录'}}
-        </button>
-
-        <!-- 其他方式 -->
-        <view class="divider">
-            <view class="divider-line"></view>
-            <text class="divider-text">其他方式登录</text>
-            <view class="divider-line"></view>
-        </view>
-
-        <button bindgetphonenumber="onWechatLogin" class="wechat-btn" disabled="{{submitting}}"
-                open-type="getPhoneNumber">
-            <image class="wechat-icon" src="/image/wechat-icon.png"/>
-            <text>快捷登录</text>
-        </button>
+    <!-- 验证码 -->
+    <view class="input-row">
+      <view class="input-row__icon input-row__icon--lock"></view>
+      <input bindinput="onCodeInput" maxlength="6" placeholder="6位验证码" type="number" value="{{code}}" />
+      <button bindtap="sendsmsCode" class="sms-btn {{isCountdown ? 'sms-btn--disabled' : ''}}" disabled="{{isCountdown}}">
+        {{countdownText}}
+      </button>
     </view>
+
+    <!-- 协议勾选 -->
+    <view bindtap="toggleAgree" class="agreement-row">
+      <view class="checkbox {{agree ? 'checkbox--checked' : ''}}">
+        <view class="checkbox__tick" wx:if="{{agree}}"></view>
+      </view>
+      <text class="agreement-text">我已阅读并同意</text>
+      <text catchtap="onOpenAgreementService" class="agreement-link">《用户服务协议》</text>
+      <text catchtap="onOpenAgreementPrivacy" class="agreement-link">《用户隐私协议》</text>
+    </view>
+
+    <!-- 登录按钮：未填完时仅置灰，仍可点击以给出校验提示 -->
+    <button bindtap="handleLogin" class="login-btn {{!phone || !code || !agree || submitting ? 'login-btn--disabled' : ''}}" disabled="{{submitting}}">
+      {{submitting ? '登录中...' : '登录'}}
+    </button>
+
+    <!-- 其他方式 -->
+    <view class="divider">
+      <view class="divider-line"></view>
+      <text class="divider-text">其他方式登录</text>
+      <view class="divider-line"></view>
+    </view>
+
+    <button bindgetphonenumber="onWechatLogin" class="wechat-btn" disabled="{{submitting}}" open-type="getPhoneNumber">
+      <image class="wechat-icon" src="/image/wechat-icon.png" />
+      <text>快捷登录</text>
+    </button>
+  </view>
+
 </view>
