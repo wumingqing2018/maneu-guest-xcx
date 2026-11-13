@@ -1,2 +1,89 @@
 <!--pages/userPage/userPage.wxml-->
-<text>pages/userPage/userPage.wxml</text>
+<!-- pages/userPage/userPage.wxml -->
+
+<view class="page">
+
+  <!-- 顶部品牌栏（与 user / userLogin 完全一致） -->
+  <view class="top-bar top-bar--short">
+    <view class="top-bar__inner">
+      <image class="brand-logo" lazy-load mode="aspectFit" src="https://maneu.online/static/img/maneu/logo.svg" />
+    </view>
+  </view>
+
+  <!-- ==================== 加载态 ==================== -->
+  <block wx:if="{{loading}}">
+    <view class="profile-card">
+      <view class="skeleton skeleton--avatar"></view>
+      <view class="skeleton skeleton--text" style="width: 40%; margin-top: 24rpx;"></view>
+      <view class="skeleton skeleton--text" style="width: 60%; margin-top: 16rpx;"></view>
+    </view>
+    <view class="info-card">
+      <view class="skeleton skeleton--menu"></view>
+      <view class="skeleton skeleton--menu" style="margin-top: 16rpx;"></view>
+      <view class="skeleton skeleton--menu" style="margin-top: 16rpx;"></view>
+      <view class="skeleton skeleton--menu" style="margin-top: 16rpx;"></view>
+    </view>
+  </block>
+
+  <!-- ==================== 错误态 ==================== -->
+  <view wx:elif="{{loadError}}" class="empty">
+    <view class="empty__icon"></view>
+    <text class="empty__title">加载失败</text>
+    <text class="empty__desc">请检查网络后重试</text>
+    <view bindtap="onRetry" class="empty__btn" hover-class="empty__btn--hover">重新加载</view>
+  </view>
+
+  <!-- ==================== 正常态 ==================== -->
+  <block wx:else>
+
+    <!-- 资料卡片：头像 + 昵称 + 手机号 -->
+    <view class="profile-card">
+      <view class="profile-card__avatar"></view>
+      <view class="info-card__title"></view>
+
+      <view class="info-item">
+        <text class="info-item__label">用户昵称</text>
+        <text class="info-item__value">{{user.name}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-item__label">用户ID</text>
+        <text class="info-item__value">{{user.id}}</text>
+      </view>
+
+      <view class="info-item">
+        <text class="info-item__label">手机号</text>
+        <text class="info-item__value">{{user.phone}}</text>
+      </view>
+
+      <view class="info-item">
+        <text class="info-item__label">微信绑定</text>
+        <text class="info-item__value {{user.isBound ? 'info-item__value--success' : 'info-item__value--muted'}}">
+          {{user.boundText}}
+        </text>
+      </view>
+
+      <view class="info-item">
+        <text class="info-item__label">账户状态</text>
+        <text class="info-item__value {{user.statusRaw === '1' ? 'info-item__value--success' : 'info-item__value--warn'}}">
+          {{user.status}}
+        </text>
+      </view>
+
+      <view class="info-item">
+        <text class="info-item__label">注册时间</text>
+        <text class="info-item__value">{{user.time}}</text>
+      </view>
+
+      <view class="info-item">
+        <text class="info-item__label">备注</text>
+        <text class="info-item__value info-item__value--wrap">{{user.remark}}</text>
+      </view>
+      
+      <view bindtap="handleLogout" class="menu-item" hover-class="menu-item--hover" hover-stay-time="80">
+        退出登录
+      </view>
+    </view>
+
+  </block>
+
+</view>

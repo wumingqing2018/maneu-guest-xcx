@@ -1,1 +1,317 @@
-/* pages/userPage/userPage.wxss */
+/* ==========================================================
+   pages/userPage/userPage.wxss
+   ----------------------------------------------------------
+   Apple 风格设计系统 —— 个人资料页
+   与 user / userLogin 共用同一套设计系统
+   ----------------------------------------------------------
+   bg        #FBFBFD   Apple.com 页面底色
+   surface   #FFFFFF
+   brand     #003153   品牌深蓝
+   accent    #0071E3   Apple Blue
+   danger    #FF3B30   iOS Red
+   success   #34C759   iOS Green
+   warn      #FF9500   iOS Orange
+   text      #1D1D1F
+   text-2    #86868B
+   hairline  rgba(0,0,0,.08)
+   ========================================================== */
+
+/* ==================== 页面基础（与 user / userLogin 一致） ==================== */
+.page {
+  min-height: 100vh;
+  background: #fbfbfd;
+  padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Helvetica Neue", "PingFang SC", "Microsoft YaHei",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #1d1d1f;
+}
+
+/* ==================== 顶部品牌栏（与 user / userLogin 一致） ==================== */
+.top-bar {
+  width: 100%;
+  position: relative;
+  background: linear-gradient(180deg,
+      #004272 0%,
+      #003b62 25%,
+      #003153 60%,
+      #002a45 100%);
+  padding-bottom: 20rpx;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  z-index: 1;
+}
+
+.top-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.top-bar::after {
+  content: '';
+  width: 100%;
+  height: 60rpx;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #002a45;
+}
+
+.top-bar__inner {
+  width: 82%;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.top-bar--short {
+  padding: 96rpx 0 56rpx;
+}
+
+.brand-logo {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 34rpx;
+  padding: 12rpx;
+  box-sizing: border-box;
+  box-shadow: 0 6rpx 24rpx rgba(0, 0, 0, 0.18);
+}
+
+/* ==================== 骨架屏 ==================== */
+.skeleton {
+  background: linear-gradient(90deg, #eef0f3 25%, #f7f8fa 37%, #eef0f3 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 12rpx;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* ⭐ 加 margin-bottom: 28rpx，与正常态 .profile-card__avatar 对齐 */
+.skeleton--avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  margin: 0 auto 28rpx;
+}
+
+.skeleton--text {
+  height: 32rpx;
+  margin: 0 auto;
+}
+
+.skeleton--menu {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 12rpx;
+}
+
+/* ==================== 资料卡片（与 user 页 account-card 完全同框架） ==================== */
+.profile-card {
+  width: 82%;
+  margin: -32rpx auto 32rpx;
+  /* ⭐ 24rpx → 32rpx */
+  background: #ffffff;
+  border-radius: 36rpx;
+  padding: 56rpx 44rpx 48rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
+    0 24rpx 64rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.profile-card__avatar {
+  width: 140rpx;
+  height: 140rpx;
+  margin: 0 auto 28rpx;
+  border-radius: 50%;
+  background-color: rgba(0, 113, 227, 0.08);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230071E3' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8.5' r='3.5'/%3E%3Cpath d='M4.5 20c.9-3.6 4-6 7.5-6s6.6 2.4 7.5 6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 72rpx 72rpx;
+}
+
+.profile-card__name {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+  letter-spacing: -0.8rpx;
+  /* ⭐ -0.4rpx → -0.8rpx，与 user 页标题一致 */
+  line-height: 1.2;
+  margin-bottom: 12rpx;
+}
+
+.profile-card__phone {
+  display: block;
+  font-size: 28rpx;
+  color: #86868b;
+  letter-spacing: 0.6rpx;
+}
+
+/* ==================== 信息卡片（Apple Settings 风格） ==================== */
+.info-card {
+  width: 82%;
+  margin: 0 auto 32rpx;
+  /* ⭐ 24rpx → 32rpx，与主卡间距一致 */
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 8rpx 0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
+    0 16rpx 40rpx rgba(0, 0, 0, 0.06);
+}
+
+/* ⭐ 去掉 text-transform，与 user 页 account-card__label 对齐 */
+.info-card__title {
+  display: block;
+  font-size: 24rpx;
+  color: #86868b;
+  letter-spacing: 3rpx;
+  padding: 24rpx 32rpx 12rpx;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-top: 1rpx solid rgba(0, 0, 0, 0.05);
+  font-size: 30rpx;
+  line-height: 1.4;
+}
+
+.info-item:first-of-type {
+  border-top: none;
+}
+
+.info-item__label {
+  color: #86868b;
+  flex-shrink: 0;
+  margin-right: 24rpx;
+  letter-spacing: 0.2rpx;
+}
+
+.info-item__value {
+  color: #1d1d1f;
+  font-weight: 500;
+  text-align: right;
+  word-break: break-all;
+  flex: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.info-item__value--wrap {
+  text-align: left;
+  font-weight: 400;
+}
+
+.info-item__value--muted {
+  color: #c7c7cc;
+  font-weight: 400;
+}
+
+.info-item__value--success {
+  color: #34c759;
+}
+
+.info-item__value--warn {
+  color: #ff9500;
+}
+
+/* ==================== 底部操作（与 user 页 menu-item 完全一致） ==================== */
+.menu-list {
+  width: 92%;
+  margin: 0 auto;
+}
+
+.menu-item {
+  padding: 48rpx;
+  font-size: 30rpx;
+  color: #1d1d1f;
+  text-align: center;
+  font-weight: 500;
+  letter-spacing: 0.2rpx;
+}
+
+.menu-item--hover {
+  background: #f2f2f7;
+  transform: scale(0.98);
+}
+
+/* ==================== 加载失败态 ==================== */
+.empty {
+  padding: 160rpx 60rpx;
+  text-align: center;
+}
+
+.empty__icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin: 0 auto 32rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 59, 48, 0.06);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C7C7CC' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cline x1='12' y1='8' x2='12' y2='13'/%3E%3Ccircle cx='12' cy='16' r='.5' fill='%23C7C7CC' stroke='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60rpx 60rpx;
+}
+
+.empty__title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 8rpx;
+  letter-spacing: -0.2rpx;
+}
+
+.empty__desc {
+  display: block;
+  font-size: 26rpx;
+  color: #86868b;
+  letter-spacing: 0.2rpx;
+}
+
+.empty__btn {
+  display: inline-block;
+  margin-top: 40rpx;
+  padding: 20rpx 56rpx;
+  background: #0071e3;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 500;
+  border-radius: 999rpx;
+  letter-spacing: 0.4rpx;
+  box-shadow: 0 6rpx 20rpx rgba(0, 113, 227, 0.28);
+  transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 0.25s ease, opacity 0.2s ease;
+}
+
+.empty__btn--hover {
+  transform: scale(0.96);
+  box-shadow: 0 3rpx 10rpx rgba(0, 113, 227, 0.2);
+  opacity: 0.9;
+}

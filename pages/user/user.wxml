@@ -9,70 +9,64 @@
 <!-- ==================== 已登录：用户中心 ==================== -->
 <view class="page" wx:if="{{islogin}}">
 
-    <!-- 顶部品牌栏 -->
-    <view class="top-bar top-bar--short">
-        <view class="top-bar__inner">
-            <image class="brand-logo" lazy-load mode="aspectFit" src="https://maneu.online/static/img/maneu/logo.svg"/>
-        </view>
+  <!-- 顶部品牌栏 -->
+  <view class="top-bar top-bar--short">
+    <view class="top-bar__inner">
+      <image class="brand-logo" lazy-load mode="aspectFit" src="https://maneu.online/static/img/maneu/logo.svg" />
+    </view>
+  </view>
+
+  <!-- 账号信息卡片 -->
+  <view class="account-card" bindtap="getUserPage" hover-class="account-card--hover">
+    <view class="account-card__info">
+      <text class="account-card__label">登录账号</text>
+      <text class="account-card__value">{{call || '--'}}</text>
+    </view>
+    <!-- 右侧箭头指示 -->
+    <view class="account-card__arrow"></view>
+  </view>
+  <!-- 功能网格（2×2） -->
+  <view class="grid">
+    <view bindtap="getOrderList" class="grid__item" hover-class="grid__item--hover" hover-stay-time="80">
+      <view class="grid__icon grid__icon--order"></view>
+      <text class="grid__label">购买记录</text>
     </view>
 
-    <!-- 账号信息卡片 -->
-    <view class="account-card">
-        <text class="account-card__label">登录账号</text>
-        <text class="account-card__value">{{call || '--'}}</text>
+    <view bindtap="getReportList" class="grid__item" hover-class="grid__item--hover" hover-stay-time="80">
+      <view class="grid__icon grid__icon--report"></view>
+      <text class="grid__label">验光报告</text>
     </view>
 
-    <!-- 功能网格（2×2） -->
-    <view class="grid">
-        <view bindtap="getOrderList" class="grid__item" hover-class="grid__item--hover" hover-stay-time="80">
-            <view class="grid__icon grid__icon--order"></view>
-            <text class="grid__label">购买记录</text>
-        </view>
-
-        <view bindtap="getReportList" class="grid__item" hover-class="grid__item--hover" hover-stay-time="80">
-            <view class="grid__icon grid__icon--report"></view>
-            <text class="grid__label">验光报告</text>
-        </view>
-
-        <view bindtap="getRepairList" class="grid__item" hover-class="grid__item--hover" hover-stay-time="80">
-            <view class="grid__icon grid__icon--repair"></view>
-            <text class="grid__label">售后记录</text>
-        </view>
-
-        <view bindtap="getStoreList" class="grid__item" hover-class="grid__item--hover" hover-stay-time="80">
-            <view class="grid__icon grid__icon--store"></view>
-            <text class="grid__label">定制产品</text>
-        </view>
+    <view bindtap="getRepairList" class="grid__item" hover-class="grid__item--hover" hover-stay-time="80">
+      <view class="grid__icon grid__icon--repair"></view>
+      <text class="grid__label">售后记录</text>
     </view>
 
-    <!-- 退出登录 -->
-    <view class="menu-list">
-        <view bindtap="handleLogout" class="menu-item menu-item--logout" hover-class="menu-item--hover"
-              hover-stay-time="80">
-            用户退出
-        </view>
+    <view bindtap="getStoreList" class="grid__item" hover-class="grid__item--hover" hover-stay-time="80">
+      <view class="grid__icon grid__icon--store"></view>
+      <text class="grid__label">定制产品</text>
     </view>
-
+  </view>
 </view>
 
 <!-- ==================== 未登录：登录卡片 ==================== -->
 <view class="page" wx:else>
 
-    <!-- 顶部品牌栏（与已登录状态完全一致） -->
-    <view class="top-bar top-bar--short">
-        <view class="top-bar__inner">
-            <image class="brand-logo" lazy-load mode="aspectFit" src="https://maneu.online/static/img/maneu/logo.svg"/>
-        </view>
+  <!-- 顶部品牌栏（与已登录状态完全一致） -->
+  <view class="top-bar top-bar--short">
+    <view class="top-bar__inner">
+      <image class="brand-logo" lazy-load mode="aspectFit" src="https://maneu.online/static/img/maneu/logo.svg" />
     </view>
+  </view>
 
-    <!-- 登录卡片 -->
-    <view class="login-card">
-        <view class="login-card__icon"></view>
-        <text class="login-card__title">未登录</text>
-        <text class="login-card__desc">登录后可查看订单、验光报告和售后记录</text>
-        <view bindtap="goLogin" class="login-card__btn" hover-class="login-card__btn--hover" hover-stay-time="80">
-            立即登录
-        </view>
+  <!-- 登录卡片 -->
+  <view class="login-card">
+    <view class="login-card__icon"></view>
+    <text class="login-card__title">未登录</text>
+    <text class="login-card__desc">登录后可查看订单、验光报告和售后记录</text>
+    <view bindtap="getLogin" class="login-card__btn" hover-class="login-card__btn--hover" hover-stay-time="80">
+      立即登录
     </view>
+  </view>
 
 </view>

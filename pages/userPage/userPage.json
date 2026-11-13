@@ -1,4 +1,8 @@
 {
-  "component": true,
+  "navigationBarTitleText": "徕可视光",
+  "navigationBarBackgroundColor": "#004272",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#004272",
+  "backgroundTextStyle": "dark",
   "usingComponents": {}
 }

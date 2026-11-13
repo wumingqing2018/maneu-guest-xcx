@@ -161,11 +161,11 @@
    与 userLogin 的 login-card 保持相同圆角 / 阴影 / 宽度，
    但内容改为 label + value 双层结构
    ========================================================== */
-   .account-card {
-    width: 82%;
+.account-card {
+    width: 70%;
     margin: -32rpx auto 32rpx;
     background: #ffffff;
-    border-radius: 36rpx;
+    border-radius: 24rpx;
     padding: 56rpx 44rpx 48rpx;
     box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
     0 24rpx 64rpx rgba(0, 0, 0, 0.1);
@@ -178,17 +178,47 @@
     font-size: 24rpx;
     color: #86868b;
     letter-spacing: 3rpx;
-    margin-bottom: 12rpx;
 }
 
 .account-card__value {
     display: block;
     font-size: 40rpx;
-    font-weight: 700;
     color: #1d1d1f;
     letter-spacing: -0.4rpx;
     line-height: 1.2;
 }
+
+/* 修改卡片为左右两端对齐 */
+.account-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* 保持你原有的 padding、background、border-radius 等配置不变 */
+  /* 例如：padding: 30rpx 40rpx; background: #fff; border-radius: 20rpx; */
+}
+
+/* 添加点击时的反馈效果 */
+.account-card--hover {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+/* 左侧信息包裹 */
+.account-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+/* 纯 CSS 画一个精致的右箭头 */
+.account-card__arrow {
+  width: 16rpx;
+  height: 16rpx;
+  border-top: 3rpx solid #C7C7CC;   /* 箭头颜色，可视情况调整为你的主题色 */
+  border-right: 3rpx solid #C7C7CC;
+  transform: rotate(45deg);
+}
+
 
 /* ==================== 功能网格（2×2） ==================== */
 .grid {
@@ -296,10 +326,10 @@
    ========================================================== */
 .login-card {
     width: 82%;
-    margin: -32rpx auto 0;
+    margin: -32rpx auto 32rpx;
     background: #ffffff;
     border-radius: 36rpx;
-    padding: 56rpx 44rpx 48rpx;
+    padding: 64rpx 44rpx 56rpx;
     text-align: center;
     box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
     0 24rpx 64rpx rgba(0, 0, 0, 0.1);
