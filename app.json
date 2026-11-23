@@ -36,8 +36,8 @@
       {
         "pagePath": "pages/index/index",
         "text": "首页",
-        "iconPath": "/image/home1.png",
-        "selectedIconPath": "/image/home2.png"
+        "iconPath": "/image/index1.png",
+        "selectedIconPath": "/image/index2.png"
       },
       {
         "pagePath": "pages/user/user",
