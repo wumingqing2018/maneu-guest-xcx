@@ -8,7 +8,6 @@
 
 <!-- ==================== 已登录：用户中心 ==================== -->
 <view class="page" wx:if="{{islogin}}">
-
   <!-- 顶部品牌栏 -->
   <view class="top-bar top-bar--short">
     <view class="top-bar__inner">
@@ -25,6 +24,7 @@
     <!-- 右侧箭头指示 -->
     <view class="account-card__arrow"></view>
   </view>
+  
   <!-- 功能网格（2×2） -->
   <view class="grid">
     <view bindtap="getOrderList" class="grid__item" hover-class="grid__item--hover" hover-stay-time="80">

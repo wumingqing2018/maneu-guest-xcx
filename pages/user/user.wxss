@@ -162,7 +162,7 @@
    但内容改为 label + value 双层结构
    ========================================================== */
 .account-card {
-    width: 70%;
+    width: 71%;
     margin: -32rpx auto 32rpx;
     background: #ffffff;
     border-radius: 24rpx;
