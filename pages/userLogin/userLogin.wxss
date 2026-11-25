@@ -196,7 +196,7 @@
 /* ==================== 协议勾选 ==================== */
 .agreement-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;   /* 多行时 checkbox 贴第一行，比 center 自然 */
   margin-top: 32rpx;
   padding: 8rpx 0;
 }

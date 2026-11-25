@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/agreement-service/agreement-service",
-    "pages/agreement-privacy/agreement-privacy",
+    "pages/agreementService/agreementService",
+    "pages/agreementPrivacy/agreementPrivacy",
     "pages/index/index",
     "pages/indexList/indexList",
     "pages/order/order",

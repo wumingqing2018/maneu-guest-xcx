@@ -1,8 +1,6 @@
-<!--pages/userPage/userPage.wxml-->
 <!-- pages/userPage/userPage.wxml -->
 
 <view class="page">
-
   <!-- 顶部品牌栏（与 user / userLogin 完全一致） -->
   <view class="top-bar top-bar--short">
     <view class="top-bar__inner">
@@ -35,7 +33,6 @@
 
   <!-- ==================== 正常态 ==================== -->
   <block wx:else>
-
     <!-- 资料卡片：头像 + 昵称 + 手机号 -->
     <view class="profile-card">
       <view class="profile-card__avatar"></view>
@@ -45,6 +42,7 @@
         <text class="info-item__label">用户昵称</text>
         <text class="info-item__value">{{user.name}}</text>
       </view>
+
       <view class="info-item">
         <text class="info-item__label">用户ID</text>
         <text class="info-item__value">{{user.id}}</text>
@@ -83,7 +81,5 @@
         退出登录
       </view>
     </view>
-
   </block>
-
 </view>

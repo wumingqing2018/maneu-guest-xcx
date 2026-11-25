@@ -3,6 +3,7 @@
 
 /* ==================== 常量 ==================== */
 const API = {
+  removeUrl: 'https://maneu.online/apis/remove_token/',
   guestDetail: 'https://maneu.online/apis/auth/guest_detail/'
 };
 

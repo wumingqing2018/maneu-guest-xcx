@@ -1,9 +1,6 @@
 // pages/user/user.js
 
 /* ==================== 常量 ==================== */
-const API = {
-  removeUrl: 'https://maneu.online/apis/remove_token/'
-};
 
 const ROUTES = {
   index: '/pages/index/index',
