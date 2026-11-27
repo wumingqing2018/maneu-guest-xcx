@@ -1,5 +1,4 @@
 // pages/userPage/userPage.js
-// pages/userPage/userPage.js
 
 /* ==================== 常量 ==================== */
 const API = {
@@ -153,20 +152,6 @@ Page({
 
         /* 1. 通知后端注销（失败不阻塞本地清理） */
         const accessToken = getAccessToken();
-        if (accessToken) {
-          wx.request({
-            url: API.removeUrl,
-            method: 'POST',
-            header: {
-              'content-type': 'application/json'
-            },
-            data: {
-              access_token: accessToken
-            },
-            timeout: REQUEST_TIMEOUT,
-            fail: () => {}
-          });
-        }
 
         /* 2. 本地清理（统一入口，openid 保留） */
         clearAuth();

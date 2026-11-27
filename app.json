@@ -1,9 +1,9 @@
 {
   "pages": [
-    "pages/agreementService/agreementService",
-    "pages/agreementPrivacy/agreementPrivacy",
     "pages/index/index",
     "pages/indexList/indexList",
+    "pages/agreementService/agreementService",
+    "pages/agreementPrivacy/agreementPrivacy",
     "pages/order/order",
     "pages/orderList/orderList",
     "pages/orderVerify/orderVerify",
@@ -27,7 +27,6 @@
     "navigationBarTextStyle": "white",
     "enablePullDownRefresh": false
   },
-  "entryPagePath": "pages/index/index",
   "lazyCodeLoading": "requiredComponents",
   "tabBar": {
     "color": "#999999",

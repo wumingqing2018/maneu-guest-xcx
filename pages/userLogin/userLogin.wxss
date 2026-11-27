@@ -20,8 +20,8 @@
   padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-  "SF Pro Text", "Helvetica Neue", "PingFang SC", "Microsoft YaHei",
-  sans-serif;
+    "SF Pro Text", "Helvetica Neue", "PingFang SC", "Microsoft YaHei",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   color: #1d1d1f;
 }
@@ -31,14 +31,13 @@
   width: 100%;
   position: relative;
   background: linear-gradient(180deg,
-  #004272 0%,
-  #003b62 25%,
-  #003153 60%,
-  #002a45 100%
-  );
+      #004272 0%,
+      #003b62 25%,
+      #003153 60%,
+      #002a45 100%);
   padding-bottom: 20rpx;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18),
-  inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
   z-index: 1;
 }
 
@@ -51,9 +50,9 @@
   right: 0;
   height: 1px;
   background: linear-gradient(90deg,
-  rgba(255, 255, 255, 0) 0%,
-  rgba(255, 255, 255, 0.5) 50%,
-  rgba(255, 255, 255, 0) 100%);
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0) 100%);
   z-index: 2;
   pointer-events: none;
 }
@@ -102,7 +101,7 @@
   border-radius: 36rpx;
   padding: 56rpx 44rpx 48rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03),
-  0 24rpx 64rpx rgba(0, 0, 0, 0.1);
+    0 24rpx 64rpx rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 2;
 }
@@ -196,7 +195,8 @@
 /* ==================== 协议勾选 ==================== */
 .agreement-row {
   display: flex;
-  align-items: flex-start;   /* 多行时 checkbox 贴第一行，比 center 自然 */
+  align-items: flex-start;
+  /* 多行时 checkbox 贴第一行，比 center 自然 */
   margin-top: 32rpx;
   padding: 8rpx 0;
 }
@@ -256,7 +256,7 @@
   letter-spacing: 0.6rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 113, 227, 0.3);
   transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
-  box-shadow 0.25s ease, opacity 0.2s ease;
+    box-shadow 0.25s ease, opacity 0.2s ease;
 }
 
 .login-btn::after {
@@ -304,7 +304,7 @@
   align-items: center;
   padding: 28rpx 0;
   transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
-  background 0.2s ease;
+    background 0.2s ease;
 }
 
 .wechat-btn::after {
@@ -320,6 +320,11 @@
   width: 56rpx;
   height: 56rpx;
   margin-bottom: 10rpx;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%2307C160' role='img' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3EWeChat%3C/title%3E%3Cpath d='M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.27-.027-.407-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 1 1-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 1 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z'/%3E%3C/svg%3E");
+
 }
 
 .wechat-btn text {
