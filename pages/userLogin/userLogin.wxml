@@ -56,7 +56,7 @@
     </view>
 
     <button bindgetphonenumber="onWechatLogin" class="wechat-btn" disabled="{{submitting}}" open-type="getPhoneNumber">
-      <image class="wechat-icon" src="/image/wechat-icon.png" />
+      <image class="wechat-icon"/>
       <text>快捷登录</text>
     </button>
   </view>
